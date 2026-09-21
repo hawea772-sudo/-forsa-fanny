@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>فرصة فني</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #0b0d10;
+      color: white;
+      min-height: 100vh;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 500px;
+      margin: auto;
+      padding: 22px 18px 90px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    .logo {
+      font-size: 25px;
+      font-weight: bold;
+    }
+
+    .logo span {
+      color: #f5b942;
+    }
+
+    .location {
+      color: #aaa;
+      font-size: 13px;
+    }
+
+    .welcome {
+      margin-bottom: 22px;
+    }
+
+    .welcome h1 {
+      font-size: 27px;
+      margin-bottom: 8px;
+    }
+
+    .welcome p {
+      color: #999;
+      font-size: 15px;
+    }
+
+    .search {
+      background: #15181d;
+      border: 1px solid #252a31;
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 22px;
+    }
+
+    .search-title {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    textarea {
+      width: 100%;
+      height: 95px;
+      resize: none;
+      background: #0d1014;
+      border: 1px solid #292f37;
+      border-radius: 12px;
+      color: white;
+      padding: 13px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: #f5b942;
+    }
+
+    .categories-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 13px;
+    }
+
+    .categories {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .category {
+      background: #15181d;
+      border: 1px solid #252a31;
+      border-radius: 15px;
+      padding: 17px 12px;
+      color: white;
+      font-size: 15px;
+      cursor: pointer;
+      text-align: right;
+      transition: .2s;
+    }
+
+    .category:hover,
+    .category.active {
+      border-color: #f5b942;
+      background: #1d1b15;
+    }
+
+    .icon {
+      font-size: 25px;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 25px;
+    }
+
+    .main-btn {
+      border: none;
+      border-radius: 14px;
+      padding: 16px 10px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .customer {
+      background: #f5b942;
+      color: #111;
+    }
+
+    .worker {
+      background: #171b21;
+      color: white;
+      border: 1px solid #303640;
+    }
+
+    nav {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      background: #111419;
+      border-top: 1px solid #292e35;
+      padding: 10px;
+      display: flex;
+      justify-content: space-around;
+      z-index: 10;
+    }
+
+    nav button {
+      background: none;
+      border: none;
+      color: #888;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    nav button.active {
+      color: #f5b942;
+    }
+
+    .nav-icon {
+      display: block;
+      font-size: 21px;
+      margin-bottom: 3px;
+    }
+
+    #message {
+      display: none;
+      margin-top: 15px;
+      padding: 14px;
+      background: #15181d;
+      border: 1px solid #f5b942;
+      border-radius: 12px;
+      color: #f5b942;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="app">
+
+    <header>
+      <div>
+        <div class="logo">فرصة <span>فني</span></div>
+        <div class="location">📍 القاهرة</div>
+      </div>
+      <div>🔔</div>
+    </header>
+
+    <section class="welcome">
+      <h1>أهلاً بيك 👋</h1>
+      <p>محتاج فني؟ ولا بتدور على شغل؟</p>
+    </section>
+
+    <section class="search">
+      <div class="search-title">إيه المشكلة اللي محتاج حلها؟</div>
+
+      <textarea id="problem"
+        placeholder="مثال: الحنفية بتسرب مياه..."></textarea>
+    </section>
+
+    <div class="categories-title">اختار نوع الخدمة</div>
+
+    <section class="categories">
+
+      <button class="category" onclick="selectCategory('كهرباء', this)">
+        <span class="icon">⚡</span>
+        كهرباء
+      </button>
+
+      <button class="category" onclick="selectCategory('سباكة', this)">
+        <span class="icon">🔧</span>
+        سباكة
+      </button>
+
+      <button class="category" onclick="selectCategory('تكييف', this)">
+        <span class="icon">❄️</span>
+        تكييف
+      </button>
+
+      <button class="category" onclick="selectCategory('أجهزة منزلية', this)">
+        <span class="icon">📺</span>
+        أجهزة منزلية
+      </button>
+
+      <button class="category" onclick="selectCategory('سيارات', this)">
+        <span class="icon">🚗</span>
+        سيارات
+      </button>
+
+      <button class="category" onclick="selectCategory('موبايلات', this)">
+        <span class="icon">📱</span>
+        موبايلات
+      </button>
+
+      <button class="category" onclick="selectCategory('نجارة', this)">
+        <span class="icon">🪚</span>
+        نجارة
+      </button>
+
+      <button class="category" onclick="selectCategory('نقاشة', this)">
+        <span class="icon">🎨</span>
+        نقاشة
+      </button>
+
+      <button class="category" onclick="selectCategory('تنظيف', this)">
+        <span class="icon">🧹</span>
+        تنظيف
+      </button>
+
+      <button class="category" onclick="selectCategory('نقل وشحن', this)">
+        <span class="icon">🚚</span>
+        نقل وشحن
+      </button>
+
+    </section>
+
+    <div class="buttons">
+      <button class="main-btn customer" onclick="requestService()">
+        🔧 محتاج خدمة
+      </button>
+
+      <button class="main-btn worker" onclick="workerPage()">
+        💼 عايز شغل
+      </button>
+    </div>
+
+    <div id="message"></div>
+
+  </main>
+
+  <nav>
+    <button class="active">
+      <span class="nav-icon">🏠</span>
+      الرئيسية
+    </button>
+
+    <button>
+      <span class="nav-icon">📋</span>
+      طلباتي
+    </button>
+
+    <button>
+      <span class="nav-icon">💬</span>
+      المحادثات
+    </button>
+
+    <button>
+      <span class="nav-icon">👤</span>
+      حسابي
+    </button>
+  </nav>
+
+  <script>
+
+    let selectedCategory = "";
+
+    function selectCategory(category, element) {
+
+      selectedCategory = category;
+
+      document.querySelectorAll(".category")
+        .forEach(btn => btn.classList.remove("active"));
+
+      element.classList.add("active");
+
+      showMessage("تم اختيار قسم " + category + " ✅");
+    }
+
+    function requestService() {
+
+      const problem = document.getElementById("problem").value.trim();
+
+      if (!selectedCategory && !problem) {
+        showMessage("اكتب المشكلة أو اختار نوع الخدمة الأول 👌");
+        return;
+      }
+
+      const service = selectedCategory || "خدمة عامة";
+
+      showMessage(
+        "تمام 👍 هنبحثلك عن فني مناسب في قسم " +
+        service
+      );
+    }
+
+    function workerPage() {
+      showMessage(
+        "قسم «عايز شغل» هنبنيه في الخطوة الجاية 💼"
+      );
+    }
+
+    function showMessage(text) {
+
+      const message = document.getElementById("message");
+
+      message.innerText = text;
+      message.style.display = "block";
+
+      setTimeout(() => {
+        message.style.display = "none";
+      }, 3500);
+    }
+
+  </script>
+
+</body>
+</html>
