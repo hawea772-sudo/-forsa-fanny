@@ -71,6 +71,21 @@
             flex: 1;
         }
 
+        /* App Views */
+        .app-view {
+            display: none;
+        }
+
+        .app-view.active {
+            display: block;
+            animation: fadeIn 0.25s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         .section-title {
             font-size: 1rem;
             font-weight: 700;
@@ -187,11 +202,6 @@
             animation: fadeIn 0.3s ease;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
         .form-group {
             margin-bottom: 16px;
         }
@@ -234,15 +244,6 @@
             margin-top: 6px;
         }
 
-        .camera-preview {
-            width: 100%;
-            max-height: 200px;
-            border-radius: 10px;
-            object-fit: cover;
-            display: none;
-            margin-top: 10px;
-        }
-
         .status-badge {
             display: none;
             background: rgba(35, 134, 54, 0.2);
@@ -253,6 +254,102 @@
             text-align: center;
             font-weight: 700;
             margin-top: 16px;
+        }
+
+        /* Card Styles for Orders and Chats */
+        .item-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .item-avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: rgba(227, 179, 65, 0.15);
+            color: var(--accent-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .item-sub {
+            font-size: 0.8rem;
+            color: var(--text-sub);
+        }
+
+        .badge-status {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .badge-pending {
+            background: rgba(227, 179, 65, 0.15);
+            color: var(--accent-gold);
+        }
+
+        .badge-completed {
+            background: rgba(35, 134, 54, 0.15);
+            color: #3fb950;
+        }
+
+        /* Profile Elements */
+        .profile-header {
+            text-align: center;
+            padding: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            margin-bottom: 16px;
+        }
+
+        .profile-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: var(--accent-gold);
+            color: #000;
+            font-size: 2rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+        }
+
+        .profile-menu-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 14px 16px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
         }
 
         /* Bottom Nav */
@@ -278,6 +375,9 @@
             font-size: 0.75rem;
             cursor: pointer;
             text-decoration: none;
+            border: none;
+            background: none;
+            width: 25%;
         }
 
         .nav-item.active {
@@ -300,183 +400,284 @@
 
     <!-- Main Content -->
     <main class="main-content">
-        <!-- Action Buttons -->
-        <div class="action-buttons">
-            <button class="btn-action btn-primary" onclick="scrollToServices()">
-                🛠️ محتاج خدمة
-            </button>
-            <button class="btn-action btn-secondary" onclick="toggleTechForm()">
-                💼 عايز شغل
-            </button>
-        </div>
 
-        <!-- Request Service Form (شاشة طلب الخدمة مع إضافة الموقع) -->
-        <div class="modal-form" id="serviceRequestForm">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
-                <h3 style="color: var(--accent-gold);" id="selectedServiceName">🛠️ طلب خدمة</h3>
-                <span onclick="closeServiceForm()" style="cursor:pointer; color:var(--text-sub); font-weight:bold;">✕ إغلاق</span>
+        <!-- 1. الشاشة الرئيسية (Home View) -->
+        <div id="viewHome" class="app-view active">
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+                <button class="btn-action btn-primary" onclick="scrollToServices()">
+                    🛠️ محتاج خدمة
+                </button>
+                <button class="btn-action btn-secondary" onclick="toggleTechForm()">
+                    💼 عايز شغل
+                </button>
             </div>
-            
-            <form id="customerForm" onsubmit="handleCustomerSubmit(event)">
-                <div class="form-group">
-                    <label class="form-label">تفاصيل المشكلة / الخدمة المطلوبة</label>
-                    <textarea class="form-textarea" placeholder="اشرح المشكلة بالتفصيل (مثال: تسريب مياه في حنفية المطبخ)..." required></textarea>
-                </div>
 
-                <div class="form-group">
-                    <label class="form-label">موقعك على الخريطة (لتسهيل وصول الفني)</label>
-                    <button type="button" class="btn-location" onclick="getGPSLocation()">
-                        📍 تحديد موفعي الحالي تلقائياً (GPS)
+            <!-- Request Service Form -->
+            <div class="modal-form" id="serviceRequestForm">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
+                    <h3 style="color: var(--accent-gold);" id="selectedServiceName">🛠️ طلب خدمة</h3>
+                    <span onclick="closeServiceForm()" style="cursor:pointer; color:var(--text-sub); font-weight:bold;">✕ إغلاق</span>
+                </div>
+                
+                <form id="customerForm" onsubmit="handleCustomerSubmit(event)">
+                    <div class="form-group">
+                        <label class="form-label">تفاصيل المشكلة / الخدمة المطلوبة</label>
+                        <textarea class="form-textarea" placeholder="اشرح المشكلة بالتفصيل (مثال: تسريب مياه في حنفية المطبخ)..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">موقعك على الخريطة (لتسهيل وصول الفني)</label>
+                        <button type="button" class="btn-location" onclick="getGPSLocation()">
+                            📍 تحديد موقعي الحالي تلقائياً (GPS)
+                        </button>
+                        <input type="hidden" id="geoCoordinates" name="coordinates">
+                        <div id="locationStatus" style="font-size: 0.8rem; margin-top: 6px; color: var(--accent-gold);"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">العنوان التفصيلي / العلامة المميزة</label>
+                        <input type="text" class="form-input" placeholder="المنطقة - اسم الشارع - رقم العقار / الشقة" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">رقم الموبايل للتواصل</label>
+                        <input type="tel" class="form-input" placeholder="01XXXXXXXXX" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">إرفاق صورة المشكلة (اختياري)</label>
+                        <div class="upload-box" onclick="document.getElementById('servicePhoto').click()">
+                            📷 اضغط لالتقاط أو رفع صورة
+                            <input type="file" id="servicePhoto" accept="image/*" style="display:none" onchange="handleFileUpload(this, 'servicePhotoStatus')">
+                        </div>
+                        <div id="servicePhotoStatus" style="font-size: 0.8rem; color: var(--accent-gold); margin-top: 4px;"></div>
+                    </div>
+
+                    <button type="submit" class="btn-action btn-primary" style="width: 100%; margin-top: 10px;">
+                        إرسال الطلب للفنيين 🚀
                     </button>
-                    <input type="hidden" id="geoCoordinates" name="coordinates">
-                    <div id="locationStatus" style="font-size: 0.8rem; margin-top: 6px; color: var(--accent-gold);"></div>
-                </div>
+                </form>
 
-                <div class="form-group">
-                    <label class="form-label">العنوان التفصيلي / العلامة المميزة</label>
-                    <input type="text" id="addressInput" class="form-input" placeholder="المنطقة - اسم الشارع - رقم العقار / الشقة" required>
+                <div class="status-badge" id="customerSuccessStatus">
+                    ✅ تم نشر طلبك بنجاح ومشاركة موقعك مع الفنيين!
                 </div>
+            </div>
 
-                <div class="form-group">
-                    <label class="form-label">رقم الموبايل للتواصل</label>
-                    <input type="tel" class="form-input" placeholder="01XXXXXXXXX" required>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">إرفاق صورة المشكلة (اختياري)</label>
-                    <div class="upload-box" onclick="document.getElementById('servicePhoto').click()">
-                        📷 اضغط لالتقاط أو رفع صورة
-                        <input type="file" id="servicePhoto" accept="image/*" style="display:none" onchange="handleFileUpload(this, 'servicePhotoStatus')">
+            <!-- Technician Registration Form -->
+            <div class="modal-form" id="techForm">
+                <h3 style="margin-bottom: 16px; color: var(--accent-gold);">🪪 تقديم طلب انضمام كفني</h3>
+                
+                <form id="registerForm" onsubmit="handleTechSubmit(event)">
+                    <div class="form-group">
+                        <label class="form-label">الاسم بالكامل</label>
+                        <input type="text" class="form-input" placeholder="أدخل اسمك كما في البطاقة" required>
                     </div>
-                    <div id="servicePhotoStatus" style="font-size: 0.8rem; color: var(--accent-gold); margin-top: 4px;"></div>
+
+                    <div class="form-group">
+                        <label class="form-label">رقم الهاتف</label>
+                        <input type="tel" class="form-input" placeholder="01XXXXXXXXX" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">اختر المهنة / التخصص</label>
+                        <select class="form-select" required>
+                            <option value="">اختر التخصص...</option>
+                            <option value="سباكة">سباكة</option>
+                            <option value="كهرباء">كهرباء</option>
+                            <option value="تكييف">تكييف وتبريد</option>
+                            <option value="أجهزة منزلية">صيانة أجهزة منزلية</option>
+                            <option value="نقاشة">نقاشة ودهانات</option>
+                            <option value="نجارة">نجارة</option>
+                            <option value="سيارات">ميكانيكا / كهرباء سيارات</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">صورة البطاقة الشخصية (وجه وظهر)</label>
+                        <div class="upload-box" onclick="document.getElementById('idUpload').click()">
+                            📷 اضغط لرفع صورة البطاقة
+                            <input type="file" id="idUpload" accept="image/*" style="display:none" required onchange="handleFileUpload(this, 'idStatus')">
+                        </div>
+                        <div id="idStatus" style="font-size: 0.8rem; color: var(--accent-gold); margin-top: 4px;"></div>
+                    </div>
+
+                    <button type="submit" class="btn-action btn-primary" style="width: 100%; margin-top: 10px;">
+                        إرسال الطلب للتوثيق 🚀
+                    </button>
+                </form>
+
+                <div class="status-badge" id="successStatus">
+                    ⏳ تم إرسال طلبك بنجاح! جاري مراجعة البطاقة وتوثيق حسابك خلال 24 ساعة.
                 </div>
+            </div>
 
-                <button type="submit" class="btn-action btn-primary" style="width: 100%; margin-top: 10px;">
-                    إرسال الطلب للفنيين 🚀
-                </button>
-            </form>
-
-            <div class="status-badge" id="customerSuccessStatus">
-                ✅ تم نشر طلبك بنجاح ومشاركة موقعك مع الفنيين!
+            <!-- Services Grid -->
+            <div id="servicesSection">
+                <div class="section-title">الأقسام والخدمات المتاحة</div>
+                <div class="services-grid">
+                    <div class="service-card" onclick="openServiceForm('سباكة')">
+                        <div class="service-icon">🔧</div>
+                        <div class="service-name">سباكة</div>
+                    </div>
+                    <div class="service-card" onclick="openServiceForm('كهرباء')">
+                        <div class="service-icon">⚡</div>
+                        <div class="service-name">كهرباء</div>
+                    </div>
+                    <div class="service-card" onclick="openServiceForm('تكييف')">
+                        <div class="service-icon">❄️</div>
+                        <div class="service-name">تكييف</div>
+                    </div>
+                    <div class="service-card" onclick="openServiceForm('أجهزة منزلية')">
+                        <div class="service-icon">📺</div>
+                        <div class="service-name">أجهزة منزلية</div>
+                    </div>
+                    <div class="service-card" onclick="openServiceForm('سيارات')">
+                        <div class="service-icon">🚗</div>
+                        <div class="service-name">سيارات</div>
+                    </div>
+                    <div class="service-card" onclick="openServiceForm('موبايلات')">
+                        <div class="service-icon">📱</div>
+                        <div class="service-name">موبايلات</div>
+                    </div>
+                    <div class="service-card" onclick="openServiceForm('نجارة')">
+                        <div class="service-icon">🪚</div>
+                        <div class="service-name">نجارة</div>
+                    </div>
+                    <div class="service-card" onclick="openServiceForm('نقاشة')">
+                        <div class="service-icon">🎨</div>
+                        <div class="service-name">نقاشة</div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Technician Registration Form -->
-        <div class="modal-form" id="techForm">
-            <h3 style="margin-bottom: 16px; color: var(--accent-gold);">🪪 تقديم طلب انضمام كفني</h3>
+        <!-- 2. شاشة طلباتي (Orders View) -->
+        <div id="viewOrders" class="app-view">
+            <div class="section-title">سجل طلباتي</div>
             
-            <form id="registerForm" onsubmit="handleTechSubmit(event)">
-                <div class="form-group">
-                    <label class="form-label">الاسم بالكامل</label>
-                    <input type="text" class="form-input" placeholder="أدخل اسمك كما في البطاقة" required>
+            <div class="item-card">
+                <div class="item-avatar">🔧</div>
+                <div class="item-info">
+                    <div class="item-title">طلب خدمة سباكة</div>
+                    <div class="item-sub">منذ ساعتين • القاهرة</div>
                 </div>
+                <span class="badge-status badge-pending">جاري التواصل</span>
+            </div>
 
-                <div class="form-group">
-                    <label class="form-label">رقم الهاتف</label>
-                    <input type="tel" class="form-input" placeholder="01XXXXXXXXX" required>
+            <div class="item-card">
+                <div class="item-avatar">⚡</div>
+                <div class="item-info">
+                    <div class="item-title">صيانة لوحة كهرباء</div>
+                    <div class="item-sub">الأسبوع الماضي</div>
                 </div>
-
-                <div class="form-group">
-                    <label class="form-label">اختر المهنة / التخصص</label>
-                    <select class="form-select" required>
-                        <option value="">اختر التخصص...</option>
-                        <option value="سباكة">سباكة</option>
-                        <option value="كهرباء">كهرباء</option>
-                        <option value="تكييف">تكييف وتبريد</option>
-                        <option value="أجهزة منزلية">صيانة أجهزة منزلية</option>
-                        <option value="نقاشة">نقاشة ودهانات</option>
-                        <option value="نجارة">نجارة</option>
-                        <option value="سيارات">ميكانيكا / كهرباء سيارات</option>
-                        <option value="تنظيف">تنظيف ومكافحة حشرات</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">المنطقة / المحافظة</label>
-                    <input type="text" class="form-input" placeholder="مثال: القاهرة - التجمع الخامس" required>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-label">صورة البطاقة الشخصية (وجه وظهر)</label>
-                    <div class="upload-box" onclick="document.getElementById('idUpload').click()">
-                        📷 اضغط لرفع صورة البطاقة
-                        <input type="file" id="idUpload" accept="image/*" style="display:none" required onchange="handleFileUpload(this, 'idStatus')">
-                    </div>
-                    <div id="idStatus" style="font-size: 0.8rem; color: var(--accent-gold); margin-top: 4px;"></div>
-                </div>
-
-                <button type="submit" class="btn-action btn-primary" style="width: 100%; margin-top: 10px;">
-                    إرسال الطلب للتوثيق 🚀
-                </button>
-            </form>
-
-            <div class="status-badge" id="successStatus">
-                ⏳ تم إرسال طلبك بنجاح! جاري مراجعة البطاقة وتوثيق حسابك خلال 24 ساعة.
+                <span class="badge-status badge-completed">مكتمل</span>
             </div>
         </div>
 
-        <!-- Services Grid -->
-        <div id="servicesSection">
-            <div class="section-title">الأقسام والخدمات المتاحة</div>
-            <div class="services-grid">
-                <div class="service-card" onclick="openServiceForm('سباكة')">
-                    <div class="service-icon">🔧</div>
-                    <div class="service-name">سباكة</div>
+        <!-- 3. شاشة المحادثات (Chats View) -->
+        <div id="viewChats" class="app-view">
+            <div class="section-title">المحادثات المباشرة</div>
+
+            <div class="item-card" onclick="alert('جاري فتح الشات مع الفني...')">
+                <div class="item-avatar">👨‍🔧</div>
+                <div class="item-info">
+                    <div class="item-title">الأسطى أحمد (فني سباكة)</div>
+                    <div class="item-sub">أنا قريب منك وجاهز للوصول...</div>
                 </div>
-                <div class="service-card" onclick="openServiceForm('كهرباء')">
-                    <div class="service-icon">⚡</div>
-                    <div class="service-name">كهرباء</div>
+                <span style="font-size:0.75rem; color:var(--text-sub);">10:30 ص</span>
+            </div>
+
+            <div class="item-card" onclick="alert('جاري فتح الشات مع الدعم...')">
+                <div class="item-avatar">🎧</div>
+                <div class="item-info">
+                    <div class="item-title">الدعم الفني - فرصة فني</div>
+                    <div class="item-sub">أهلاً بك، كيف يمكننا مساعدتك اليوم؟</div>
                 </div>
-                <div class="service-card" onclick="openServiceForm('تكييف')">
-                    <div class="service-icon">❄️</div>
-                    <div class="service-name">تكييف</div>
-                </div>
-                <div class="service-card" onclick="openServiceForm('أجهزة منزلية')">
-                    <div class="service-icon">📺</div>
-                    <div class="service-name">أجهزة منزلية</div>
-                </div>
-                <div class="service-card" onclick="openServiceForm('سيارات')">
-                    <div class="service-icon">🚗</div>
-                    <div class="service-name">سيارات</div>
-                </div>
-                <div class="service-card" onclick="openServiceForm('موبايلات')">
-                    <div class="service-icon">📱</div>
-                    <div class="service-name">موبايلات</div>
-                </div>
-                <div class="service-card" onclick="openServiceForm('نجارة')">
-                    <div class="service-icon">🪚</div>
-                    <div class="service-name">نجارة</div>
-                </div>
-                <div class="service-card" onclick="openServiceForm('نقاشة')">
-                    <div class="service-icon">🎨</div>
-                    <div class="service-name">نقاشة</div>
-                </div>
+                <span style="font-size:0.75rem; color:var(--text-sub);">أمس</span>
             </div>
         </div>
+
+        <!-- 4. شاشة حسابي (Profile View) -->
+        <div id="viewProfile" class="app-view">
+            <div class="profile-header">
+                <div class="profile-avatar">م</div>
+                <h3 style="margin-bottom: 4px;">مستخدم فرصة فني</h3>
+                <p style="font-size: 0.85rem; color: var(--text-sub);">01XXXXXXXXX</p>
+            </div>
+
+            <div class="profile-menu-item" onclick="switchTab('orders')">
+                <span>📋 طلباتي السابقة</span>
+                <span>‹</span>
+            </div>
+            <div class="profile-menu-item" onclick="toggleTechForm(); switchTab('home');">
+                <span>💼 التسجيل كفني (عايز شغل)</span>
+                <span>‹</span>
+            </div>
+            <div class="profile-menu-item" onclick="alert('خاصية تغيير المحافظة قريباً')">
+                <span>📍 المحافظة: القاهرة</span>
+                <span>✏️</span>
+            </div>
+            <div class="profile-menu-item" onclick="switchTab('chats')">
+                <span>🎧 مركز الدعم والمساعدة</span>
+                <span>‹</span>
+            </div>
+        </div>
+
     </main>
 
     <!-- Bottom Navigation -->
     <nav class="bottom-nav">
-        <a class="nav-item active">
+        <button class="nav-item active" id="btn-home" onclick="switchTab('home')">
             <span class="nav-icon">🏠</span>
             <span>الرئيسية</span>
-        </a>
-        <a class="nav-item">
+        </button>
+        <button class="nav-item" id="btn-orders" onclick="switchTab('orders')">
             <span class="nav-icon">📋</span>
             <span>طلباتي</span>
-        </a>
-        <a class="nav-item">
+        </button>
+        <button class="nav-item" id="btn-chats" onclick="switchTab('chats')">
             <span class="nav-icon">💬</span>
             <span>المحادثات</span>
-        </a>
-        <a class="nav-item">
+        </button>
+        <button class="nav-item" id="btn-profile" onclick="switchTab('profile')">
             <span class="nav-icon">👤</span>
             <span>حسابي</span>
-        </a>
+        </button>
     </nav>
 </div>
 
 <script>
+    // التنقل بين الشاشات الرئيسية
+    function switchTab(tabName) {
+        // إخفاء جميع الشاشات
+        document.querySelectorAll('.app-view').forEach(view => {
+            view.classList.remove('active');
+        });
+
+        // إلغاء تفعيل جميع أزرار التنقل
+        document.querySelectorAll('.nav-item').forEach(btn => {
+            btn.classList.remove('active');
+        });
+
+        // إظهار الشاشة المختارة وتفعيل الزر المناسب
+        if (tabName === 'home') {
+            document.getElementById('viewHome').classList.add('active');
+            document.getElementById('btn-home').classList.add('active');
+        } else if (tabName === 'orders') {
+            document.getElementById('viewOrders').classList.add('active');
+            document.getElementById('btn-orders').classList.add('active');
+        } else if (tabName === 'chats') {
+            document.getElementById('viewChats').classList.add('active');
+            document.getElementById('btn-chats').classList.add('active');
+        } else if (tabName === 'profile') {
+            document.getElementById('viewProfile').classList.add('active');
+            document.getElementById('btn-profile').classList.add('active');
+        }
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
     function getGPSLocation() {
         const status = document.getElementById('locationStatus');
         const coordsInput = document.getElementById('geoCoordinates');
