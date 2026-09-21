@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>فرصة فني - منصة الخدمات والفنيين</title>
+    
+    <!-- ربط ملف التنزيل كتطبيق -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0d1117">
+    
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -73,7 +78,9 @@
             gap: 8px;
         }
 
+        /* محفظة الرصيد - مخفية افتراضياً وتظهر فقط للشغالين */
         .wallet-badge {
+            display: none; 
             font-size: 0.75rem;
             font-weight: 700;
             color: var(--accent-gold);
@@ -81,9 +88,9 @@
             padding: 5px 10px;
             border-radius: 20px;
             border: 1px solid rgba(255, 193, 7, 0.3);
-            display: flex;
             align-items: center;
             gap: 4px;
+            cursor: pointer;
         }
 
         .location-badge {
@@ -122,7 +129,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Search Section */
         .search-box {
             background: var(--card-dark);
             border: 1px solid var(--card-border);
@@ -172,7 +178,6 @@
             align-items: center;
         }
 
-        /* Services Grid */
         .services-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -216,7 +221,6 @@
             color: var(--text-main);
         }
 
-        /* Action Buttons */
         .action-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -264,7 +268,6 @@
             cursor: pointer;
         }
 
-        /* Empty State Box */
         .empty-state {
             text-align: center;
             padding: 40px 20px;
@@ -279,7 +282,6 @@
             margin-bottom: 12px;
         }
 
-        /* Form Controls */
         .modal-form {
             background: var(--card-dark);
             border: 1px solid var(--card-border);
@@ -311,7 +313,6 @@
             outline: none;
         }
 
-        /* Upload File Box Styling */
         .upload-box {
             border: 2px dashed var(--card-border);
             border-radius: 10px;
@@ -326,7 +327,6 @@
             border-color: var(--accent-gold);
         }
 
-        /* Menu Items */
         .menu-item {
             background: var(--card-dark);
             border: 1px solid var(--card-border);
@@ -341,7 +341,6 @@
             font-size: 0.9rem;
         }
 
-        /* Bottom Nav */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -399,22 +398,23 @@
     <header class="app-header">
         <div class="app-title">🏠 فرصة فني</div>
         <div class="header-widgets">
-            <div class="wallet-badge" onclick="alert('رصيد محفظتك الحالي هو: 0 ج.م')">
+            <!-- المحفظة تظهر فقط إذا كان نوع المستخدم "فني / worker" -->
+            <div class="wallet-badge" id="walletBadge" onclick="alert('رصيد أرباحك الحالي: ' + (currentUser.wallet || '0.00') + ' ج.م')">
                 💳 <span id="walletBalance">0.00</span> ج.م
             </div>
             <div class="location-badge" id="userLocation" onclick="detectAutoLocation()">
-                📍 <span id="locationText">جاري تحديد الموقع...</span>
+                📍 <span id="locationText">جاري التحديد...</span>
             </div>
         </div>
     </header>
 
     <main class="main-content">
 
-        <!-- 0. شاشة تسجيل الدخول وإنشاء الحساب -->
+        <!-- 0. شاشة تسجيل الدخول -->
         <div id="viewAuth" class="app-view active">
             <div style="text-align:center; margin: 20px 0;">
                 <h2 style="color:var(--accent-gold); margin-bottom: 6px;">مرحباً بك في فرصة فني 👋</h2>
-                <p style="font-size:0.85rem; color:var(--text-sub);">سجل دخولك الآن لطلب الخدمات أو تقديم خدماتك كفني</p>
+                <p style="font-size:0.85rem; color:var(--text-sub);">سجل دخولك لطلب الخدمة أو لتقديم خدماتك كفني</p>
             </div>
 
             <div class="modal-form">
@@ -427,6 +427,14 @@
 
                 <form id="phoneAuthForm" onsubmit="handlePhoneLogin(event)">
                     <div class="form-group">
+                        <label class="form-label">نوع الحساب</label>
+                        <select class="form-select" id="userRoleInput" required>
+                            <option value="customer">عميل (محتاج خدمة)</option>
+                            <option value="worker">فني / مهني (عايز شغل)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
                         <label class="form-label">الاسم بالكامل</label>
                         <input type="text" class="form-input" id="userNameInput" placeholder="أدخل اسمك الكريم" required>
                     </div>
@@ -438,7 +446,7 @@
 
                     <div class="form-group" id="otpGroup" style="display:none;">
                         <label class="form-label">رمز التحقق (OTP)</label>
-                        <input type="text" class="form-input" id="otpInput" placeholder="أدخل كود التحقق المكون من 4 أرقام">
+                        <input type="text" class="form-input" id="otpInput" placeholder="أدخل كود التحقق 4 أرقام">
                     </div>
 
                     <button type="submit" id="btnSubmitAuth" class="btn-action btn-primary" style="width: 100%;">إرسال رمز التحقق 📲</button>
@@ -469,66 +477,25 @@
                 <span>أو اختار نوع الخدمة</span>
             </div>
             <div class="services-grid">
-                <div class="service-card" onclick="selectService('سباكة')">
-                    <div class="service-icon">🚰</div>
-                    <div class="service-name">سباكة</div>
-                </div>
-                <div class="service-card" onclick="selectService('كهرباء')">
-                    <div class="service-icon">⚡</div>
-                    <div class="service-name">كهرباء</div>
-                </div>
-                <div class="service-card" onclick="selectService('أجهزة منزلية')">
-                    <div class="service-icon">❄️</div>
-                    <div class="service-name">أجهزة منزلية</div>
-                </div>
-                <div class="service-card" onclick="selectService('تكييف')">
-                    <div class="service-icon">💨</div>
-                    <div class="service-name">تكييف</div>
-                </div>
-                <div class="service-card" onclick="selectService('موبايلات')">
-                    <div class="service-icon">📱</div>
-                    <div class="service-name">موبايلات</div>
-                </div>
-                <div class="service-card" onclick="selectService('سيارات')">
-                    <div class="service-icon">🚗</div>
-                    <div class="service-name">سيارات</div>
-                </div>
-                <div class="service-card" onclick="selectService('نقاشة')">
-                    <div class="service-icon">🎨</div>
-                    <div class="service-name">نقاشة</div>
-                </div>
-                <div class="service-card" onclick="selectService('نجارة')">
-                    <div class="service-icon">🪚</div>
-                    <div class="service-name">نجارة</div>
-                </div>
-                <div class="service-card" onclick="selectService('نقل وشحن')">
-                    <div class="service-icon">🚚</div>
-                    <div class="service-name">نقل وشحن</div>
-                </div>
-                <div class="service-card" onclick="selectService('تنظيف')">
-                    <div class="service-icon">🧹</div>
-                    <div class="service-name">تنظيف</div>
-                </div>
+                <div class="service-card" onclick="selectService('سباكة')"><div class="service-icon">🚰</div><div class="service-name">سباكة</div></div>
+                <div class="service-card" onclick="selectService('كهرباء')"><div class="service-icon">⚡</div><div class="service-name">كهرباء</div></div>
+                <div class="service-card" onclick="selectService('أجهزة منزلية')"><div class="service-icon">❄️</div><div class="service-name">أجهزة منزلية</div></div>
+                <div class="service-card" onclick="selectService('تكييف')"><div class="service-icon">💨</div><div class="service-name">تكييف</div></div>
+                <div class="service-card" onclick="selectService('موبايلات')"><div class="service-icon">📱</div><div class="service-name">موبايلات</div></div>
+                <div class="service-card" onclick="selectService('سيارات')"><div class="service-icon">🚗</div><div class="service-name">سيارات</div></div>
+                <div class="service-card" onclick="selectService('نقاشة')"><div class="service-icon">🎨</div><div class="service-name">نقاشة</div></div>
+                <div class="service-card" onclick="selectService('نجارة')"><div class="service-icon">🪚</div><div class="service-name">نجارة</div></div>
+                <div class="service-card" onclick="selectService('نقل وشحن')"><div class="service-icon">🚚</div><div class="service-name">نقل وشحن</div></div>
+                <div class="service-card" onclick="selectService('تنظيف')"><div class="service-icon">🧹</div><div class="service-name">تنظيف</div></div>
             </div>
         </div>
 
-        <!-- 2. شاشة قائمة الفنيين القريبين -->
+        <!-- باقي الشاشات -->
         <div id="viewTechs" class="app-view">
-            <div class="section-title">
-                <span id="selectedCategoryTitle">الفنيين المتاحين</span>
-            </div>
-
-            <div id="techsListContainer">
-                <div class="empty-state">
-                    <div class="empty-icon">👷‍♂️</div>
-                    <h4>لا يوجد فنيين مسجلين حالياً في هذه الخدمة بمحيطك</h4>
-                    <p style="font-size:0.8rem; margin-top:6px;">كن أول من يسجل كفني وابدأ في استقبال الطلبات!</p>
-                    <button class="btn-action btn-primary" style="margin: 16px auto 0;" onclick="switchTab('offerSkills')">تسجيل كفني الآن</button>
-                </div>
-            </div>
+            <div class="section-title"><span id="selectedCategoryTitle">الفنيين المتاحين</span></div>
+            <div id="techsListContainer"><div class="empty-state"><div class="empty-icon">👷‍♂️</div><h4>لا يوجد فنيين مسجلين حالياً بالقرب منك</h4></div></div>
         </div>
 
-        <!-- 3. شاشة طلب خدمة جديدة -->
         <div id="viewNewRequest" class="app-view">
             <div class="section-title">طلب خدمة جديدة</div>
             <div class="modal-form">
@@ -541,173 +508,68 @@
                             <option value="كهرباء">كهرباء</option>
                             <option value="أجهزة منزلية">أجهزة منزلية</option>
                             <option value="تكييف">تكييف</option>
-                            <option value="موبايلات">موبايلات</option>
-                            <option value="سيارات">سيارات</option>
-                            <option value="نقاشة">نقاشة</option>
-                            <option value="نجارة">نجارة</option>
-                            <option value="نقل وشحن">نقل وشحن</option>
-                            <option value="تنظيف">تنظيف</option>
                         </select>
                     </div>
-
                     <div class="form-group">
-                        <label class="form-label">وصف المشكلة بالتفصيل</label>
+                        <label class="form-label">وصف المشكلة</label>
                         <textarea class="form-textarea" id="reqDescription" placeholder="اشرح المشكلة للفني..." required></textarea>
                     </div>
-
                     <div class="form-group">
-                        <label class="form-label">موقع الخدمة</label>
-                        <div style="display:flex; gap:8px;">
-                            <input type="text" class="form-input" id="reqLocation" placeholder="العنوان بالتفصيل" required>
-                            <button type="button" class="btn-sm-gold" style="white-space:nowrap; background:var(--card-dark); border:1px solid var(--card-border); color:var(--text-main); padding:0 12px; border-radius:8px;" onclick="getUserGPSLocation('reqLocation')">📍 GPS</button>
-                        </div>
+                        <label class="form-label">العنوان</label>
+                        <input type="text" class="form-input" id="reqLocation" placeholder="العنوان بالتفصيل" required>
                     </div>
-
                     <button type="submit" class="btn-action btn-primary" style="width: 100%;">إرسال الطلب 🚀</button>
                 </form>
             </div>
         </div>
 
-        <!-- 4. شاشة انضم كفني (عايز شغل) -->
         <div id="viewOfferSkills" class="app-view">
-            <div class="section-title">التسجيل المباشر للفنيين والعمال</div>
+            <div class="section-title">التسجيل المباشر للفنيين</div>
             <div class="modal-form">
                 <form id="techRegisterForm" onsubmit="registerTechnician(event)">
-                    <div class="form-group">
-                        <label class="form-label">الاسم الثلاثي (كما بالبطاقة)</label>
-                        <input type="text" class="form-input" id="techName" placeholder="الاسم الكامل" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">رقم الهاتف</label>
-                        <input type="tel" class="form-input" id="techPhone" placeholder="01xxxxxxxxx" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">المهارة / المهنة الرئيسية</label>
-                        <select class="form-select" id="techCategory" required>
-                            <option value="سباكة">سباكة</option>
-                            <option value="كهرباء">كهرباء</option>
-                            <option value="أجهزة منزلية">أجهزة منزلية</option>
-                            <option value="تكييف">تكييف</option>
-                            <option value="موبايلات">موبايلات</option>
-                            <option value="سيارات">سيارات</option>
-                            <option value="نقاشة">نقاشة</option>
-                            <option value="نجارة">نجارة</option>
-                            <option value="نقل وشحن">نقل وشحن</option>
-                            <option value="تنظيف">تنظيف</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">موقعك / نطاق عملك الحالي</label>
-                        <div style="display:flex; gap:8px;">
-                            <input type="text" class="form-input" id="techArea" placeholder="مثال: القاهرة، عين شمس" required>
-                            <button type="button" class="btn-sm-gold" style="white-space:nowrap; background:var(--card-dark); border:1px solid var(--card-border); color:var(--text-main); padding:0 12px; border-radius:8px;" onclick="getUserGPSLocation('techArea')">📍 موقعي</button>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">صورة بطاقة الرقم القومي (أمامي وخلفي)</label>
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                            <div class="upload-box" onclick="document.getElementById('idFrontInput').click()">
-                                <div style="font-size:1.5rem;">🆔</div>
-                                <div style="font-size:0.75rem; color:var(--text-sub);" id="idFrontLabel">صورة وجه البطاقة</div>
-                                <input type="file" id="idFrontInput" accept="image/*" style="display:none;" onchange="handleFileSelected(this, 'idFrontLabel')">
-                            </div>
-                            <div class="upload-box" onclick="document.getElementById('idBackInput').click()">
-                                <div style="font-size:1.5rem;">💳</div>
-                                <div style="font-size:0.75rem; color:var(--text-sub);" id="idBackLabel">صورة ظهر البطاقة</div>
-                                <input type="file" id="idBackInput" accept="image/*" style="display:none;" onchange="handleFileSelected(this, 'idBackLabel')">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">تأكيد الهوية ببصمة الوجه (Face ID Live)</label>
-                        <div class="upload-box" style="border-color: var(--accent-gold);" onclick="triggerFaceIDScan()">
-                            <div style="font-size:2rem;">🤳</div>
-                            <div style="font-size:0.85rem; font-weight:700; color:var(--accent-gold);" id="faceIDStatus">اضغط لالتقاط صورة مباشرة للوجه</div>
-                            <div style="font-size:0.7rem; color:var(--text-sub);">للتأكد من تطابق الوجه مع صورة البطاقة</div>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn-action btn-primary" style="width: 100%;">تقديم الطلب والتحقق 🚀</button>
+                    <div class="form-group"><label class="form-label">الاسم بالكامل</label><input type="text" class="form-input" id="techName" required></div>
+                    <div class="form-group"><label class="form-label">رقم الهاتف</label><input type="tel" class="form-input" id="techPhone" required></div>
+                    <div class="form-group"><label class="form-label">المهنة</label><input type="text" class="form-input" id="techCategory" placeholder="سباك، كهربائي..." required></div>
+                    <button type="submit" class="btn-action btn-primary" style="width: 100%;">تقديم الطلب 🚀</button>
                 </form>
             </div>
         </div>
 
-        <!-- 5. شاشة طلباتي -->
         <div id="viewOrders" class="app-view">
-            <div class="section-title">طلباتي الحالية والسابقة</div>
-            <div id="ordersListContainer">
-                <div class="empty-state">
-                    <div class="empty-icon">📋</div>
-                    <h4>لا توجد طلبات جارية</h4>
-                    <p style="font-size:0.8rem; margin-top:6px;">عندما تقوم بطلب خدمة ستظهر تفاصيلها هنا.</p>
-                </div>
-            </div>
+            <div class="section-title">طلباتي</div>
+            <div class="empty-state"><div class="empty-icon">📋</div><h4>لا توجد طلبات جارية</h4></div>
         </div>
 
-        <!-- 6. شاشة المحادثات -->
         <div id="viewChat" class="app-view">
             <div class="section-title">المحادثات</div>
-            <div class="empty-state">
-                <div class="empty-icon">💬</div>
-                <h4>لا توجد محادثات نشطة</h4>
-                <p style="font-size:0.8rem; margin-top:6px;">تبدأ المحادثات تلقائياً عند قَبول طلبك من قبل أحد الفنيين.</p>
-            </div>
+            <div class="empty-state"><div class="empty-icon">💬</div><h4>لا توجد محادثات نشطة</h4></div>
         </div>
 
-        <!-- 7. شاشة حسابي -->
         <div id="viewProfile" class="app-view">
             <div style="text-align:center; padding: 20px 0;">
                 <div style="width:70px; height:70px; border-radius:50%; background:var(--accent-gold); color:#000; font-size:2rem; font-weight:800; display:flex; align-items:center; justify-content:center; margin:0 auto 10px;" id="profileAvatar">👤</div>
-                <h3 id="profileName">مستخدم فرصة فني</h3>
-                <p style="font-size:0.8rem; color:var(--text-sub);" id="profileStatus">01000000000</p>
+                <h3 id="profileName">اسم المستخدم</h3>
+                <p style="font-size:0.8rem; color:var(--text-sub);" id="profileStatus">رقم الهاتف</p>
             </div>
-
-            <div class="menu-item" onclick="switchTab('orders')">
-                <span>📋 طلباتي</span>
-                <span>‹</span>
-            </div>
-            <div class="menu-item" onclick="switchTab('chat')">
-                <span>💬 المحادثات</span>
-                <span>‹</span>
-            </div>
-            <div class="menu-item" onclick="switchTab('offerSkills')">
-                <span>🧰 التسجيل كفني (إثبات الهوية)</span>
-                <span>‹</span>
-            </div>
-            <div class="menu-item" style="color: #ea4335;" onclick="logout()">
-                <span>🚪 تسجيل الخروج</span>
-                <span>‹</span>
-            </div>
+            <div class="menu-item" style="color: #ea4335;" onclick="logout()"><span>🚪 تسجيل الخروج</span><span>‹</span></div>
         </div>
 
     </main>
 
     <nav class="bottom-nav" id="bottomNav" style="display:none;">
-        <button class="nav-item active" id="nav-home" onclick="switchTab('home')">
-            <span style="font-size:1.2rem;">🏠</span>
-            <span>الرئيسية</span>
-        </button>
-        <button class="nav-item" id="nav-orders" onclick="switchTab('orders')">
-            <span style="font-size:1.2rem;">📋</span>
-            <span>طلباتي</span>
-        </button>
-        <button class="nav-item" id="nav-chat" onclick="switchTab('chat')">
-            <span style="font-size:1.2rem;">💬</span>
-            <span>المحادثات</span>
-        </button>
-        <button class="nav-item" id="nav-profile" onclick="switchTab('profile')">
-            <span style="font-size:1.2rem;">👤</span>
-            <span>حسابي</span>
-        </button>
+        <button class="nav-item active" id="nav-home" onclick="switchTab('home')"><span style="font-size:1.2rem;">🏠</span><span>الرئيسية</span></button>
+        <button class="nav-item" id="nav-orders" onclick="switchTab('orders')"><span style="font-size:1.2rem;">📋</span><span>طلباتي</span></button>
+        <button class="nav-item" id="nav-chat" onclick="switchTab('chat')"><span style="font-size:1.2rem;">💬</span><span>المحادثات</span></button>
+        <button class="nav-item" id="nav-profile" onclick="switchTab('profile')"><span style="font-size:1.2rem;">👤</span><span>حسابي</span></button>
     </nav>
 </div>
 
 <script>
+    // تسجيل الـ Service Worker
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js').then(() => console.log("App PWA Ready!"));
+    }
+
     let isOtpSent = false;
     let currentUser = JSON.parse(localStorage.getItem('userSession')) || null;
 
@@ -727,42 +589,35 @@
                 (position) => {
                     const lat = position.coords.latitude;
                     const lon = position.coords.longitude;
-                    
                     fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&accept-language=ar`)
                         .then(res => res.json())
                         .then(data => {
                             if (data && data.address) {
                                 const city = data.address.state || data.address.city || data.address.governorate || "موقعك الحقيقي";
-                                const district = data.address.suburb || data.address.town || data.address.village || "";
-                                const fullLocationName = district ? `${city} - ${district}` : city;
-                                locationText.innerText = fullLocationName;
+                                const district = data.address.suburb || data.address.town || "";
+                                locationText.innerText = district ? `${city} - ${district}` : city;
                             } else {
                                 locationText.innerText = "موقعك الحالي";
                             }
                         })
-                        .catch(() => {
-                            locationText.innerText = "موقعك الحالي";
-                        });
+                        .catch(() => locationText.innerText = "موقعك الحالي");
                 },
-                () => {
-                    locationText.innerText = "تحديد الموقع ملغى";
-                }
+                () => locationText.innerText = "تحديد الموقع ملغى"
             );
         } else {
             locationText.innerText = "الموقع غير مدعوم";
         }
     }
 
-    /* تسجيل الدخول والوظائف الخاصة بالمستخدم */
     function loginWithGoogle() {
-        alert("جاري الاتصال بحساب Google...");
-        saveSession("مستخدم Google", "تسجيل عبر Google");
+        saveSession("مستخدم Google", "تسجيل عبر Google", "customer");
     }
 
     function handlePhoneLogin(e) {
         e.preventDefault();
         const name = document.getElementById('userNameInput').value;
         const phone = document.getElementById('userPhoneInput').value;
+        const role = document.getElementById('userRoleInput').value;
 
         if (!isOtpSent) {
             document.getElementById('otpGroup').style.display = 'block';
@@ -770,20 +625,30 @@
             alert('تم إرسال كود التحقق OTP إلى الرقم: ' + phone);
             isOtpSent = true;
         } else {
-            saveSession(name, phone);
+            saveSession(name, phone, role);
         }
     }
 
-    function saveSession(name, phone) {
-        currentUser = { name, phone, wallet: "0.00" };
+    function saveSession(name, phone, role) {
+        currentUser = { name, phone, role, wallet: "0.00" };
         localStorage.setItem('userSession', JSON.stringify(currentUser));
         setupLoggedInState();
     }
 
     function setupLoggedInState() {
         document.getElementById('profileName').innerText = currentUser.name;
-        document.getElementById('profileStatus').innerText = currentUser.phone;
+        document.getElementById('profileStatus').innerText = currentUser.phone + " (" + (currentUser.role === 'worker' ? 'فني' : 'عميل') + ")";
         document.getElementById('bottomNav').style.display = 'flex';
+        
+        // شرط المحفظة: تظهر فقط للـ worker (الفني/الشغال)
+        const walletBadge = document.getElementById('walletBadge');
+        if (currentUser.role === 'worker') {
+            walletBadge.style.display = 'flex';
+            document.getElementById('walletBalance').innerText = currentUser.wallet || '0.00';
+        } else {
+            walletBadge.style.display = 'none'; // مخفية تماماً عن العملاء
+        }
+
         switchTab('home');
     }
 
@@ -791,6 +656,7 @@
         localStorage.removeItem('userSession');
         currentUser = null;
         document.getElementById('bottomNav').style.display = 'none';
+        document.getElementById('walletBadge').style.display = 'none';
         isOtpSent = false;
         document.getElementById('otpGroup').style.display = 'none';
         document.getElementById('btnSubmitAuth').innerText = 'إرسال رمز التحقق 📲';
@@ -801,37 +667,20 @@
         document.querySelectorAll('.app-view').forEach(view => view.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
 
-        if (tab === 'auth') {
-            document.getElementById('viewAuth').classList.add('active');
-        } else if (tab === 'home') {
-            document.getElementById('viewHome').classList.add('active');
-            document.getElementById('nav-home').classList.add('active');
-        } else if (tab === 'techs') {
-            document.getElementById('viewTechs').classList.add('active');
-            document.getElementById('nav-home').classList.add('active');
-        } else if (tab === 'newRequest') {
-            document.getElementById('viewNewRequest').classList.add('active');
-            document.getElementById('nav-orders').classList.add('active');
-        } else if (tab === 'offerSkills') {
-            document.getElementById('viewOfferSkills').classList.add('active');
-            document.getElementById('nav-profile').classList.add('active');
-        } else if (tab === 'chat') {
-            document.getElementById('viewChat').classList.add('active');
-            document.getElementById('nav-chat').classList.add('active');
-        } else if (tab === 'orders') {
-            document.getElementById('viewOrders').classList.add('active');
-            document.getElementById('nav-orders').classList.add('active');
-        } else if (tab === 'profile') {
-            document.getElementById('viewProfile').classList.add('active');
-            document.getElementById('nav-profile').classList.add('active');
-        }
+        if (tab === 'auth') document.getElementById('viewAuth').classList.add('active');
+        else if (tab === 'home') { document.getElementById('viewHome').classList.add('active'); document.getElementById('nav-home').classList.add('active'); }
+        else if (tab === 'techs') { document.getElementById('viewTechs').classList.add('active'); document.getElementById('nav-home').classList.add('active'); }
+        else if (tab === 'newRequest') { document.getElementById('viewNewRequest').classList.add('active'); document.getElementById('nav-orders').classList.add('active'); }
+        else if (tab === 'offerSkills') { document.getElementById('viewOfferSkills').classList.add('active'); document.getElementById('nav-profile').classList.add('active'); }
+        else if (tab === 'chat') { document.getElementById('viewChat').classList.add('active'); document.getElementById('nav-chat').classList.add('active'); }
+        else if (tab === 'orders') { document.getElementById('viewOrders').classList.add('active'); document.getElementById('nav-orders').classList.add('active'); }
+        else if (tab === 'profile') { document.getElementById('viewProfile').classList.add('active'); document.getElementById('nav-profile').classList.add('active'); }
 
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function selectService(categoryName) {
         document.getElementById('selectedCategoryTitle').innerText = 'فنيين: ' + categoryName;
-        document.getElementById('reqCategory').value = categoryName;
         switchTab('techs');
     }
 
@@ -843,34 +692,6 @@
         }
     }
 
-    function getUserGPSLocation(inputId) {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                const lat = position.coords.latitude;
-                const lng = position.coords.longitude;
-                document.getElementById(inputId).value = `تم التحديد تلقائياً (${lat.toFixed(3)}, ${lng.toFixed(3)})`;
-            }, function() {
-                alert("تعذر تحديد الموقع الجغرافي. يرجى تفعيل الـ GPS في هاتفك.");
-            });
-        }
-    }
-
-    function handleFileSelected(input, labelId) {
-        if (input.files && input.files[0]) {
-            document.getElementById(labelId).innerText = "✓ تم اختيار الصورة";
-            document.getElementById(labelId).style.color = "#238636";
-        }
-    }
-
-    function triggerFaceIDScan() {
-        const status = document.getElementById('faceIDStatus');
-        status.innerText = "جاري فتح الكاميرا والتحقق من الوجه...";
-        setTimeout(() => {
-            status.innerText = "✓ تم التقاط الوجه والتحقق بنجاح";
-            status.style.color = "#238636";
-        }, 1500);
-    }
-
     function submitNewRequest(e) {
         e.preventDefault();
         alert('تم إرسال طلبك بنجاح!');
@@ -880,8 +701,7 @@
 
     function registerTechnician(e) {
         e.preventDefault();
-        const name = document.getElementById('techName').value;
-        alert('تم تقديم طلبك بنجاح باسم: ' + name + '\nجاري مراجعة البيانات والبطاقة وتأكيد الوجه لتفعيل الحساب.');
+        alert('تم تقديم طلب تسجيل الفني بنجاح!');
         document.getElementById('techRegisterForm').reset();
         switchTab('home');
     }
