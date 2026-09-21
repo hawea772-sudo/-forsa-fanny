@@ -7,14 +7,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0d1117;
-            --card-bg: #161b22;
-            --accent-yellow: #f1e05a;
-            --accent-gold: #e3b341;
+            --bg-dark: #0d1117;
+            --card-dark: #161b22;
+            --card-border: #30363d;
+            --accent-gold: #ffc107;
+            --accent-gold-hover: #e0a800;
             --text-main: #f0f6fc;
             --text-sub: #8b949e;
-            --border-color: #30363d;
-            --success-green: #238636;
+            --badge-green: #238636;
+            --chat-bubble-out: #238636;
+            --chat-bubble-in: #21262d;
+            --input-bg: #090d11;
         }
 
         * {
@@ -26,7 +29,7 @@
         }
 
         body {
-            background-color: var(--bg-color);
+            background-color: var(--bg-dark);
             color: var(--text-main);
             display: flex;
             justify-content: center;
@@ -36,7 +39,7 @@
         .app-container {
             width: 100%;
             max-width: 480px;
-            background-color: var(--bg-color);
+            background-color: var(--bg-dark);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -44,11 +47,11 @@
             padding-bottom: 75px;
         }
 
-        /* Header */
+        /* Top Header */
         .app-header {
-            padding: 16px 20px;
-            background: var(--card-bg);
-            border-bottom: 1px solid var(--border-color);
+            padding: 16px;
+            background: var(--card-dark);
+            border-bottom: 1px solid var(--card-border);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -71,41 +74,83 @@
             flex: 1;
         }
 
-        /* App Views */
         .app-view {
             display: none;
         }
 
         .app-view.active {
             display: block;
-            animation: fadeIn 0.25s ease-in-out;
+            animation: fadeIn 0.2s ease-in-out;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
+            from { opacity: 0; transform: translateY(4px); }
             to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Search Section */
+        .search-box {
+            background: var(--card-dark);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+        }
+
+        .search-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        .search-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 40px 12px 12px;
+            background: var(--input-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            color: var(--text-main);
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 12px;
+            color: var(--text-sub);
         }
 
         .section-title {
             font-size: 1rem;
             font-weight: 700;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
             color: var(--text-main);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        /* Grid Services Alignment */
+        /* Services Grid (10 Services fully aligned) */
         .services-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .service-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 16px;
+            background: var(--card-dark);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 18px 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -121,13 +166,13 @@
         }
 
         .service-icon {
-            font-size: 2rem;
-            width: 48px;
-            height: 48px;
+            font-size: 2.2rem;
+            width: 52px;
+            height: 52px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.03);
             border-radius: 50%;
         }
 
@@ -135,7 +180,6 @@
             font-size: 0.95rem;
             font-weight: 700;
             color: var(--text-main);
-            text-align: center;
         }
 
         /* Action Buttons */
@@ -151,7 +195,7 @@
             border-radius: 12px;
             border: none;
             font-size: 0.95rem;
-            font-weight: 700;
+            font-weight: 800;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -165,41 +209,121 @@
         }
 
         .btn-secondary {
-            background: var(--card-bg);
+            background: var(--card-dark);
             color: var(--text-main);
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--card-border);
         }
 
-        .btn-location {
+        /* Technician Cards (القريبين منك) */
+        .tech-card {
+            background: var(--card-dark);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 12px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .tech-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            object-fit: cover;
             background: #21262d;
-            color: #58a6ff;
-            border: 1px solid #30363d;
-            padding: 10px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
+        }
+
+        .tech-info {
+            flex: 1;
+        }
+
+        .tech-name {
+            font-weight: 800;
+            font-size: 1rem;
+            color: var(--text-main);
+        }
+
+        .tech-title {
+            font-size: 0.8rem;
+            color: var(--text-sub);
+            margin-bottom: 4px;
+        }
+
+        .tech-meta {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 6px;
-            margin-top: 6px;
-            width: 100%;
+            gap: 8px;
+            font-size: 0.8rem;
+            color: var(--text-sub);
         }
 
-        /* Modal Forms */
+        .tech-price {
+            font-weight: 700;
+            color: var(--accent-gold);
+            font-size: 0.85rem;
+        }
+
+        .btn-sm-gold {
+            background: var(--accent-gold);
+            color: #000;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        /* Profile Details Screen */
+        .tech-profile-header {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            background: var(--card-dark);
+            border: 1px solid var(--card-border);
+            margin-bottom: 16px;
+        }
+
+        .tech-cover {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            text-align: center;
+            margin: 16px 0;
+        }
+
+        .stat-box {
+            background: var(--card-dark);
+            border: 1px solid var(--card-border);
+            padding: 12px;
+            border-radius: 12px;
+        }
+
+        .stat-val {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--accent-gold);
+        }
+
+        .stat-lbl {
+            font-size: 0.75rem;
+            color: var(--text-sub);
+        }
+
+        /* Form Inputs & Controls */
         .modal-form {
-            display: none;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
+            background: var(--card-dark);
+            border: 1px solid var(--card-border);
             border-radius: 16px;
             padding: 20px;
             margin-bottom: 20px;
-        }
-
-        .modal-form.active {
-            display: block;
-            animation: fadeIn 0.3s ease;
         }
 
         .form-group {
@@ -217,149 +341,95 @@
         .form-input, .form-select, .form-textarea {
             width: 100%;
             padding: 12px;
-            background: var(--bg-color);
-            border: 1px solid var(--border-color);
+            background: var(--input-bg);
+            border: 1px solid var(--card-border);
             border-radius: 8px;
             color: var(--text-main);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             outline: none;
         }
 
-        .form-textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
-
-        .form-input:focus, .form-select:focus, .form-textarea:focus {
-            border-color: var(--accent-gold);
-        }
-
-        .upload-box {
-            border: 2px dashed var(--border-color);
-            padding: 16px;
-            text-align: center;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.02);
-            cursor: pointer;
-            margin-top: 6px;
-        }
-
-        .status-badge {
-            display: none;
-            background: rgba(35, 134, 54, 0.2);
-            border: 1px solid var(--success-green);
-            color: #3fb950;
-            padding: 12px;
-            border-radius: 10px;
-            text-align: center;
-            font-weight: 700;
-            margin-top: 16px;
-        }
-
-        /* Card Styles for Orders and Chats */
-        .item-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 14px;
-            margin-bottom: 12px;
+        .radio-group {
             display: flex;
-            align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
-        .item-avatar {
-            width: 46px;
-            height: 46px;
-            border-radius: 50%;
-            background: rgba(227, 179, 65, 0.15);
-            color: var(--accent-gold);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            flex-shrink: 0;
-        }
-
-        .item-info {
+        .radio-btn {
             flex: 1;
-        }
-
-        .item-title {
-            font-weight: 700;
-            font-size: 0.95rem;
+            padding: 10px;
+            border: 1px solid var(--card-border);
+            background: var(--input-bg);
             color: var(--text-main);
-            margin-bottom: 4px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.85rem;
+            cursor: pointer;
         }
 
-        .item-sub {
-            font-size: 0.8rem;
-            color: var(--text-sub);
-        }
-
-        .badge-status {
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 0.75rem;
+        .radio-btn.active {
+            border-color: var(--accent-gold);
+            background: rgba(255, 193, 7, 0.1);
+            color: var(--accent-gold);
             font-weight: 700;
         }
 
-        .badge-pending {
-            background: rgba(227, 179, 65, 0.15);
-            color: var(--accent-gold);
-        }
-
-        .badge-completed {
-            background: rgba(35, 134, 54, 0.15);
-            color: #3fb950;
-        }
-
-        /* Profile Elements */
-        .profile-header {
-            text-align: center;
-            padding: 20px;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            margin-bottom: 16px;
-        }
-
-        .profile-avatar {
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
-            background: var(--accent-gold);
-            color: #000;
-            font-size: 2rem;
-            font-weight: 800;
+        /* Chat UI */
+        .chat-container {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 10px;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
-        .profile-menu-item {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            padding: 14px 16px;
-            border-radius: 10px;
+        .chat-bubble {
+            max-width: 80%;
+            padding: 12px 14px;
+            border-radius: 14px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .chat-in {
+            background: var(--chat-bubble-in);
+            align-self: flex-start;
+            border-bottom-right-radius: 2px;
+            color: var(--text-main);
+        }
+
+        .chat-out {
+            background: var(--chat-bubble-out);
+            align-self: flex-end;
+            border-bottom-left-radius: 2px;
+            color: #fff;
+        }
+
+        /* Account Menu List */
+        .menu-item {
+            background: var(--card-dark);
+            border: 1px solid var(--card-border);
+            padding: 16px;
+            border-radius: 12px;
             margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
+            font-weight: 700;
             font-size: 0.9rem;
-            font-weight: 600;
         }
 
-        /* Bottom Nav */
+        .menu-item:active {
+            border-color: var(--accent-gold);
+        }
+
+        /* Bottom Navigation Bar */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             width: 100%;
             max-width: 480px;
-            background: var(--card-bg);
-            border-top: 1px solid var(--border-color);
+            background: var(--card-dark);
+            border-top: 1px solid var(--card-border);
             display: flex;
             justify-content: space-around;
             padding: 10px 0;
@@ -374,14 +444,14 @@
             color: var(--text-sub);
             font-size: 0.75rem;
             cursor: pointer;
-            text-decoration: none;
             border: none;
             background: none;
-            width: 25%;
+            width: 20%;
         }
 
         .nav-item.active {
             color: var(--accent-gold);
+            font-weight: 700;
         }
 
         .nav-icon {
@@ -392,255 +462,336 @@
 <body>
 
 <div class="app-container">
-    <!-- Header -->
+    <!-- Main Header -->
     <header class="app-header">
-        <div class="app-title">⚡ فرصة فني</div>
-        <div style="font-size: 0.85rem; color: var(--text-sub);" id="headerCity">القاهرة</div>
+        <div class="app-title">🏠 فرصة فني</div>
+        <div style="font-size: 0.85rem; color: var(--text-sub);" id="headerCity">📍 عين شمس - القاهرة</div>
     </header>
 
-    <!-- Main Content -->
     <main class="main-content">
 
         <!-- 1. الشاشة الرئيسية (Home View) -->
         <div id="viewHome" class="app-view active">
-            <!-- Action Buttons -->
+            <!-- Search Box -->
+            <div class="search-box">
+                <div class="search-title">إيه المشكلة اللي محتاج حلها؟</div>
+                <div class="search-input-wrapper">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" placeholder="اكتب مشكلتك هنا (مثال: الحنفية بتسرب مياه)..." onkeypress="if(event.key === 'Enter') switchTab('techs')">
+                </div>
+            </div>
+
+            <!-- Main Actions -->
             <div class="action-buttons">
-                <button class="btn-action btn-primary" onclick="scrollToServices()">
+                <button class="btn-action btn-primary" onclick="switchTab('newRequest')">
                     🛠️ محتاج خدمة
                 </button>
-                <button class="btn-action btn-secondary" onclick="toggleTechForm()">
+                <button class="btn-action btn-secondary" onclick="switchTab('offerSkills')">
                     💼 عايز شغل
                 </button>
             </div>
 
-            <!-- Request Service Form -->
-            <div class="modal-form" id="serviceRequestForm">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
-                    <h3 style="color: var(--accent-gold);" id="selectedServiceName">🛠️ طلب خدمة</h3>
-                    <span onclick="closeServiceForm()" style="cursor:pointer; color:var(--text-sub); font-weight:bold;">✕ إغلاق</span>
+            <!-- 10 Services Grid (matching the reference image) -->
+            <div class="section-title">
+                <span>أو اختار نوع الخدمة</span>
+            </div>
+            <div class="services-grid">
+                <div class="service-card" onclick="openServiceForm('سباكة')">
+                    <div class="service-icon">🚰</div>
+                    <div class="service-name">سباكة</div>
                 </div>
-                
-                <form id="customerForm" onsubmit="handleCustomerSubmit(event)">
-                    <div class="form-group">
-                        <label class="form-label">تفاصيل المشكلة / الخدمة المطلوبة</label>
-                        <textarea class="form-textarea" placeholder="اشرح المشكلة بالتفصيل (مثال: تسريب مياه في حنفية المطبخ)..." required></textarea>
+                <div class="service-card" onclick="openServiceForm('كهرباء')">
+                    <div class="service-icon">⚡</div>
+                    <div class="service-name">كهرباء</div>
+                </div>
+                <div class="service-card" onclick="openServiceForm('أجهزة منزلية')">
+                    <div class="service-icon">❄️</div>
+                    <div class="service-name">أجهزة منزلية</div>
+                </div>
+                <div class="service-card" onclick="openServiceForm('تكييف')">
+                    <div class="service-icon">💨</div>
+                    <div class="service-name">تكييف</div>
+                </div>
+                <div class="service-card" onclick="openServiceForm('موبايلات')">
+                    <div class="service-icon">📱</div>
+                    <div class="service-name">موبايلات</div>
+                </div>
+                <div class="service-card" onclick="openServiceForm('سيارات')">
+                    <div class="service-icon">🚗</div>
+                    <div class="service-name">سيارات</div>
+                </div>
+                <div class="service-card" onclick="openServiceForm('نقاشة')">
+                    <div class="service-icon">🎨</div>
+                    <div class="service-name">نقاشة</div>
+                </div>
+                <div class="service-card" onclick="openServiceForm('نجارة')">
+                    <div class="service-icon">🪚</div>
+                    <div class="service-name">نجارة</div>
+                </div>
+                <div class="service-card" onclick="openServiceForm('شحن ونقل')">
+                    <div class="service-icon">🚚</div>
+                    <div class="service-name">نقل وشحن</div>
+                </div>
+                <div class="service-card" onclick="openServiceForm('تنظيف')">
+                    <div class="service-icon">🧹</div>
+                    <div class="service-name">تنظيف</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. شاشة الفنيين القريبين منك (Nearby Technicians) -->
+        <div id="viewTechs" class="app-view">
+            <div class="section-title">
+                <span>الفنيين المتاحين القريبين منك</span>
+                <span style="font-size: 0.8rem; color: var(--text-sub);">📍 عين شمس</span>
+            </div>
+
+            <div class="tech-card" onclick="switchTab('techDetail')">
+                <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=150" class="tech-avatar" alt="الفني">
+                <div class="tech-info">
+                    <div class="tech-name">محمد علي</div>
+                    <div class="tech-title">سباك محترف • ⭐ 4.8 (120 تقييم)</div>
+                    <div class="tech-meta">
+                        <span>📍 2.3 كم</span>
+                        <span class="tech-price">من 150 جنيه</span>
                     </div>
+                </div>
+                <button class="btn-sm-gold">اطلب الفني</button>
+            </div>
 
-                    <div class="form-group">
-                        <label class="form-label">موقعك على الخريطة (لتسهيل وصول الفني)</label>
-                        <button type="button" class="btn-location" onclick="getGPSLocation()">
-                            📍 تحديد موقعي الحالي تلقائياً (GPS)
-                        </button>
-                        <input type="hidden" id="geoCoordinates" name="coordinates">
-                        <div id="locationStatus" style="font-size: 0.8rem; margin-top: 6px; color: var(--accent-gold);"></div>
+            <div class="tech-card" onclick="switchTab('techDetail')">
+                <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=150" class="tech-avatar" alt="الفني">
+                <div class="tech-info">
+                    <div class="tech-name">أحمد سمير</div>
+                    <div class="tech-title">سباك وصيانة • ⭐ 4.6 (85 تقييم)</div>
+                    <div class="tech-meta">
+                        <span>📍 3.1 كم</span>
+                        <span class="tech-price">من 120 جنيه</span>
                     </div>
+                </div>
+                <button class="btn-sm-gold">اطلب الفني</button>
+            </div>
 
-                    <div class="form-group">
-                        <label class="form-label">العنوان التفصيلي / العلامة المميزة</label>
-                        <input type="text" class="form-input" placeholder="المنطقة - اسم الشارع - رقم العقار / الشقة" required>
+            <div class="tech-card" onclick="switchTab('techDetail')">
+                <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=150" class="tech-avatar" alt="الفني">
+                <div class="tech-info">
+                    <div class="tech-name">كريم جابر</div>
+                    <div class="tech-title">سباك عام • ⭐ 4.4 (60 تقييم)</div>
+                    <div class="tech-meta">
+                        <span>📍 3.2 كم</span>
+                        <span class="tech-price">من 100 جنيه</span>
                     </div>
+                </div>
+                <button class="btn-sm-gold">اطلب الفني</button>
+            </div>
+        </div>
 
-                    <div class="form-group">
-                        <label class="form-label">رقم الموبايل للتواصل</label>
-                        <input type="tel" class="form-input" placeholder="01XXXXXXXXX" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">إرفاق صورة المشكلة (اختياري)</label>
-                        <div class="upload-box" onclick="document.getElementById('servicePhoto').click()">
-                            📷 اضغط لالتقاط أو رفع صورة
-                            <input type="file" id="servicePhoto" accept="image/*" style="display:none" onchange="handleFileUpload(this, 'servicePhotoStatus')">
-                        </div>
-                        <div id="servicePhotoStatus" style="font-size: 0.8rem; color: var(--accent-gold); margin-top: 4px;"></div>
-                    </div>
-
-                    <button type="submit" class="btn-action btn-primary" style="width: 100%; margin-top: 10px;">
-                        إرسال الطلب للفنيين 🚀
-                    </button>
-                </form>
-
-                <div class="status-badge" id="customerSuccessStatus">
-                    ✅ تم نشر طلبك بنجاح ومشاركة موقعك مع الفنيين!
+        <!-- 3. شاشة تفاصيل الفني (Technician Profile) -->
+        <div id="viewTechDetail" class="app-view">
+            <button onclick="switchTab('techs')" style="background:none; border:none; color:var(--text-sub); margin-bottom:10px; cursor:pointer;">← العودة للفنيين</button>
+            
+            <div class="tech-profile-header">
+                <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=500" class="tech-cover" alt="الفني">
+                <div style="padding: 16px;">
+                    <h2 style="color: var(--text-main);">أحمد سمير</h2>
+                    <p style="color: var(--text-sub); font-size: 0.85rem;">⭐ 4.6 (85 تقييم) • سباك محترف</p>
+                    <p style="color: var(--text-sub); font-size: 0.8rem; margin-top:4px;">📍 3.1 كم - عين شمس</p>
                 </div>
             </div>
 
-            <!-- Technician Registration Form -->
-            <div class="modal-form" id="techForm">
-                <h3 style="margin-bottom: 16px; color: var(--accent-gold);">🪪 تقديم طلب انضمام كفني</h3>
-                
-                <form id="registerForm" onsubmit="handleTechSubmit(event)">
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-val">+5</div>
+                    <div class="stat-lbl">سنوات خبرة</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-val">+120</div>
+                    <div class="stat-lbl">عملية ناجحة</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-val">95%</div>
+                    <div class="stat-lbl">رضا العملاء</div>
+                </div>
+            </div>
+
+            <div class="modal-form">
+                <h4 style="margin-bottom:8px;">نبذة عني</h4>
+                <p style="font-size:0.85rem; color:var(--text-sub); line-height:1.5;">خبرة في جميع أعمال السباكة وتركيب الأدوات الصحية، التزام بالمواعيد وأسعار مناسبة.</p>
+            </div>
+
+            <button class="btn-action btn-primary" style="width: 100%;" onclick="switchTab('chat')">💬 بدء المحادثة مع الفني</button>
+        </div>
+
+        <!-- 4. شاشة طلب خدمة جديدة (New Request Form) -->
+        <div id="viewNewRequest" class="app-view">
+            <div class="section-title">طلب خدمة جديدة</div>
+            <div class="modal-form">
+                <form onsubmit="event.preventDefault(); alert('تم إرسال طلبك بنجاح!'); switchTab('orders');">
                     <div class="form-group">
-                        <label class="form-label">الاسم بالكامل</label>
-                        <input type="text" class="form-input" placeholder="أدخل اسمك كما في البطاقة" required>
+                        <label class="form-label">وصف المشكلة</label>
+                        <textarea class="form-textarea" placeholder="الحنفية بتسرب مياه من تحت، محتاج فني يجي يصلحها..." required></textarea>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">رقم الهاتف</label>
-                        <input type="tel" class="form-input" placeholder="01XXXXXXXXX" required>
+                        <label class="form-label">الموقع</label>
+                        <input type="text" class="form-input" value="عين شمس - القاهرة" required>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">اختر المهنة / التخصص</label>
+                        <label class="form-label">متى تحتاج الخدمة؟</label>
+                        <div class="radio-group">
+                            <div class="radio-btn active">الآن</div>
+                            <div class="radio-btn">خلال اليوم</div>
+                            <div class="radio-btn">غداً</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">الميزانية المتوقعة</label>
+                        <input type="text" class="form-input" placeholder="من 100 إلى 200 جنيه">
+                    </div>
+
+                    <button type="submit" class="btn-action btn-primary" style="width: 100%;">إرسال الطلب 🚀</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 5. شاشة عرض المهارات (Offer Skills / عايز شغل) -->
+        <div id="viewOfferSkills" class="app-view">
+            <div class="section-title">اعرض مهاراتك وانضم كفني</div>
+            <div class="modal-form">
+                <form onsubmit="event.preventDefault(); alert('تم تقديم طلبك بنجاح وسيتواصل معك الفريق للتوثيق.'); switchTab('home');">
+                    <div class="form-group">
+                        <label class="form-label">اختر مهارتك الرئيسية</label>
                         <select class="form-select" required>
-                            <option value="">اختر التخصص...</option>
-                            <option value="سباكة">سباكة</option>
-                            <option value="كهرباء">كهرباء</option>
-                            <option value="تكييف">تكييف وتبريد</option>
-                            <option value="أجهزة منزلية">صيانة أجهزة منزلية</option>
-                            <option value="نقاشة">نقاشة ودهانات</option>
-                            <option value="نجارة">نجارة</option>
-                            <option value="سيارات">ميكانيكا / كهرباء سيارات</option>
+                            <option>سباكة</option>
+                            <option>كهرباء</option>
+                            <option>صيانة تكييف</option>
+                            <option>نقاشة ودهانات</option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">صورة البطاقة الشخصية (وجه وظهر)</label>
-                        <div class="upload-box" onclick="document.getElementById('idUpload').click()">
-                            📷 اضغط لرفع صورة البطاقة
-                            <input type="file" id="idUpload" accept="image/*" style="display:none" required onchange="handleFileUpload(this, 'idStatus')">
-                        </div>
-                        <div id="idStatus" style="font-size: 0.8rem; color: var(--accent-gold); margin-top: 4px;"></div>
+                        <label class="form-label">منطقتك</label>
+                        <input type="text" class="form-input" placeholder="مثال: عين شمس" required>
                     </div>
 
-                    <button type="submit" class="btn-action btn-primary" style="width: 100%; margin-top: 10px;">
-                        إرسال الطلب للتوثيق 🚀
-                    </button>
+                    <div class="form-group">
+                        <label class="form-label">أوقات تفرغك</label>
+                        <input type="text" class="form-input" placeholder="من 9 صباحاً إلى 5 مساءً">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">سعر الخدمة التقديري</label>
+                        <input type="text" class="form-input" placeholder="من 100 إلى 200 جنيه">
+                    </div>
+
+                    <button type="submit" class="btn-action btn-primary" style="width: 100%;">نشر مهاراتك 🚀</button>
                 </form>
-
-                <div class="status-badge" id="successStatus">
-                    ⏳ تم إرسال طلبك بنجاح! جاري مراجعة البطاقة وتوثيق حسابك خلال 24 ساعة.
-                </div>
-            </div>
-
-            <!-- Services Grid -->
-            <div id="servicesSection">
-                <div class="section-title">الأقسام والخدمات المتاحة</div>
-                <div class="services-grid">
-                    <div class="service-card" onclick="openServiceForm('سباكة')">
-                        <div class="service-icon">🔧</div>
-                        <div class="service-name">سباكة</div>
-                    </div>
-                    <div class="service-card" onclick="openServiceForm('كهرباء')">
-                        <div class="service-icon">⚡</div>
-                        <div class="service-name">كهرباء</div>
-                    </div>
-                    <div class="service-card" onclick="openServiceForm('تكييف')">
-                        <div class="service-icon">❄️</div>
-                        <div class="service-name">تكييف</div>
-                    </div>
-                    <div class="service-card" onclick="openServiceForm('أجهزة منزلية')">
-                        <div class="service-icon">📺</div>
-                        <div class="service-name">أجهزة منزلية</div>
-                    </div>
-                    <div class="service-card" onclick="openServiceForm('سيارات')">
-                        <div class="service-icon">🚗</div>
-                        <div class="service-name">سيارات</div>
-                    </div>
-                    <div class="service-card" onclick="openServiceForm('موبايلات')">
-                        <div class="service-icon">📱</div>
-                        <div class="service-name">موبايلات</div>
-                    </div>
-                    <div class="service-card" onclick="openServiceForm('نجارة')">
-                        <div class="service-icon">🪚</div>
-                        <div class="service-name">نجارة</div>
-                    </div>
-                    <div class="service-card" onclick="openServiceForm('نقاشة')">
-                        <div class="service-icon">🎨</div>
-                        <div class="service-name">نقاشة</div>
-                    </div>
-                </div>
             </div>
         </div>
 
-        <!-- 2. شاشة طلباتي (Orders View) -->
+        <!-- 6. شاشة المحادثة المباشرة (Chat View) -->
+        <div id="viewChat" class="app-view">
+            <div class="section-title">
+                <span>💬 المحادثة مع الفني (أحمد سمير)</span>
+            </div>
+
+            <div class="chat-container">
+                <div class="chat-bubble chat-in">
+                    السلام عليكم، ممكن توضح مكان التسريب بالتحديد؟
+                </div>
+                <div class="chat-bubble chat-out">
+                    وعليكم السلام، هو من تحت الحنفية في المطبخ.
+                </div>
+                <div class="chat-bubble chat-in">
+                    تمام، ممكن أجي خلال ساعة والسعر هيكون 150 جنيه.
+                </div>
+            </div>
+
+            <div style="display:flex; gap:8px;">
+                <input type="text" class="form-input" placeholder="اكتب رسالة..." id="chatInput">
+                <button class="btn-sm-gold" onclick="sendChatMessage()">إرسال</button>
+            </div>
+        </div>
+
+        <!-- 7. شاشة طلباتي (Orders View) -->
         <div id="viewOrders" class="app-view">
-            <div class="section-title">سجل طلباتي</div>
+            <div class="section-title">طلباتي السابقة والحالية</div>
             
-            <div class="item-card">
-                <div class="item-avatar">🔧</div>
-                <div class="item-info">
-                    <div class="item-title">طلب خدمة سباكة</div>
-                    <div class="item-sub">منذ ساعتين • القاهرة</div>
+            <div class="menu-item" onclick="switchTab('chat')">
+                <div>
+                    <div>🚰 طلب خدمة سباكة</div>
+                    <div style="font-size:0.75rem; color:var(--text-sub);">الأن • عين شمس</div>
                 </div>
-                <span class="badge-status badge-pending">جاري التواصل</span>
+                <span style="color:var(--accent-gold); font-size:0.8rem;">جاري التنفيذ ›</span>
             </div>
 
-            <div class="item-card">
-                <div class="item-avatar">⚡</div>
-                <div class="item-info">
-                    <div class="item-title">صيانة لوحة كهرباء</div>
-                    <div class="item-sub">الأسبوع الماضي</div>
+            <div class="menu-item">
+                <div>
+                    <div>⚡ صيانة لوحة كهرباء</div>
+                    <div style="font-size:0.75rem; color:var(--text-sub);">الأسبوع الماضي</div>
                 </div>
-                <span class="badge-status badge-completed">مكتمل</span>
+                <span style="color:var(--badge-green); font-size:0.8rem;">مكتمل ✓</span>
             </div>
         </div>
 
-        <!-- 3. شاشة المحادثات (Chats View) -->
-        <div id="viewChats" class="app-view">
-            <div class="section-title">المحادثات المباشرة</div>
-
-            <div class="item-card" onclick="alert('جاري فتح الشات مع الفني...')">
-                <div class="item-avatar">👨‍🔧</div>
-                <div class="item-info">
-                    <div class="item-title">الأسطى أحمد (فني سباكة)</div>
-                    <div class="item-sub">أنا قريب منك وجاهز للوصول...</div>
-                </div>
-                <span style="font-size:0.75rem; color:var(--text-sub);">10:30 ص</span>
-            </div>
-
-            <div class="item-card" onclick="alert('جاري فتح الشات مع الدعم...')">
-                <div class="item-avatar">🎧</div>
-                <div class="item-info">
-                    <div class="item-title">الدعم الفني - فرصة فني</div>
-                    <div class="item-sub">أهلاً بك، كيف يمكننا مساعدتك اليوم؟</div>
-                </div>
-                <span style="font-size:0.75rem; color:var(--text-sub);">أمس</span>
-            </div>
-        </div>
-
-        <!-- 4. شاشة حسابي (Profile View) -->
+        <!-- 8. شاشة حسابي المكتملة (Account Menu List) -->
         <div id="viewProfile" class="app-view">
-            <div class="profile-header">
-                <div class="profile-avatar">م</div>
-                <h3 style="margin-bottom: 4px;">مستخدم فرصة فني</h3>
-                <p style="font-size: 0.85rem; color: var(--text-sub);">01XXXXXXXXX</p>
+            <div style="text-align:center; padding: 20px 0;">
+                <div style="width:70px; height:70px; border-radius:50%; background:var(--accent-gold); color:#000; font-size:2rem; font-weight:800; display:flex; align-items:center; justify-content:center; margin:0 auto 10px;">أ</div>
+                <h3>أحمد محمد</h3>
+                <p style="font-size:0.8rem; color:var(--text-sub);">ahmed@gmail.com</p>
             </div>
 
-            <div class="profile-menu-item" onclick="switchTab('orders')">
-                <span>📋 طلباتي السابقة</span>
+            <!-- Complete List matching the image -->
+            <div class="menu-item" onclick="switchTab('orders')">
+                <span>📋 طلباتي</span>
                 <span>‹</span>
             </div>
-            <div class="profile-menu-item" onclick="toggleTechForm(); switchTab('home');">
-                <span>💼 التسجيل كفني (عايز شغل)</span>
+            <div class="menu-item" onclick="switchTab('chat')">
+                <span>💬 المحادثات</span>
                 <span>‹</span>
             </div>
-            <div class="profile-menu-item" onclick="alert('خاصية تغيير المحافظة قريباً')">
-                <span>📍 المحافظة: القاهرة</span>
-                <span>✏️</span>
+            <div class="menu-item" onclick="alert('شاشة معلوماتي الشخصية')">
+                <span>👤 معلوماتي الشخصية</span>
+                <span>‹</span>
             </div>
-            <div class="profile-menu-item" onclick="switchTab('chats')">
-                <span>🎧 مركز الدعم والمساعدة</span>
+            <div class="menu-item" onclick="switchTab('offerSkills')">
+                <span>🧰 مهاراتي (للمقدمين)</span>
+                <span>‹</span>
+            </div>
+            <div class="menu-item" onclick="alert('شاشة التقييمات')">
+                <span>⭐ التقييمات</span>
+                <span>‹</span>
+            </div>
+            <div class="menu-item" onclick="alert('شاشة الإعدادات')">
+                <span>⚙️ الإعدادات</span>
+                <span>‹</span>
+            </div>
+            <div class="menu-item" onclick="alert('مساعدة ودعم')">
+                <span>❓ مساعدة ودعم</span>
                 <span>‹</span>
             </div>
         </div>
 
     </main>
 
-    <!-- Bottom Navigation -->
+    <!-- Bottom Navigation Bar (Matching design) -->
     <nav class="bottom-nav">
-        <button class="nav-item active" id="btn-home" onclick="switchTab('home')">
+        <button class="nav-item active" id="nav-home" onclick="switchTab('home')">
             <span class="nav-icon">🏠</span>
             <span>الرئيسية</span>
         </button>
-        <button class="nav-item" id="btn-orders" onclick="switchTab('orders')">
+        <button class="nav-item" id="nav-orders" onclick="switchTab('orders')">
             <span class="nav-icon">📋</span>
             <span>طلباتي</span>
         </button>
-        <button class="nav-item" id="btn-chats" onclick="switchTab('chats')">
+        <button class="nav-item" id="nav-chat" onclick="switchTab('chat')">
             <span class="nav-icon">💬</span>
             <span>المحادثات</span>
         </button>
-        <button class="nav-item" id="btn-profile" onclick="switchTab('profile')">
+        <button class="nav-item" id="nav-profile" onclick="switchTab('profile')">
             <span class="nav-icon">👤</span>
             <span>حسابي</span>
         </button>
@@ -648,106 +799,55 @@
 </div>
 
 <script>
-    // التنقل بين الشاشات الرئيسية
-    function switchTab(tabName) {
-        // إخفاء جميع الشاشات
-        document.querySelectorAll('.app-view').forEach(view => {
-            view.classList.remove('active');
-        });
+    function switchTab(tab) {
+        // Hide all screens
+        document.querySelectorAll('.app-view').forEach(view => view.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
 
-        // إلغاء تفعيل جميع أزرار التنقل
-        document.querySelectorAll('.nav-item').forEach(btn => {
-            btn.classList.remove('active');
-        });
-
-        // إظهار الشاشة المختارة وتفعيل الزر المناسب
-        if (tabName === 'home') {
+        // Tab routing
+        if (tab === 'home') {
             document.getElementById('viewHome').classList.add('active');
-            document.getElementById('btn-home').classList.add('active');
-        } else if (tabName === 'orders') {
+            document.getElementById('nav-home').classList.add('active');
+        } else if (tab === 'techs') {
+            document.getElementById('viewTechs').classList.add('active');
+            document.getElementById('nav-home').classList.add('active');
+        } else if (tab === 'techDetail') {
+            document.getElementById('viewTechDetail').classList.add('active');
+            document.getElementById('nav-home').classList.add('active');
+        } else if (tab === 'newRequest') {
+            document.getElementById('viewNewRequest').classList.add('active');
+            document.getElementById('nav-orders').classList.add('active');
+        } else if (tab === 'offerSkills') {
+            document.getElementById('viewOfferSkills').classList.add('active');
+            document.getElementById('nav-profile').classList.add('active');
+        } else if (tab === 'chat') {
+            document.getElementById('viewChat').classList.add('active');
+            document.getElementById('nav-chat').classList.add('active');
+        } else if (tab === 'orders') {
             document.getElementById('viewOrders').classList.add('active');
-            document.getElementById('btn-orders').classList.add('active');
-        } else if (tabName === 'chats') {
-            document.getElementById('viewChats').classList.add('active');
-            document.getElementById('btn-chats').classList.add('active');
-        } else if (tabName === 'profile') {
+            document.getElementById('nav-orders').classList.add('active');
+        } else if (tab === 'profile') {
             document.getElementById('viewProfile').classList.add('active');
-            document.getElementById('btn-profile').classList.add('active');
+            document.getElementById('nav-profile').classList.add('active');
         }
 
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function getGPSLocation() {
-        const status = document.getElementById('locationStatus');
-        const coordsInput = document.getElementById('geoCoordinates');
-        
-        if (!navigator.geolocation) {
-            status.innerText = "❌ خاصية تحديد الموقع غير مدعومة في متصفحك.";
-            return;
+    function openServiceForm(serviceName) {
+        switchTab('techs');
+    }
+
+    function sendChatMessage() {
+        const input = document.getElementById('chatInput');
+        if(input.value.trim() !== "") {
+            const container = document.querySelector('.chat-container');
+            const newMsg = document.createElement('div');
+            newMsg.className = 'chat-bubble chat-out';
+            newMsg.innerText = input.value;
+            container.appendChild(newMsg);
+            input.value = "";
         }
-
-        status.innerText = "⏳ جاري تحديد موقعك الجغرافي...";
-
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const lat = position.coords.latitude;
-                const lng = position.coords.longitude;
-                const mapsUrl = `https://maps.google.com/?q=${lat},${lng}`;
-                
-                coordsInput.value = mapsUrl;
-                status.innerHTML = `✅ تم تحديد موقعك بنجاح! <a href="${mapsUrl}" target="_blank" style="color:#58a6ff;">عرض على الخريطة 🗺️</a>`;
-            },
-            (error) => {
-                status.innerText = "⚠️ تعذر الوصول للموقع. يرجى السماح لصلاحيات الموقع في الهاتف.";
-            },
-            { enableHighAccuracy: true, timeout: 10000 }
-        );
-    }
-
-    function openServiceForm(name) {
-        document.getElementById('techForm').classList.remove('active');
-        document.getElementById('selectedServiceName').innerText = "🛠️ طلب خدمة: " + name;
-        const form = document.getElementById('serviceRequestForm');
-        form.classList.add('active');
-        form.scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function closeServiceForm() {
-        document.getElementById('serviceRequestForm').classList.remove('active');
-    }
-
-    function toggleTechForm() {
-        closeServiceForm();
-        const form = document.getElementById('techForm');
-        form.classList.toggle('active');
-        if(form.classList.contains('active')) {
-            form.scrollIntoView({ behavior: 'smooth' });
-        }
-    }
-
-    function scrollToServices() {
-        closeServiceForm();
-        document.getElementById('techForm').classList.remove('active');
-        document.getElementById('servicesSection').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function handleFileUpload(input, statusId) {
-        if (input.files && input.files[0]) {
-            document.getElementById(statusId).innerText = "✓ تم اختيار الملف: " + input.files[0].name;
-        }
-    }
-
-    function handleCustomerSubmit(e) {
-        e.preventDefault();
-        document.getElementById('customerForm').style.display = 'none';
-        document.getElementById('customerSuccessStatus').style.display = 'block';
-    }
-
-    function handleTechSubmit(e) {
-        e.preventDefault();
-        document.getElementById('registerForm').style.display = 'none';
-        document.getElementById('successStatus').style.display = 'block';
     }
 </script>
 
