@@ -15,8 +15,6 @@
             --text-main: #f0f6fc;
             --text-sub: #8b949e;
             --badge-green: #238636;
-            --chat-bubble-out: #238636;
-            --chat-bubble-in: #21262d;
             --input-bg: #090d11;
         }
 
@@ -138,7 +136,7 @@
             align-items: center;
         }
 
-        /* Services Grid (10 Services fully aligned) */
+        /* Services Grid (10 Services) */
         .services-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -214,110 +212,22 @@
             border: 1px solid var(--card-border);
         }
 
-        /* Technician Cards (القريبين منك) */
-        .tech-card {
-            background: var(--card-dark);
-            border: 1px solid var(--card-border);
-            border-radius: 14px;
-            padding: 14px;
-            margin-bottom: 12px;
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .tech-avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            object-fit: cover;
-            background: #21262d;
-        }
-
-        .tech-info {
-            flex: 1;
-        }
-
-        .tech-name {
-            font-weight: 800;
-            font-size: 1rem;
-            color: var(--text-main);
-        }
-
-        .tech-title {
-            font-size: 0.8rem;
-            color: var(--text-sub);
-            margin-bottom: 4px;
-        }
-
-        .tech-meta {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.8rem;
-            color: var(--text-sub);
-        }
-
-        .tech-price {
-            font-weight: 700;
-            color: var(--accent-gold);
-            font-size: 0.85rem;
-        }
-
-        .btn-sm-gold {
-            background: var(--accent-gold);
-            color: #000;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-weight: 700;
-            font-size: 0.8rem;
-            cursor: pointer;
-        }
-
-        /* Profile Details Screen */
-        .tech-profile-header {
-            position: relative;
-            border-radius: 16px;
-            overflow: hidden;
-            background: var(--card-dark);
-            border: 1px solid var(--card-border);
-            margin-bottom: 16px;
-        }
-
-        .tech-cover {
-            width: 100%;
-            height: 140px;
-            object-fit: cover;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+        /* Empty State Box */
+        .empty-state {
             text-align: center;
-            margin: 16px 0;
-        }
-
-        .stat-box {
+            padding: 40px 20px;
             background: var(--card-dark);
             border: 1px solid var(--card-border);
-            padding: 12px;
-            border-radius: 12px;
-        }
-
-        .stat-val {
-            font-size: 1.1rem;
-            font-weight: 800;
-            color: var(--accent-gold);
-        }
-
-        .stat-lbl {
-            font-size: 0.75rem;
+            border-radius: 16px;
             color: var(--text-sub);
         }
 
-        /* Form Inputs & Controls */
+        .empty-icon {
+            font-size: 3rem;
+            margin-bottom: 12px;
+        }
+
+        /* Form Controls */
         .modal-form {
             background: var(--card-dark);
             border: 1px solid var(--card-border);
@@ -349,61 +259,7 @@
             outline: none;
         }
 
-        .radio-group {
-            display: flex;
-            gap: 10px;
-        }
-
-        .radio-btn {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid var(--card-border);
-            background: var(--input-bg);
-            color: var(--text-main);
-            border-radius: 8px;
-            text-align: center;
-            font-size: 0.85rem;
-            cursor: pointer;
-        }
-
-        .radio-btn.active {
-            border-color: var(--accent-gold);
-            background: rgba(255, 193, 7, 0.1);
-            color: var(--accent-gold);
-            font-weight: 700;
-        }
-
-        /* Chat UI */
-        .chat-container {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .chat-bubble {
-            max-width: 80%;
-            padding: 12px 14px;
-            border-radius: 14px;
-            font-size: 0.9rem;
-            line-height: 1.4;
-        }
-
-        .chat-in {
-            background: var(--chat-bubble-in);
-            align-self: flex-start;
-            border-bottom-right-radius: 2px;
-            color: var(--text-main);
-        }
-
-        .chat-out {
-            background: var(--chat-bubble-out);
-            align-self: flex-end;
-            border-bottom-left-radius: 2px;
-            color: #fff;
-        }
-
-        /* Account Menu List */
+        /* Menu Items */
         .menu-item {
             background: var(--card-dark);
             border: 1px solid var(--card-border);
@@ -418,11 +274,7 @@
             font-size: 0.9rem;
         }
 
-        .menu-item:active {
-            border-color: var(--accent-gold);
-        }
-
-        /* Bottom Navigation Bar */
+        /* Bottom Nav */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -446,42 +298,35 @@
             cursor: pointer;
             border: none;
             background: none;
-            width: 20%;
+            width: 25%;
         }
 
         .nav-item.active {
             color: var(--accent-gold);
             font-weight: 700;
         }
-
-        .nav-icon {
-            font-size: 1.2rem;
-        }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <!-- Main Header -->
     <header class="app-header">
         <div class="app-title">🏠 فرصة فني</div>
-        <div style="font-size: 0.85rem; color: var(--text-sub);" id="headerCity">📍 عين شمس - القاهرة</div>
+        <div style="font-size: 0.85rem; color: var(--text-sub);" id="userLocation">📍 القاهرة</div>
     </header>
 
     <main class="main-content">
 
-        <!-- 1. الشاشة الرئيسية (Home View) -->
+        <!-- 1. الشاشة الرئيسية -->
         <div id="viewHome" class="app-view active">
-            <!-- Search Box -->
             <div class="search-box">
                 <div class="search-title">إيه المشكلة اللي محتاج حلها؟</div>
                 <div class="search-input-wrapper">
                     <span class="search-icon">🔍</span>
-                    <input type="text" class="search-input" placeholder="اكتب مشكلتك هنا (مثال: الحنفية بتسرب مياه)..." onkeypress="if(event.key === 'Enter') switchTab('techs')">
+                    <input type="text" id="searchInput" class="search-input" placeholder="اكتب مشكلتك هنا..." onkeypress="if(event.key === 'Enter') handleSearch()">
                 </div>
             </div>
 
-            <!-- Main Actions -->
             <div class="action-buttons">
                 <button class="btn-action btn-primary" onclick="switchTab('newRequest')">
                     🛠️ محتاج خدمة
@@ -491,164 +336,100 @@
                 </button>
             </div>
 
-            <!-- 10 Services Grid (matching the reference image) -->
             <div class="section-title">
                 <span>أو اختار نوع الخدمة</span>
             </div>
             <div class="services-grid">
-                <div class="service-card" onclick="openServiceForm('سباكة')">
+                <div class="service-card" onclick="selectService('سباكة')">
                     <div class="service-icon">🚰</div>
                     <div class="service-name">سباكة</div>
                 </div>
-                <div class="service-card" onclick="openServiceForm('كهرباء')">
+                <div class="service-card" onclick="selectService('كهرباء')">
                     <div class="service-icon">⚡</div>
                     <div class="service-name">كهرباء</div>
                 </div>
-                <div class="service-card" onclick="openServiceForm('أجهزة منزلية')">
+                <div class="service-card" onclick="selectService('أجهزة منزلية')">
                     <div class="service-icon">❄️</div>
                     <div class="service-name">أجهزة منزلية</div>
                 </div>
-                <div class="service-card" onclick="openServiceForm('تكييف')">
+                <div class="service-card" onclick="selectService('تكييف')">
                     <div class="service-icon">💨</div>
                     <div class="service-name">تكييف</div>
                 </div>
-                <div class="service-card" onclick="openServiceForm('موبايلات')">
+                <div class="service-card" onclick="selectService('موبايلات')">
                     <div class="service-icon">📱</div>
                     <div class="service-name">موبايلات</div>
                 </div>
-                <div class="service-card" onclick="openServiceForm('سيارات')">
+                <div class="service-card" onclick="selectService('سيارات')">
                     <div class="service-icon">🚗</div>
                     <div class="service-name">سيارات</div>
                 </div>
-                <div class="service-card" onclick="openServiceForm('نقاشة')">
+                <div class="service-card" onclick="selectService('نقاشة')">
                     <div class="service-icon">🎨</div>
                     <div class="service-name">نقاشة</div>
                 </div>
-                <div class="service-card" onclick="openServiceForm('نجارة')">
+                <div class="service-card" onclick="selectService('نجارة')">
                     <div class="service-icon">🪚</div>
                     <div class="service-name">نجارة</div>
                 </div>
-                <div class="service-card" onclick="openServiceForm('شحن ونقل')">
+                <div class="service-card" onclick="selectService('نقل وشحن')">
                     <div class="service-icon">🚚</div>
                     <div class="service-name">نقل وشحن</div>
                 </div>
-                <div class="service-card" onclick="openServiceForm('تنظيف')">
+                <div class="service-card" onclick="selectService('تنظيف')">
                     <div class="service-icon">🧹</div>
                     <div class="service-name">تنظيف</div>
                 </div>
             </div>
         </div>
 
-        <!-- 2. شاشة الفنيين القريبين منك (Nearby Technicians) -->
+        <!-- 2. شاشة قائمة الفنيين القريبين (قائمة ديناميكية فارغة في البداية) -->
         <div id="viewTechs" class="app-view">
             <div class="section-title">
-                <span>الفنيين المتاحين القريبين منك</span>
-                <span style="font-size: 0.8rem; color: var(--text-sub);">📍 عين شمس</span>
+                <span id="selectedCategoryTitle">الفنيين المتاحين</span>
             </div>
 
-            <div class="tech-card" onclick="switchTab('techDetail')">
-                <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=150" class="tech-avatar" alt="الفني">
-                <div class="tech-info">
-                    <div class="tech-name">محمد علي</div>
-                    <div class="tech-title">سباك محترف • ⭐ 4.8 (120 تقييم)</div>
-                    <div class="tech-meta">
-                        <span>📍 2.3 كم</span>
-                        <span class="tech-price">من 150 جنيه</span>
-                    </div>
+            <div id="techsListContainer">
+                <!-- سيتم ملء الفنيين الحقيقيين هنا بواسطة JavaScript لاحقاً -->
+                <div class="empty-state">
+                    <div class="empty-icon">👷‍♂️</div>
+                    <h4>لا يوجد فنيين مسجلين حالياً في هذه الخدمة</h4>
+                    <p style="font-size:0.8rem; margin-top:6px;">كن أول من يسجل كفني وابدأ في استقبال الطلبات!</p>
+                    <button class="btn-action btn-primary" style="margin: 16px auto 0;" onclick="switchTab('offerSkills')">تسجيل كفني الآن</button>
                 </div>
-                <button class="btn-sm-gold">اطلب الفني</button>
-            </div>
-
-            <div class="tech-card" onclick="switchTab('techDetail')">
-                <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=150" class="tech-avatar" alt="الفني">
-                <div class="tech-info">
-                    <div class="tech-name">أحمد سمير</div>
-                    <div class="tech-title">سباك وصيانة • ⭐ 4.6 (85 تقييم)</div>
-                    <div class="tech-meta">
-                        <span>📍 3.1 كم</span>
-                        <span class="tech-price">من 120 جنيه</span>
-                    </div>
-                </div>
-                <button class="btn-sm-gold">اطلب الفني</button>
-            </div>
-
-            <div class="tech-card" onclick="switchTab('techDetail')">
-                <img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=150" class="tech-avatar" alt="الفني">
-                <div class="tech-info">
-                    <div class="tech-name">كريم جابر</div>
-                    <div class="tech-title">سباك عام • ⭐ 4.4 (60 تقييم)</div>
-                    <div class="tech-meta">
-                        <span>📍 3.2 كم</span>
-                        <span class="tech-price">من 100 جنيه</span>
-                    </div>
-                </div>
-                <button class="btn-sm-gold">اطلب الفني</button>
             </div>
         </div>
 
-        <!-- 3. شاشة تفاصيل الفني (Technician Profile) -->
-        <div id="viewTechDetail" class="app-view">
-            <button onclick="switchTab('techs')" style="background:none; border:none; color:var(--text-sub); margin-bottom:10px; cursor:pointer;">← العودة للفنيين</button>
-            
-            <div class="tech-profile-header">
-                <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=500" class="tech-cover" alt="الفني">
-                <div style="padding: 16px;">
-                    <h2 style="color: var(--text-main);">أحمد سمير</h2>
-                    <p style="color: var(--text-sub); font-size: 0.85rem;">⭐ 4.6 (85 تقييم) • سباك محترف</p>
-                    <p style="color: var(--text-sub); font-size: 0.8rem; margin-top:4px;">📍 3.1 كم - عين شمس</p>
-                </div>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-box">
-                    <div class="stat-val">+5</div>
-                    <div class="stat-lbl">سنوات خبرة</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-val">+120</div>
-                    <div class="stat-lbl">عملية ناجحة</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-val">95%</div>
-                    <div class="stat-lbl">رضا العملاء</div>
-                </div>
-            </div>
-
-            <div class="modal-form">
-                <h4 style="margin-bottom:8px;">نبذة عني</h4>
-                <p style="font-size:0.85rem; color:var(--text-sub); line-height:1.5;">خبرة في جميع أعمال السباكة وتركيب الأدوات الصحية، التزام بالمواعيد وأسعار مناسبة.</p>
-            </div>
-
-            <button class="btn-action btn-primary" style="width: 100%;" onclick="switchTab('chat')">💬 بدء المحادثة مع الفني</button>
-        </div>
-
-        <!-- 4. شاشة طلب خدمة جديدة (New Request Form) -->
+        <!-- 3. شاشة طلب خدمة جديدة -->
         <div id="viewNewRequest" class="app-view">
             <div class="section-title">طلب خدمة جديدة</div>
             <div class="modal-form">
-                <form onsubmit="event.preventDefault(); alert('تم إرسال طلبك بنجاح!'); switchTab('orders');">
+                <form id="requestForm" onsubmit="submitNewRequest(event)">
                     <div class="form-group">
-                        <label class="form-label">وصف المشكلة</label>
-                        <textarea class="form-textarea" placeholder="الحنفية بتسرب مياه من تحت، محتاج فني يجي يصلحها..." required></textarea>
+                        <label class="form-label">نوع الخدمة</label>
+                        <select class="form-select" id="reqCategory" required>
+                            <option value="">اختر الخدمة...</option>
+                            <option value="سباكة">سباكة</option>
+                            <option value="كهرباء">كهرباء</option>
+                            <option value="أجهزة منزلية">أجهزة منزلية</option>
+                            <option value="تكييف">تكييف</option>
+                            <option value="موبايلات">موبايلات</option>
+                            <option value="سيارات">سيارات</option>
+                            <option value="نقاشة">نقاشة</option>
+                            <option value="نجارة">نجارة</option>
+                            <option value="نقل وشحن">نقل وشحن</option>
+                            <option value="تنظيف">تنظيف</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">الموقع</label>
-                        <input type="text" class="form-input" value="عين شمس - القاهرة" required>
+                        <label class="form-label">وصف المشكلة بالتفصيل</label>
+                        <textarea class="form-textarea" id="reqDescription" placeholder="اشرح المشكلة للفني..." required></textarea>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">متى تحتاج الخدمة؟</label>
-                        <div class="radio-group">
-                            <div class="radio-btn active">الآن</div>
-                            <div class="radio-btn">خلال اليوم</div>
-                            <div class="radio-btn">غداً</div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">الميزانية المتوقعة</label>
-                        <input type="text" class="form-input" placeholder="من 100 إلى 200 جنيه">
+                        <label class="form-label">العنوان / المنطقة</label>
+                        <input type="text" class="form-input" id="reqLocation" placeholder="مثال: عين شمس - القاهرة" required>
                     </div>
 
                     <button type="submit" class="btn-action btn-primary" style="width: 100%;">إرسال الطلب 🚀</button>
@@ -656,95 +437,77 @@
             </div>
         </div>
 
-        <!-- 5. شاشة عرض المهارات (Offer Skills / عايز شغل) -->
+        <!-- 4. شاشة انضم كفني (عايز شغل) -->
         <div id="viewOfferSkills" class="app-view">
             <div class="section-title">اعرض مهاراتك وانضم كفني</div>
             <div class="modal-form">
-                <form onsubmit="event.preventDefault(); alert('تم تقديم طلبك بنجاح وسيتواصل معك الفريق للتوثيق.'); switchTab('home');">
+                <form id="techRegisterForm" onsubmit="registerTechnician(event)">
                     <div class="form-group">
-                        <label class="form-label">اختر مهارتك الرئيسية</label>
-                        <select class="form-select" required>
-                            <option>سباكة</option>
-                            <option>كهرباء</option>
-                            <option>صيانة تكييف</option>
-                            <option>نقاشة ودهانات</option>
+                        <label class="form-label">الاسم بالكامل</label>
+                        <input type="text" class="form-input" id="techName" placeholder="اسمك الثلاثي" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">رقم الهاتف</label>
+                        <input type="tel" class="form-input" id="techPhone" placeholder="01xxxxxxxxx" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">المهارة الرئيسية</label>
+                        <select class="form-select" id="techCategory" required>
+                            <option value="سباكة">سباكة</option>
+                            <option value="كهرباء">كهرباء</option>
+                            <option value="أجهزة منزلية">أجهزة منزلية</option>
+                            <option value="تكييف">تكييف</option>
+                            <option value="موبايلات">موبايلات</option>
+                            <option value="سيارات">سيارات</option>
+                            <option value="نقاشة">نقاشة</option>
+                            <option value="نجارة">نجارة</option>
+                            <option value="نقل وشحن">نقل وشحن</option>
+                            <option value="تنظيف">تنظيف</option>
                         </select>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label">منطقتك</label>
-                        <input type="text" class="form-input" placeholder="مثال: عين شمس" required>
+                        <label class="form-label">المنطقة والمدينة</label>
+                        <input type="text" class="form-input" id="techArea" placeholder="مثال: عين شمس" required>
                     </div>
 
-                    <div class="form-group">
-                        <label class="form-label">أوقات تفرغك</label>
-                        <input type="text" class="form-input" placeholder="من 9 صباحاً إلى 5 مساءً">
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">سعر الخدمة التقديري</label>
-                        <input type="text" class="form-input" placeholder="من 100 إلى 200 جنيه">
-                    </div>
-
-                    <button type="submit" class="btn-action btn-primary" style="width: 100%;">نشر مهاراتك 🚀</button>
+                    <button type="submit" class="btn-action btn-primary" style="width: 100%;">تسجيل الحساب كفني 🚀</button>
                 </form>
             </div>
         </div>
 
-        <!-- 6. شاشة المحادثة المباشرة (Chat View) -->
-        <div id="viewChat" class="app-view">
-            <div class="section-title">
-                <span>💬 المحادثة مع الفني (أحمد سمير)</span>
-            </div>
-
-            <div class="chat-container">
-                <div class="chat-bubble chat-in">
-                    السلام عليكم، ممكن توضح مكان التسريب بالتحديد؟
-                </div>
-                <div class="chat-bubble chat-out">
-                    وعليكم السلام، هو من تحت الحنفية في المطبخ.
-                </div>
-                <div class="chat-bubble chat-in">
-                    تمام، ممكن أجي خلال ساعة والسعر هيكون 150 جنيه.
-                </div>
-            </div>
-
-            <div style="display:flex; gap:8px;">
-                <input type="text" class="form-input" placeholder="اكتب رسالة..." id="chatInput">
-                <button class="btn-sm-gold" onclick="sendChatMessage()">إرسال</button>
-            </div>
-        </div>
-
-        <!-- 7. شاشة طلباتي (Orders View) -->
+        <!-- 5. شاشة طلباتي -->
         <div id="viewOrders" class="app-view">
-            <div class="section-title">طلباتي السابقة والحالية</div>
-            
-            <div class="menu-item" onclick="switchTab('chat')">
-                <div>
-                    <div>🚰 طلب خدمة سباكة</div>
-                    <div style="font-size:0.75rem; color:var(--text-sub);">الأن • عين شمس</div>
+            <div class="section-title">طلباتي الحالية والسابقة</div>
+            <div id="ordersListContainer">
+                <div class="empty-state">
+                    <div class="empty-icon">📋</div>
+                    <h4>لا توجد طلبات جارية</h4>
+                    <p style="font-size:0.8rem; margin-top:6px;">عندما تقوم بطلب خدمة ستظهر تفاصيلها هنا.</p>
                 </div>
-                <span style="color:var(--accent-gold); font-size:0.8rem;">جاري التنفيذ ›</span>
-            </div>
-
-            <div class="menu-item">
-                <div>
-                    <div>⚡ صيانة لوحة كهرباء</div>
-                    <div style="font-size:0.75rem; color:var(--text-sub);">الأسبوع الماضي</div>
-                </div>
-                <span style="color:var(--badge-green); font-size:0.8rem;">مكتمل ✓</span>
             </div>
         </div>
 
-        <!-- 8. شاشة حسابي المكتملة (Account Menu List) -->
+        <!-- 6. شاشة المحادثات -->
+        <div id="viewChat" class="app-view">
+            <div class="section-title">المحادثات</div>
+            <div class="empty-state">
+                <div class="empty-icon">💬</div>
+                <h4>لا توجد محادثات نشطة</h4>
+                <p style="font-size:0.8rem; margin-top:6px;">تبدأ المحادثات تلقائياً عند قَبول طلبك من قبل أحد الفنيين.</p>
+            </div>
+        </div>
+
+        <!-- 7. شاشة حسابي -->
         <div id="viewProfile" class="app-view">
             <div style="text-align:center; padding: 20px 0;">
-                <div style="width:70px; height:70px; border-radius:50%; background:var(--accent-gold); color:#000; font-size:2rem; font-weight:800; display:flex; align-items:center; justify-content:center; margin:0 auto 10px;">أ</div>
-                <h3>أحمد محمد</h3>
-                <p style="font-size:0.8rem; color:var(--text-sub);">ahmed@gmail.com</p>
+                <div style="width:70px; height:70px; border-radius:50%; background:var(--accent-gold); color:#000; font-size:2rem; font-weight:800; display:flex; align-items:center; justify-content:center; margin:0 auto 10px;">👤</div>
+                <h3 id="profileName">حساب جديد</h3>
+                <p style="font-size:0.8rem; color:var(--text-sub);" id="profileStatus">زائر</p>
             </div>
 
-            <!-- Complete List matching the image -->
             <div class="menu-item" onclick="switchTab('orders')">
                 <span>📋 طلباتي</span>
                 <span>‹</span>
@@ -753,46 +516,33 @@
                 <span>💬 المحادثات</span>
                 <span>‹</span>
             </div>
-            <div class="menu-item" onclick="alert('شاشة معلوماتي الشخصية')">
-                <span>👤 معلوماتي الشخصية</span>
-                <span>‹</span>
-            </div>
             <div class="menu-item" onclick="switchTab('offerSkills')">
-                <span>🧰 مهاراتي (للمقدمين)</span>
+                <span>🧰 التسجيل كفني (تقديم خدمات)</span>
                 <span>‹</span>
             </div>
-            <div class="menu-item" onclick="alert('شاشة التقييمات')">
-                <span>⭐ التقييمات</span>
-                <span>‹</span>
-            </div>
-            <div class="menu-item" onclick="alert('شاشة الإعدادات')">
-                <span>⚙️ الإعدادات</span>
-                <span>‹</span>
-            </div>
-            <div class="menu-item" onclick="alert('مساعدة ودعم')">
-                <span>❓ مساعدة ودعم</span>
+            <div class="menu-item" onclick="alert('سيتم تفعيل الإعدادات فور الربط بقاعدة البيانات')">
+                <span>⚙️ الإعدادات والدعم</span>
                 <span>‹</span>
             </div>
         </div>
 
     </main>
 
-    <!-- Bottom Navigation Bar (Matching design) -->
     <nav class="bottom-nav">
         <button class="nav-item active" id="nav-home" onclick="switchTab('home')">
-            <span class="nav-icon">🏠</span>
+            <span style="font-size:1.2rem;">🏠</span>
             <span>الرئيسية</span>
         </button>
         <button class="nav-item" id="nav-orders" onclick="switchTab('orders')">
-            <span class="nav-icon">📋</span>
+            <span style="font-size:1.2rem;">📋</span>
             <span>طلباتي</span>
         </button>
         <button class="nav-item" id="nav-chat" onclick="switchTab('chat')">
-            <span class="nav-icon">💬</span>
+            <span style="font-size:1.2rem;">💬</span>
             <span>المحادثات</span>
         </button>
         <button class="nav-item" id="nav-profile" onclick="switchTab('profile')">
-            <span class="nav-icon">👤</span>
+            <span style="font-size:1.2rem;">👤</span>
             <span>حسابي</span>
         </button>
     </nav>
@@ -800,19 +550,14 @@
 
 <script>
     function switchTab(tab) {
-        // Hide all screens
         document.querySelectorAll('.app-view').forEach(view => view.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
 
-        // Tab routing
         if (tab === 'home') {
             document.getElementById('viewHome').classList.add('active');
             document.getElementById('nav-home').classList.add('active');
         } else if (tab === 'techs') {
             document.getElementById('viewTechs').classList.add('active');
-            document.getElementById('nav-home').classList.add('active');
-        } else if (tab === 'techDetail') {
-            document.getElementById('viewTechDetail').classList.add('active');
             document.getElementById('nav-home').classList.add('active');
         } else if (tab === 'newRequest') {
             document.getElementById('viewNewRequest').classList.add('active');
@@ -834,20 +579,33 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    function openServiceForm(serviceName) {
+    function selectService(categoryName) {
+        document.getElementById('selectedCategoryTitle').innerText = 'فنيين: ' + categoryName;
+        document.getElementById('reqCategory').value = categoryName;
         switchTab('techs');
     }
 
-    function sendChatMessage() {
-        const input = document.getElementById('chatInput');
-        if(input.value.trim() !== "") {
-            const container = document.querySelector('.chat-container');
-            const newMsg = document.createElement('div');
-            newMsg.className = 'chat-bubble chat-out';
-            newMsg.innerText = input.value;
-            container.appendChild(newMsg);
-            input.value = "";
+    function handleSearch() {
+        const query = document.getElementById('searchInput').value;
+        if(query) {
+            document.getElementById('selectedCategoryTitle').innerText = 'نتائج البحث عن: ' + query;
+            switchTab('techs');
         }
+    }
+
+    function submitNewRequest(e) {
+        e.preventDefault();
+        alert('تم إرسال طلبك! سيتم ربطه بقاعدة البيانات فور تشغيل السيرفر.');
+        document.getElementById('requestForm').reset();
+        switchTab('orders');
+    }
+
+    function registerTechnician(e) {
+        e.preventDefault();
+        const name = document.getElementById('techName').value;
+        alert('تم تقديم طلب تسجيلك كفني باسم: ' + name);
+        document.getElementById('techRegisterForm').reset();
+        switchTab('home');
     }
 </script>
 
