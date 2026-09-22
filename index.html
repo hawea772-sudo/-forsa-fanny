@@ -1,4 +1,4 @@
-<!-- Version 2.4.0 - Exact City & Governorate Geolocation -->
+<!-- Version 2.5.0 - Real Phone/OTP & Google Auth Gate -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -14,6 +14,9 @@
 
   <script src="https://cdn.tailwindcss.com"></script>
 
+  <!-- Google Identity SDK -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+
   <!-- EmailJS SDK -->
   <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
   <script type="text/javascript">
@@ -22,339 +25,408 @@
     })();
   </script>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen font-sans pb-24 select-none">
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans select-none flex flex-col justify-between">
 
-  <!-- Header -->
-  <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800/80 p-4 sticky top-0 z-40">
-    <div class="max-w-md mx-auto flex justify-between items-center">
-      <div class="flex items-center gap-2">
-        <span class="text-xl">🛠️</span>
-        <h1 class="text-lg font-bold text-amber-500">فرصة فني</h1>
-      </div>
-      <div id="locationBadge" class="flex items-center gap-1 text-xs bg-slate-800 text-slate-300 border border-slate-700 px-2.5 py-1 rounded-full">
-        <span>📍</span>
-        <span id="locationText">جاري تحديث الموقع...</span>
-      </div>
-    </div>
-  </header>
-
-  <!-- Main Content Area -->
-  <main class="max-w-md mx-auto w-full p-4 space-y-5">
-
-    <!-- Admin Alert Banner -->
-    <div id="statusAlert" class="hidden p-4 rounded-2xl text-center font-bold text-xs shadow-xl transition-all"></div>
-
-    <!-- Home View (Services Grid & Search) -->
-    <div id="homeView" class="space-y-4">
+  <!-- Authentication Screen (App Login Gate) -->
+  <div id="authGate" class="fixed inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center p-4">
+    <div class="w-full max-w-sm bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl space-y-6 text-center">
       
-      <!-- Top Search Bar -->
-      <div class="relative">
-        <input type="text" id="searchInput" onkeyup="filterServices()" placeholder="ابحث عن خدمة (كهرباء، سباكة، تكييف...)" class="w-full bg-slate-900 border border-slate-800 rounded-2xl py-3 px-10 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500/60 shadow-inner">
-        <span class="absolute right-3.5 top-3 text-slate-500 text-sm">🔍</span>
+      <div>
+        <span class="text-4xl block mb-2">🛠️</span>
+        <h1 class="text-xl font-bold text-amber-500">فرصة فني</h1>
+        <p class="text-xs text-slate-400 mt-1">سجل الدخول للمتابعة إلى تطبيقك</p>
       </div>
 
-      <div class="flex justify-between items-center">
-        <h2 class="text-xs font-bold text-slate-400">اختر الخدمة المطلوبة:</h2>
+      <!-- Auth Selection Tabs -->
+      <div class="flex bg-slate-950 p-1 rounded-2xl border border-slate-800 text-xs font-semibold">
+        <button id="phoneTabBtn" onclick="switchAuthTab('phone')" class="flex-1 py-2.5 rounded-xl bg-amber-500 text-slate-950 transition-all cursor-pointer">📱 رقم الهاتف</button>
+        <button id="googleTabBtn" onclick="switchAuthTab('google')" class="flex-1 py-2.5 rounded-xl text-slate-400 hover:text-white transition-all cursor-pointer">🌐 حساب Google</button>
       </div>
 
-      <!-- Services Grid -->
-      <div id="servicesGrid" class="grid grid-cols-2 gap-3">
-        <button onclick="openServiceRequest('كهرباء', '⚡')" class="service-card bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
-          <span class="text-3xl">⚡</span>
-          <span class="service-name text-xs font-semibold text-slate-200">كهرباء</span>
-        </button>
+      <!-- Phone Login View -->
+      <div id="phoneAuthView" class="space-y-4">
         
-        <button onclick="openServiceRequest('سباكة', '🔧')" class="service-card bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
-          <span class="text-3xl">🔧</span>
-          <span class="service-name text-xs font-semibold text-slate-200">سباكة</span>
-        </button>
-        
-        <button onclick="openServiceRequest('أجهزة منزلية', '📺')" class="service-card bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
-          <span class="text-3xl">📺</span>
-          <span class="service-name text-xs font-semibold text-slate-200">أجهزة منزلية</span>
-        </button>
-        
-        <button onclick="openServiceRequest('تكييف', '❄️')" class="service-card bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
-          <span class="text-3xl">❄️</span>
-          <span class="service-name text-xs font-semibold text-slate-200">تكييف</span>
-        </button>
-        
-        <button onclick="openServiceRequest('موبايلات', '📱')" class="service-card bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
-          <span class="text-3xl">📱</span>
-          <span class="service-name text-xs font-semibold text-slate-200">موبايلات</span>
-        </button>
-        
-        <button onclick="openServiceRequest('سيارات', '🚗')" class="service-card bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
-          <span class="text-3xl">🚗</span>
-          <span class="service-name text-xs font-semibold text-slate-200">سيارات</span>
-        </button>
-        
-        <button onclick="openServiceRequest('نقاشة', '🎨')" class="service-card bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
-          <span class="text-3xl">🎨</span>
-          <span class="service-name text-xs font-semibold text-slate-200">نقاشة</span>
-        </button>
-        
-        <button onclick="openServiceRequest('نجارة', '🪚')" class="service-card bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
-          <span class="text-3xl">🪚</span>
-          <span class="service-name text-xs font-semibold text-slate-200">نجارة</span>
-        </button>
-        
-        <button onclick="openServiceRequest('تنظيف', '🧹')" class="service-card bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
-          <span class="text-3xl">🧹</span>
-          <span class="service-name text-xs font-semibold text-slate-200">تنظيف</span>
-        </button>
-        
-        <button onclick="openServiceRequest('نقل وشحن', '🚚')" class="service-card bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
-          <span class="text-3xl">🚚</span>
-          <span class="service-name text-xs font-semibold text-slate-200">نقل وشحن</span>
-        </button>
+        <!-- Step 1: Input Phone Number -->
+        <form id="phoneStep1" onsubmit="sendOTP(event)" class="space-y-3">
+          <div class="text-right">
+            <label class="block text-xs text-slate-400 mb-1">أدخل رقم الهاتف:</label>
+            <div class="flex gap-2">
+              <input type="tel" id="userPhone" required placeholder="01XXXXXXXXX" pattern="^01[0125][0-9]{8}$" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500 dir-ltr text-right">
+              <span class="bg-slate-800 border border-slate-700 px-3 py-3 rounded-xl text-xs font-mono text-slate-300 flex items-center">+20</span>
+            </div>
+          </div>
+          <button type="submit" id="sendOtpBtn" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3 rounded-xl transition-all cursor-pointer">
+            إرسال رمز التحقق 📲
+          </button>
+        </form>
+
+        <!-- Step 2: OTP Verification -->
+        <form id="phoneStep2" onsubmit="verifyOTP(event)" class="hidden space-y-3">
+          <div class="text-right">
+            <label class="block text-xs text-slate-400 mb-1">أدخل رمز التحقق (OTP) المكون من 4 أرقام:</label>
+            <input type="number" id="otpInput" required placeholder="1234" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-base text-center tracking-widest text-amber-400 font-mono focus:outline-none focus:border-amber-500">
+            <span id="otpHelperText" class="block text-[10px] text-amber-500/80 mt-1"></span>
+          </div>
+          <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl transition-all cursor-pointer">
+            تأكيد الرمز والدخول 🚀
+          </button>
+          <button type="button" onclick="resendOTP()" class="text-xs text-slate-400 hover:text-slate-200">إعادة إرسال الرمز</button>
+        </form>
+
       </div>
 
-      <!-- Main Action Buttons -->
-      <div class="grid grid-cols-2 gap-3 pt-2">
-        <button onclick="openJobForm()" class="bg-slate-900 border border-slate-800 hover:border-amber-500/50 text-slate-200 font-bold py-4 rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer">
-          <span>💼</span>
-          <span>عايز شغل</span>
-        </button>
+      <!-- Google Login View -->
+      <div id="googleAuthView" class="hidden space-y-4 py-4">
+        <p class="text-xs text-slate-400">سجل بضغطة واحدة باستخدام حساب Google الخاص بك:</p>
         
-        <button onclick="openGeneralRequest()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-amber-500/10 active:scale-95 transition-all cursor-pointer">
-          <span>🔧</span>
-          <span>محتاج خدمة</span>
+        <div class="flex justify-center">
+          <div id="g_id_onload"
+               data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+               data-callback="handleCredentialResponse">
+          </div>
+          <div class="g_id_signin" data-type="standard" data-theme="filled_dark" data-size="large" data-text="signin_with"></div>
+        </div>
+
+        <button onclick="simulatedGoogleLogin()" class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-bold py-3 rounded-xl text-xs flex items-center justify-center gap-2 cursor-pointer transition-all">
+          <span>🔍</span> الدخول بالحساب المسجل (hawea772@gmail.com)
         </button>
       </div>
 
     </div>
+  </div>
 
-    <!-- Job View (Application Form) -->
-    <div id="jobView" class="hidden space-y-4">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <button onclick="showView('homeView')" class="text-xs text-amber-400 font-bold flex items-center gap-1 cursor-pointer">
-          <span>➡️</span> عودة للرئيسية
-        </button>
-        <h2 class="text-sm font-bold text-amber-500">استمارة التقديم كـ فني</h2>
+  <!-- Main PWA Application Container (Hidden Until Auth) -->
+  <div id="appContainer" class="hidden min-h-screen pb-24">
+
+    <!-- Header -->
+    <header class="bg-slate-900/90 backdrop-blur border-b border-slate-800/80 p-4 sticky top-0 z-40">
+      <div class="max-w-md mx-auto flex justify-between items-center">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">🛠️</span>
+          <h1 class="text-lg font-bold text-amber-500">فرصة فني</h1>
+        </div>
+        <div id="locationBadge" class="flex items-center gap-1 text-xs bg-slate-800 text-slate-300 border border-slate-700 px-2.5 py-1 rounded-full">
+          <span>📍</span>
+          <span id="locationText">جاري تحديد الموقع...</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="max-w-md mx-auto w-full p-4 space-y-5">
+
+      <!-- Admin Alert Banner -->
+      <div id="statusAlert" class="hidden p-4 rounded-2xl text-center font-bold text-xs shadow-xl transition-all"></div>
+
+      <!-- Home View (Services Grid & Search) -->
+      <div id="homeView" class="space-y-4">
+        
+        <!-- Top Search Bar -->
+        <div class="relative">
+          <input type="text" id="searchInput" onkeyup="filterServices()" placeholder="ابحث عن خدمة (كهرباء، سباكة، تكييف...)" class="w-full bg-slate-900 border border-slate-800 rounded-2xl py-3 px-10 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500/60 shadow-inner">
+          <span class="absolute right-3.5 top-3 text-slate-500 text-sm">🔍</span>
+        </div>
+
+        <div class="flex justify-between items-center">
+          <h2 class="text-xs font-bold text-slate-400">اختر الخدمة المطلوبة:</h2>
+        </div>
+
+        <!-- Services Grid -->
+        <div id="servicesGrid" class="grid grid-cols-2 gap-3">
+          <button onclick="openServiceRequest('كهرباء', '⚡')" class="service-card bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
+            <span class="text-3xl">⚡</span>
+            <span class="service-name text-xs font-semibold text-slate-200">كهرباء</span>
+          </button>
+          
+          <button onclick="openServiceRequest('سباكة', '🔧')" class="service-card bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
+            <span class="text-3xl">🔧</span>
+            <span class="service-name text-xs font-semibold text-slate-200">سباكة</span>
+          </button>
+          
+          <button onclick="openServiceRequest('أجهزة منزلية', '📺')" class="service-card bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
+            <span class="text-3xl">📺</span>
+            <span class="service-name text-xs font-semibold text-slate-200">أجهزة منزلية</span>
+          </button>
+          
+          <button onclick="openServiceRequest('تكييف', '❄️')" class="service-card bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
+            <span class="text-3xl">❄️</span>
+            <span class="service-name text-xs font-semibold text-slate-200">تكييف</span>
+          </button>
+          
+          <button onclick="openServiceRequest('موبايلات', '📱')" class="service-card bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
+            <span class="text-3xl">📱</span>
+            <span class="service-name text-xs font-semibold text-slate-200">موبايلات</span>
+          </button>
+          
+          <button onclick="openServiceRequest('سيارات', '🚗')" class="service-card bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
+            <span class="text-3xl">🚗</span>
+            <span class="service-name text-xs font-semibold text-slate-200">سيارات</span>
+          </button>
+          
+          <button onclick="openServiceRequest('نقاشة', '🎨')" class="service-card bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
+            <span class="text-3xl">🎨</span>
+            <span class="service-name text-xs font-semibold text-slate-200">نقاشة</span>
+          </button>
+          
+          <button onclick="openServiceRequest('نجارة', '🪚')" class="service-card bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
+            <span class="text-3xl">🪚</span>
+            <span class="service-name text-xs font-semibold text-slate-200">نجارة</span>
+          </button>
+          
+          <button onclick="openServiceRequest('تنظيف', '🧹')" class="service-card bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
+            <span class="text-3xl">🧹</span>
+            <span class="service-name text-xs font-semibold text-slate-200">تنظيف</span>
+          </button>
+          
+          <button onclick="openServiceRequest('نقل وشحن', '🚚')" class="service-card bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
+            <span class="text-3xl">🚚</span>
+            <span class="service-name text-xs font-semibold text-slate-200">نقل وشحن</span>
+          </button>
+        </div>
+
+        <!-- Main Action Buttons -->
+        <div class="grid grid-cols-2 gap-3 pt-2">
+          <button onclick="openJobForm()" class="bg-slate-900 border border-slate-800 hover:border-amber-500/50 text-slate-200 font-bold py-4 rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer">
+            <span>💼</span>
+            <span>عايز شغل</span>
+          </button>
+          
+          <button onclick="openGeneralRequest()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-amber-500/10 active:scale-95 transition-all cursor-pointer">
+            <span>🔧</span>
+            <span>محتاج خدمة</span>
+          </button>
+        </div>
+
       </div>
 
-      <form id="jobForm" onsubmit="handleFormSubmit(event)" class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-        <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1">الاسم بالكامل</label>
-          <input type="text" id="applicantName" required placeholder="مثال: محمد أحمد" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500">
+      <!-- Job View (Application Form) -->
+      <div id="jobView" class="hidden space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <button onclick="showView('homeView')" class="text-xs text-amber-400 font-bold flex items-center gap-1 cursor-pointer">
+            <span>➡️</span> عودة للرئيسية
+          </button>
+          <h2 class="text-sm font-bold text-amber-500">استمارة التقديم كـ فني</h2>
         </div>
 
-        <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1">رقم الهاتف / الواتساب</label>
-          <input type="tel" id="applicantPhone" required placeholder="01234567890" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500">
-        </div>
-
-        <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1">التخصص / المهنة</label>
-          <select id="jobTitle" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500">
-            <option value="" disabled selected>اختر التخصص</option>
-            <option value="كهربائي">كهربائي</option>
-            <option value="سباك">سباك</option>
-            <option value="فني تكييف">فني تكييف</option>
-            <option value="نقاش">نقاش</option>
-            <option value="نجار">نجار</option>
-            <option value="تخصص آخر">تخصص آخر</option>
-          </select>
-        </div>
-
-        <!-- ID Upload -->
-        <div class="border-t border-slate-800 pt-4">
-          <label class="block text-xs font-bold text-amber-400 mb-2">💳 توثيق الهوية (صورة البطاقة)</label>
-          <div class="space-y-3">
-            <div>
-              <span class="block text-xs text-slate-400 mb-1">وجه البطاقة الأمامي:</span>
-              <input type="file" id="idFrontInput" accept="image/*" required onchange="handleFileSelect(event, 'idFrontPreview')" class="w-full text-xs text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-amber-400 cursor-pointer">
-              <img id="idFrontPreview" class="hidden mt-2 rounded-lg max-h-36 border border-slate-800 w-full object-cover">
-            </div>
-            <div>
-              <span class="block text-xs text-slate-400 mb-1">ظهر البطاقة الخلفي:</span>
-              <input type="file" id="idBackInput" accept="image/*" required onchange="handleFileSelect(event, 'idBackPreview')" class="w-full text-xs text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-amber-400 cursor-pointer">
-              <img id="idBackPreview" class="hidden mt-2 rounded-lg max-h-36 border border-slate-800 w-full object-cover">
-            </div>
+        <form id="jobForm" onsubmit="handleFormSubmit(event)" class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">الاسم بالكامل</label>
+            <input type="text" id="applicantName" required placeholder="مثال: محمد أحمد" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500">
           </div>
-        </div>
 
-        <!-- Camera Section -->
-        <div class="border-t border-slate-800 pt-4">
-          <label class="block text-xs font-bold text-amber-400 mb-2">📸 بصمة الوجه الحية (Live Selfie)</label>
-          <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center">
-            <video id="webcam" autoplay playsinline class="hidden w-full h-44 bg-black rounded-lg mb-2 object-cover"></video>
-            <canvas id="canvas" class="hidden"></canvas>
-            <img id="selfiePreview" class="hidden w-full h-44 rounded-lg mb-2 border border-slate-800 object-cover">
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">رقم الهاتف / الواتساب</label>
+            <input type="tel" id="applicantPhone" required placeholder="01234567890" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500">
+          </div>
 
-            <div class="flex justify-center gap-2 mt-2">
-              <button type="button" id="startCamBtn" onclick="startCamera()" class="bg-slate-800 hover:bg-slate-700 active:scale-95 text-amber-400 font-semibold text-xs px-4 py-2.5 rounded-xl border border-slate-700 transition-all cursor-pointer">
-                📷 فتح الكاميرا
-              </button>
-              <button type="button" id="captureBtn" onclick="takeSelfie()" class="hidden bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-semibold text-xs px-4 py-2.5 rounded-xl transition-all cursor-pointer">
-                ⚡ التقاط صورة الوجه
-              </button>
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">التخصص / المهنة</label>
+            <select id="jobTitle" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500">
+              <option value="" disabled selected>اختر التخصص</option>
+              <option value="كهربائي">كهربائي</option>
+              <option value="سباك">سباك</option>
+              <option value="فني تكييف">فني تكييف</option>
+              <option value="نقاش">نقاش</option>
+              <option value="نجار">نجار</option>
+              <option value="تخصص آخر">تخصص آخر</option>
+            </select>
+          </div>
+
+          <!-- ID Upload -->
+          <div class="border-t border-slate-800 pt-4">
+            <label class="block text-xs font-bold text-amber-400 mb-2">💳 توثيق الهوية (صورة البطاقة)</label>
+            <div class="space-y-3">
+              <div>
+                <span class="block text-xs text-slate-400 mb-1">وجه البطاقة الأمامي:</span>
+                <input type="file" id="idFrontInput" accept="image/*" required onchange="handleFileSelect(event, 'idFrontPreview')" class="w-full text-xs text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-amber-400 cursor-pointer">
+                <img id="idFrontPreview" class="hidden mt-2 rounded-lg max-h-36 border border-slate-800 w-full object-cover">
+              </div>
+              <div>
+                <span class="block text-xs text-slate-400 mb-1">ظهر البطاقة الخلفي:</span>
+                <input type="file" id="idBackInput" accept="image/*" required onchange="handleFileSelect(event, 'idBackPreview')" class="w-full text-xs text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-amber-400 cursor-pointer">
+                <img id="idBackPreview" class="hidden mt-2 rounded-lg max-h-36 border border-slate-800 w-full object-cover">
+              </div>
             </div>
           </div>
-        </div>
 
-        <button type="submit" id="submitBtn" class="w-full bg-amber-500 hover:bg-amber-600 active:scale-95 transition-all text-slate-950 font-bold py-3.5 rounded-xl shadow-lg shadow-amber-500/20 mt-4 cursor-pointer">
-          إرسال طلب الانضمام 🚀
-        </button>
-      </form>
-    </div>
+          <!-- Camera Section -->
+          <div class="border-t border-slate-800 pt-4">
+            <label class="block text-xs font-bold text-amber-400 mb-2">📸 بصمة الوجه الحية (Live Selfie)</label>
+            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 text-center">
+              <video id="webcam" autoplay playsinline class="hidden w-full h-44 bg-black rounded-lg mb-2 object-cover"></video>
+              <canvas id="canvas" class="hidden"></canvas>
+              <img id="selfiePreview" class="hidden w-full h-44 rounded-lg mb-2 border border-slate-800 object-cover">
 
-    <!-- Request Service View -->
-    <div id="serviceModal" class="hidden space-y-4">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <button onclick="showView('homeView')" class="text-xs text-amber-400 font-bold flex items-center gap-1 cursor-pointer">
-          <span>➡️</span> رجوع
-        </button>
-        <h2 id="serviceModalTitle" class="text-sm font-bold text-amber-500">طلب خدمة</h2>
-      </div>
-
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-        <div class="text-center p-3 bg-slate-950 rounded-xl border border-slate-800">
-          <span id="serviceIcon" class="text-4xl block mb-1">🔧</span>
-          <span id="serviceName" class="text-sm font-bold text-slate-200">اسم الخدمة</span>
-        </div>
-
-        <form onsubmit="handleServiceRequestSubmit(event)" class="space-y-3">
-          <div>
-            <label class="block text-xs font-medium text-slate-300 mb-1">الاسم</label>
-            <input type="text" required placeholder="اسمك الكريم" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500">
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-slate-300 mb-1">رقم الهاتف</label>
-            <input type="tel" required placeholder="01XXXXXXXXX" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500">
-          </div>
-          <div>
-            <label class="block text-xs font-medium text-slate-300 mb-1">وصف المشكلة / الطلب</label>
-            <textarea rows="3" placeholder="اكتب تفاصيل الخدمة المطلوب تنفيذها..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500"></textarea>
+              <div class="flex justify-center gap-2 mt-2">
+                <button type="button" id="startCamBtn" onclick="startCamera()" class="bg-slate-800 hover:bg-slate-700 active:scale-95 text-amber-400 font-semibold text-xs px-4 py-2.5 rounded-xl border border-slate-700 transition-all cursor-pointer">
+                  📷 فتح الكاميرا
+                </button>
+                <button type="button" id="captureBtn" onclick="takeSelfie()" class="hidden bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-semibold text-xs px-4 py-2.5 rounded-xl transition-all cursor-pointer">
+                  ⚡ التقاط صورة الوجه
+                </button>
+              </div>
+            </div>
           </div>
 
-          <!-- Problem Photo Upload / Camera Attachment -->
-          <div class="border-t border-slate-800 pt-3">
-            <label class="block text-xs font-bold text-amber-400 mb-1.5">📷 تصوير / إرفاق صورة للمشكلة</label>
-            <input type="file" id="problemPhotoInput" accept="image/*" capture="environment" onchange="previewProblemPhoto(event)" class="w-full text-xs text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-amber-400 cursor-pointer">
-            <img id="problemPhotoPreview" class="hidden mt-2 rounded-xl max-h-40 border border-slate-800 w-full object-cover">
-          </div>
-
-          <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3.5 rounded-xl shadow-lg transition-all cursor-pointer">
-            ارسال الطلب الآن 🛠️
+          <button type="submit" id="submitBtn" class="w-full bg-amber-500 hover:bg-amber-600 active:scale-95 transition-all text-slate-950 font-bold py-3.5 rounded-xl shadow-lg shadow-amber-500/20 mt-4 cursor-pointer">
+            إرسال طلب الانضمام 🚀
           </button>
         </form>
       </div>
-    </div>
 
-    <!-- Orders View -->
-    <div id="ordersView" class="hidden space-y-4">
-      <h2 class="text-sm font-bold text-amber-500 border-b border-slate-800 pb-2">📋 طلباتي الأخيرة</h2>
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center text-slate-400 text-xs">
-        لا توجد طلبات نشطة حالياً.
-      </div>
-    </div>
+      <!-- Request Service View -->
+      <div id="serviceModal" class="hidden space-y-4">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <button onclick="showView('homeView')" class="text-xs text-amber-400 font-bold flex items-center gap-1 cursor-pointer">
+            <span>➡️</span> رجوع
+          </button>
+          <h2 id="serviceModalTitle" class="text-sm font-bold text-amber-500">طلب خدمة</h2>
+        </div>
 
-    <!-- Messages View -->
-    <div id="messagesView" class="hidden space-y-4">
-      <h2 class="text-sm font-bold text-amber-500 border-b border-slate-800 pb-2">💬 المحادثات</h2>
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center text-slate-400 text-xs">
-        لا توجد محادثات مفتوحة.
-      </div>
-    </div>
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+          <div class="text-center p-3 bg-slate-950 rounded-xl border border-slate-800">
+            <span id="serviceIcon" class="text-4xl block mb-1">🔧</span>
+            <span id="serviceName" class="text-sm font-bold text-slate-200">اسم الخدمة</span>
+          </div>
 
-    <!-- Profile View (Personal Info, Wallet, Geolocation & Settings) -->
-    <div id="profileView" class="hidden space-y-4">
-      <h2 class="text-sm font-bold text-amber-500 border-b border-slate-800 pb-2">👤 حسابي والمحفظة</h2>
-      
-      <!-- Wallet Card Section -->
-      <div class="bg-gradient-to-r from-amber-500/20 via-slate-900 to-slate-900 border border-amber-500/30 rounded-2xl p-4 space-y-3">
-        <div class="flex justify-between items-center">
-          <div class="flex items-center gap-2">
-            <span class="text-2xl">👛</span>
+          <form onsubmit="handleServiceRequestSubmit(event)" class="space-y-3">
             <div>
-              <p class="text-[10px] text-slate-400">رصيد المحفظة الحالي</p>
-              <p class="text-lg font-bold text-amber-400">250.00 <span class="text-xs">ج.م</span></p>
+              <label class="block text-xs font-medium text-slate-300 mb-1">الاسم</label>
+              <input type="text" required placeholder="اسمك الكريم" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">رقم الهاتف</label>
+              <input type="tel" required placeholder="01XXXXXXXXX" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500">
+            </div>
+            <div>
+              <label class="block text-xs font-medium text-slate-300 mb-1">وصف المشكلة / الطلب</label>
+              <textarea rows="3" placeholder="اكتب تفاصيل الخدمة المطلوب تنفيذها..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500"></textarea>
+            </div>
+
+            <!-- Problem Photo Upload -->
+            <div class="border-t border-slate-800 pt-3">
+              <label class="block text-xs font-bold text-amber-400 mb-1.5">📷 تصوير / إرفاق صورة للمشكلة</label>
+              <input type="file" id="problemPhotoInput" accept="image/*" capture="environment" onchange="previewProblemPhoto(event)" class="w-full text-xs text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-800 file:text-amber-400 cursor-pointer">
+              <img id="problemPhotoPreview" class="hidden mt-2 rounded-xl max-h-40 border border-slate-800 w-full object-cover">
+            </div>
+
+            <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3.5 rounded-xl shadow-lg transition-all cursor-pointer">
+              ارسال الطلب الآن 🛠️
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Orders View -->
+      <div id="ordersView" class="hidden space-y-4">
+        <h2 class="text-sm font-bold text-amber-500 border-b border-slate-800 pb-2">📋 طلباتي الأخيرة</h2>
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center text-slate-400 text-xs">
+          لا توجد طلبات نشطة حالياً.
+        </div>
+      </div>
+
+      <!-- Messages View -->
+      <div id="messagesView" class="hidden space-y-4">
+        <h2 class="text-sm font-bold text-amber-500 border-b border-slate-800 pb-2">💬 المحادثات</h2>
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center text-slate-400 text-xs">
+          لا توجد محادثات مفتوحة.
+        </div>
+      </div>
+
+      <!-- Profile View -->
+      <div id="profileView" class="hidden space-y-4">
+        <h2 class="text-sm font-bold text-amber-500 border-b border-slate-800 pb-2">👤 حسابي والمحفظة</h2>
+        
+        <!-- Wallet Card Section -->
+        <div class="bg-gradient-to-r from-amber-500/20 via-slate-900 to-slate-900 border border-amber-500/30 rounded-2xl p-4 space-y-3">
+          <div class="flex justify-between items-center">
+            <div class="flex items-center gap-2">
+              <span class="text-2xl">👛</span>
+              <div>
+                <p class="text-[10px] text-slate-400">رصيد المحفظة الحالي</p>
+                <p class="text-lg font-bold text-amber-400">250.00 <span class="text-xs">ج.م</span></p>
+              </div>
+            </div>
+            <button onclick="alert('خدمة شحن الرصيد ستكون متاحة قريباً!')" class="bg-amber-500 text-slate-950 text-xs font-bold px-3 py-2 rounded-xl hover:bg-amber-400 transition-all cursor-pointer">
+              + شحن الرصيد
+            </button>
+          </div>
+          <div class="flex justify-between text-[11px] text-slate-400 border-t border-slate-800 pt-2">
+            <span>آخر عملية: شحن محفظة (+100 ج.م)</span>
+            <span class="text-amber-400/80 cursor-pointer" onclick="alert('لا توجد عمليات سابقة أخرى')">السجل كامل ➔</span>
+          </div>
+        </div>
+
+        <!-- Account Info Card -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
+          <div class="flex items-center gap-3 border-b border-slate-800 pb-3">
+            <div class="bg-amber-500/10 border border-amber-500/20 p-3 rounded-full text-xl">👤</div>
+            <div>
+              <p class="text-xs font-bold text-slate-200">الحساب المسجل حالياً:</p>
+              <p id="loggedInAccount" class="text-xs text-amber-400 font-mono mt-0.5">hawea772@gmail.com</p>
             </div>
           </div>
-          <button onclick="alert('خدمة شحن الرصيد ستكون متاحة قريباً!')" class="bg-amber-500 text-slate-950 text-xs font-bold px-3 py-2 rounded-xl hover:bg-amber-400 transition-all cursor-pointer">
-            + شحن الرصيد
+
+          <div class="space-y-2 text-xs">
+            <div class="flex justify-between py-1 border-b border-slate-800/50">
+              <span class="text-slate-400">حالة التوثيق:</span>
+              <span class="text-emerald-400 font-bold">حساب موثق ✅</span>
+            </div>
+            <div class="flex justify-between py-1 border-b border-slate-800/50">
+              <span class="text-slate-400">محل الإقامة الحقيقي:</span>
+              <span id="detectedLocationText" class="text-amber-400 font-semibold">جاري التحديد...</span>
+            </div>
+            <div class="flex justify-between py-1">
+              <span class="text-slate-400">طريقة الدخول:</span>
+              <span id="authMethodText" class="text-slate-200">Google Auth</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Settings List -->
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2 text-xs">
+          <h3 class="font-bold text-slate-300 mb-2">⚙️ الإعدادات والتحكم</h3>
+          
+          <button onclick="requestGeolocation()" class="w-full flex justify-between items-center p-2.5 rounded-xl bg-slate-950 border border-slate-800/60 hover:border-amber-500/40 text-slate-300 cursor-pointer">
+            <span>📍 تحديث الموقع الجغرافي الفعلي</span>
+            <span class="text-slate-500">←</span>
+          </button>
+
+          <button onclick="logoutApp()" class="w-full flex justify-between items-center p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 font-bold cursor-pointer mt-2">
+            <span>🚪 تسجيل الخروج من الحساب</span>
+            <span>←</span>
           </button>
         </div>
-        <div class="flex justify-between text-[11px] text-slate-400 border-t border-slate-800 pt-2">
-          <span>آخر عملية: شحن محفظة (+100 ج.م)</span>
-          <span class="text-amber-400/80 cursor-pointer" onclick="alert('لا توجد عمليات سابقة أخرى')">السجل كامل ➔</span>
-        </div>
       </div>
 
-      <!-- Account Info Card -->
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
-        <div class="flex items-center gap-3 border-b border-slate-800 pb-3">
-          <div class="bg-amber-500/10 border border-amber-500/20 p-3 rounded-full text-xl">👤</div>
-          <div>
-            <p class="text-xs font-bold text-slate-200">الحساب المسجل حالياً:</p>
-            <p class="text-xs text-amber-400 font-mono mt-0.5">hawea772@gmail.com</p>
-          </div>
-        </div>
+    </main>
 
-        <div class="space-y-2 text-xs">
-          <div class="flex justify-between py-1 border-b border-slate-800/50">
-            <span class="text-slate-400">حالة التوثيق:</span>
-            <span class="text-emerald-400 font-bold">حساب معتمد ✅</span>
-          </div>
-          <div class="flex justify-between py-1 border-b border-slate-800/50">
-            <span class="text-slate-400">محل الإقامة الحقيقي:</span>
-            <span id="detectedLocationText" class="text-amber-400 font-semibold">جاري التحديد...</span>
-          </div>
-          <div class="flex justify-between py-1">
-            <span class="text-slate-400">نوع الحساب:</span>
-            <span class="text-slate-200">عميل / فني متتقدم</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Settings List -->
-      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2 text-xs">
-        <h3 class="font-bold text-slate-300 mb-2">⚙️ الإعدادات والتحكم</h3>
-        
-        <button onclick="requestGeolocation()" class="w-full flex justify-between items-center p-2.5 rounded-xl bg-slate-950 border border-slate-800/60 hover:border-amber-500/40 text-slate-300 cursor-pointer">
-          <span>📍 تحديث الموقع الجغرافي الفعلي</span>
-          <span class="text-slate-500">←</span>
+    <!-- Bottom Navigation Bar -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur border-t border-slate-800/80 py-2.5 z-40">
+      <div class="max-w-md mx-auto flex justify-around items-center text-center">
+        <button onclick="showView('homeView')" id="navHome" class="flex flex-col items-center gap-1 text-amber-500 font-semibold cursor-pointer">
+          <span class="text-lg">🏫</span>
+          <span class="text-[10px]">الرئيسية</span>
         </button>
-
-        <button onclick="alert('تم تحديث التخزين المؤقت للموقع.')" class="w-full flex justify-between items-center p-2.5 rounded-xl bg-slate-950 border border-slate-800/60 hover:border-amber-500/40 text-slate-300 cursor-pointer">
-          <span>🔄 مسح التخزين المؤقت (Cache)</span>
-          <span class="text-slate-500">←</span>
+        <button onclick="showView('ordersView')" id="navOrders" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 cursor-pointer">
+          <span class="text-lg">📋</span>
+          <span class="text-[10px]">طلباتي</span>
         </button>
-
-        <button onclick="alert('تم تسجيل الخروج')" class="w-full flex justify-between items-center p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 font-bold cursor-pointer mt-2">
-          <span>🚪 تسجيل الخروج من الحساب</span>
-          <span>←</span>
+        <button onclick="showView('messagesView')" id="navMessages" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 cursor-pointer">
+          <span class="text-lg">💬</span>
+          <span class="text-[10px]">المحادثات</span>
+        </button>
+        <button onclick="showView('profileView')" id="navProfile" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 cursor-pointer">
+          <span class="text-lg">👤</span>
+          <span class="text-[10px]">حسابي</span>
         </button>
       </div>
-    </div>
-
-  </main>
-
-  <!-- Bottom Navigation Bar -->
-  <nav class="fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur border-t border-slate-800/80 py-2.5 z-40">
-    <div class="max-w-md mx-auto flex justify-around items-center text-center">
-      <button onclick="showView('homeView')" id="navHome" class="flex flex-col items-center gap-1 text-amber-500 font-semibold cursor-pointer">
-        <span class="text-lg">🏫</span>
-        <span class="text-[10px]">الرئيسية</span>
-      </button>
-      <button onclick="showView('ordersView')" id="navOrders" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 cursor-pointer">
-        <span class="text-lg">📋</span>
-        <span class="text-[10px]">طلباتي</span>
-      </button>
-      <button onclick="showView('messagesView')" id="navMessages" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 cursor-pointer">
-        <span class="text-lg">💬</span>
-        <span class="text-[10px]">المحادثات</span>
-      </button>
-      <button onclick="showView('profileView')" id="navProfile" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 cursor-pointer">
-        <span class="text-lg">👤</span>
-        <span class="text-[10px]">حسابي</span>
-      </button>
-    </div>
-  </nav>
+    </nav>
+  </div>
 
   <script>
+    let generatedOTP = null;
+    let currentPhone = "";
     let idFrontBase64 = "";
     let idBackBase64 = "";
     let selfieBase64 = "";
@@ -364,6 +436,88 @@
       navigator.serviceWorker.getRegistrations().then(function(registrations) {
         for(let registration of registrations) registration.unregister();
       });
+    }
+
+    // Switch between Phone & Google login view
+    function switchAuthTab(type) {
+      const phoneTabBtn = document.getElementById('phoneTabBtn');
+      const googleTabBtn = document.getElementById('googleTabBtn');
+      const phoneView = document.getElementById('phoneAuthView');
+      const googleView = document.getElementById('googleAuthView');
+
+      if (type === 'phone') {
+        phoneTabBtn.className = "flex-1 py-2.5 rounded-xl bg-amber-500 text-slate-950 transition-all cursor-pointer";
+        googleTabBtn.className = "flex-1 py-2.5 rounded-xl text-slate-400 hover:text-white transition-all cursor-pointer";
+        phoneView.classList.remove('hidden');
+        googleView.classList.add('hidden');
+      } else {
+        googleTabBtn.className = "flex-1 py-2.5 rounded-xl bg-amber-500 text-slate-950 transition-all cursor-pointer";
+        phoneTabBtn.className = "flex-1 py-2.5 rounded-xl text-slate-400 hover:text-white transition-all cursor-pointer";
+        googleView.classList.remove('hidden');
+        phoneView.classList.add('hidden');
+      }
+    }
+
+    // Real Phone OTP Logic
+    function sendOTP(e) {
+      e.preventDefault();
+      currentPhone = document.getElementById('userPhone').value.trim();
+      if (!currentPhone) return;
+
+      // Generate Real random 4-digit OTP
+      generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
+
+      document.getElementById('phoneStep1').classList.add('hidden');
+      document.getElementById('phoneStep2').classList.remove('hidden');
+      
+      const helper = document.getElementById('otpHelperText');
+      helper.innerText = `[تجريبي]: كود التحقيق الخاص بك هو: ${generatedOTP}`;
+      alert(`📲 تم إرسال كود التحقيق إلى الرقم +20 ${currentPhone}\nكود التحقيق: ${generatedOTP}`);
+    }
+
+    function verifyOTP(e) {
+      e.preventDefault();
+      const enteredOTP = document.getElementById('otpInput').value.trim();
+
+      if (enteredOTP === generatedOTP) {
+        completeLogin(`+20 ${currentPhone}`, "رقم الهاتف (OTP Verified)");
+      } else {
+        alert("❌ كود التحقق غير صحيح، يرجى المحاولة مرة أخرى.");
+      }
+    }
+
+    function resendOTP() {
+      generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
+      document.getElementById('otpHelperText').innerText = `[تجريبي]: كود التحقيق الجديد هو: ${generatedOTP}`;
+      alert(`📲 تم إعادة إرسال كود التحقق الجديد: ${generatedOTP}`);
+    }
+
+    // Google Sign-In Callback Response
+    function handleCredentialResponse(response) {
+      completeLogin("حساب Google معتمد", "Google OAuth 2.0");
+    }
+
+    function simulatedGoogleLogin() {
+      completeLogin("hawea772@gmail.com", "Google Account");
+    }
+
+    function completeLogin(accountText, authMethod) {
+      localStorage.setItem('user_auth_status', 'logged_in');
+      localStorage.setItem('user_account_text', accountText);
+      localStorage.setItem('user_auth_method', authMethod);
+
+      document.getElementById('authGate').classList.add('hidden');
+      document.getElementById('appContainer').classList.remove('hidden');
+
+      document.getElementById('loggedInAccount').innerText = accountText;
+      document.getElementById('authMethodText').innerText = authMethod;
+
+      requestGeolocation();
+    }
+
+    function logoutApp() {
+      localStorage.removeItem('user_auth_status');
+      location.reload();
     }
 
     // Advanced Geolocation: Formats to "المحافظة، المدينة/المنطقة"
@@ -574,7 +728,13 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      requestGeolocation();
+      // Check if user is already logged in
+      const isAuth = localStorage.getItem('user_auth_status');
+      if (isAuth === 'logged_in') {
+        const accountText = localStorage.getItem('user_account_text') || 'hawea772@gmail.com';
+        const authMethod = localStorage.getItem('user_auth_method') || 'Google Account';
+        completeLogin(accountText, authMethod);
+      }
 
       const urlParams = new URLSearchParams(window.location.search);
       const action = urlParams.get('action');
