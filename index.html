@@ -1,9 +1,9 @@
-<!-- Version 3.2.0 - Marketplace & Technician Selection Enabled -->
+<!-- Version 3.3.0 - No Auto-Zoom & Full Home Services Marketplace -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
@@ -111,44 +111,64 @@
       <div id="homeView" class="space-y-4">
         
         <div class="relative">
-          <input type="text" id="searchInput" onkeyup="filterServices()" placeholder="ابحث عن خدمة (كهرباء، سباكة، تكييف...)" class="w-full bg-slate-900 border border-slate-800 rounded-2xl py-3 px-10 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500/60 shadow-inner">
+          <input type="text" id="searchInput" onkeyup="filterServices()" placeholder="ابحث عن قسم أو خدمة..." class="w-full bg-slate-900 border border-slate-800 rounded-2xl py-3 px-10 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-amber-500/60 shadow-inner">
           <span class="absolute right-3.5 top-3 text-slate-500 text-sm">🔍</span>
         </div>
 
         <div class="flex justify-between items-center">
-          <h2 class="text-xs font-bold text-slate-400">اختر القسم المطلوبة لعرض الفنيين:</h2>
+          <h2 class="text-xs font-bold text-slate-400">اختر القسم المطلوب لطلب الفنيين:</h2>
         </div>
 
-        <!-- Services Grid -->
+        <!-- Services Grid (All Home Services Included) -->
         <div id="servicesGrid" class="grid grid-cols-2 gap-3">
-          <button onclick="openTechniciansList('كهرباء', '⚡')" class="service-card bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
+          <button onclick="openTechniciansList('كهرباء', '⚡')" class="service-card bg-slate-900 border border-slate-800/80 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
             <span class="text-3xl">⚡</span>
             <span class="service-name text-xs font-semibold text-slate-200">كهرباء</span>
           </button>
           
-          <button onclick="openTechniciansList('سباكة', '🔧')" class="service-card bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
+          <button onclick="openTechniciansList('سباكة', '🔧')" class="service-card bg-slate-900 border border-slate-800/80 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
             <span class="text-3xl">🔧</span>
             <span class="service-name text-xs font-semibold text-slate-200">سباكة</span>
           </button>
           
-          <button onclick="openTechniciansList('أجهزة منزلية', '📺')" class="service-card bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
+          <button onclick="openTechniciansList('تكييف', '❄️')" class="service-card bg-slate-900 border border-slate-800/80 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
+            <span class="text-3xl">❄️</span>
+            <span class="service-name text-xs font-semibold text-slate-200">تكييف وصيانة</span>
+          </button>
+
+          <button onclick="openTechniciansList('تنظيف', '🧹')" class="service-card bg-slate-900 border border-slate-800/80 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
+            <span class="text-3xl">🧹</span>
+            <span class="service-name text-xs font-semibold text-slate-200">تنظيف المنازل</span>
+          </button>
+
+          <button onclick="openTechniciansList('نقل وشحن', '🚚')" class="service-card bg-slate-900 border border-slate-800/80 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
+            <span class="text-3xl">🚚</span>
+            <span class="service-name text-xs font-semibold text-slate-200">نقل وشحن</span>
+          </button>
+
+          <button onclick="openTechniciansList('مغسلة', '🧺')" class="service-card bg-slate-900 border border-slate-800/80 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
+            <span class="text-3xl">🧺</span>
+            <span class="service-name text-xs font-semibold text-slate-200">مغسلة وسجاد</span>
+          </button>
+          
+          <button onclick="openTechniciansList('أجهزة منزلية', '📺')" class="service-card bg-slate-900 border border-slate-800/80 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
             <span class="text-3xl">📺</span>
             <span class="service-name text-xs font-semibold text-slate-200">أجهزة منزلية</span>
           </button>
-          
-          <button onclick="openTechniciansList('تكييف', '❄️')" class="service-card bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
-            <span class="text-3xl">❄️</span>
-            <span class="service-name text-xs font-semibold text-slate-200">تكييف</span>
+
+          <button onclick="openTechniciansList('نجارة', '🪚')" class="service-card bg-slate-900 border border-slate-800/80 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
+            <span class="text-3xl">🪚</span>
+            <span class="service-name text-xs font-semibold text-slate-200">نجارة وأثاث</span>
           </button>
 
-          <button onclick="openTechniciansList('نقاشة', '🎨')" class="service-card bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
+          <button onclick="openTechniciansList('نقاشة', '🎨')" class="service-card bg-slate-900 border border-slate-800/80 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
             <span class="text-3xl">🎨</span>
-            <span class="service-name text-xs font-semibold text-slate-200">نقاشة</span>
+            <span class="service-name text-xs font-semibold text-slate-200">نقاشة وديكور</span>
           </button>
-          
-          <button onclick="openTechniciansList('نجارة', '🪚')" class="service-card bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
-            <span class="text-3xl">🪚</span>
-            <span class="service-name text-xs font-semibold text-slate-200">نجارة</span>
+
+          <button onclick="openTechniciansList('كاميرات مراقبة', '📷')" class="service-card bg-slate-900 border border-slate-800/80 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
+            <span class="text-3xl">📷</span>
+            <span class="service-name text-xs font-semibold text-slate-200">كاميرات وأمن</span>
           </button>
         </div>
 
@@ -171,28 +191,25 @@
           <h2 id="techCategoryTitle" class="text-sm font-bold text-amber-500">الفنيين المتاحين</h2>
         </div>
 
-        <p class="text-xs text-slate-400">اختر الفني المناسب للضغط عليه وإرسال طلب الخدمة مباشرة:</p>
+        <p class="text-xs text-slate-400">اختر المزود المناسب للضغط عليه وإرسال طلب الخدمة مباشرة:</p>
 
-        <!-- Dynamic Technicians Container -->
-        <div id="techniciansContainer" class="space-y-3">
-          <!-- Technicians will be inserted here dynamically -->
-        </div>
+        <div id="techniciansContainer" class="space-y-3"></div>
       </div>
 
-      <!-- Service Request Detail View (When clicking a specific technician) -->
+      <!-- Service Request Detail View -->
       <div id="serviceDetailView" class="hidden space-y-4">
         <div class="flex items-center justify-between border-b border-slate-800 pb-3">
           <button onclick="openTechniciansList(currentSelectedCategory, '🔧')" class="text-xs text-amber-400 font-bold flex items-center gap-1 cursor-pointer">
             <span>➡️</span> عودة لقائمة الفنيين
           </button>
-          <h2 class="text-sm font-bold text-amber-500">إرسال الطلب للفني</h2>
+          <h2 class="text-sm font-bold text-amber-500">إرسال الطلب</h2>
         </div>
 
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
           <div class="flex items-center gap-3 bg-slate-950 p-3 rounded-xl border border-slate-800">
             <div class="text-3xl bg-amber-500/10 p-2 rounded-xl">👨‍🔧</div>
             <div>
-              <p class="text-xs text-slate-400">الفني المختار:</p>
+              <p class="text-xs text-slate-400">المزود / الفني المختار:</p>
               <p id="selectedTechNameDisplay" class="text-sm font-bold text-amber-400">اسم الفني</p>
             </div>
           </div>
@@ -211,8 +228,8 @@
               <input type="text" id="clientOrderAddress" required placeholder="مثال: مدينتي، الحي الأول، عمارة 5" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500">
             </div>
             <div>
-              <label class="block text-xs font-medium text-slate-300 mb-1">وصف المشكلة / الطلب بالتفصيل</label>
-              <textarea id="clientOrderDesc" rows="3" required placeholder="اشرح العطل أو المشكلة باختصار..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500"></textarea>
+              <label class="block text-xs font-medium text-slate-300 mb-1">وصف الطلب / التفاصيل</label>
+              <textarea id="clientOrderDesc" rows="3" required placeholder="اكتب تفاصيل الخدمة أو المطلوب تنفيذه..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500"></textarea>
             </div>
 
             <button type="submit" id="directOrderBtn" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3.5 rounded-xl shadow-lg transition-all cursor-pointer">
@@ -245,13 +262,17 @@
           <div>
             <label class="block text-xs font-medium text-slate-300 mb-1">التخصص / المهنة</label>
             <select id="jobTitle" required class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500">
-              <option value="" disabled selected>اختر التخصص</option>
-              <option value="كهرباء">كهربائي</option>
-              <option value="سباكة">سباك</option>
+              <option value="" disabled selected>اختر القسم</option>
+              <option value="كهرباء">كهرباء</option>
+              <option value="سباكة">سباكة</option>
+              <option value="تكييف">تكييف وصيانة</option>
+              <option value="تنظيف">تنظيف المنازل</option>
+              <option value="نقل وشحن">نقل وشحن</option>
+              <option value="مغسلة">مغسلة وسجاد</option>
               <option value="أجهزة منزلية">أجهزة منزلية</option>
-              <option value="تكييف">فني تكييف</option>
-              <option value="نقاشة">نقاش</option>
-              <option value="نجارة">نجار</option>
+              <option value="نجارة">نجارة</option>
+              <option value="نقاشة">نقاشة وديكور</option>
+              <option value="كاميرات مراقبة">كاميرات مراقبة</option>
             </select>
           </div>
 
@@ -393,27 +414,41 @@
     let currentSelectedCategory = "";
     let selectedTechnicianName = "";
 
-    // Mock Technicians Database for Marketplace
+    // Comprehensive Database for all home services
     const techniciansDB = {
       "كهرباء": [
-        { name: "محمد إبراهيم", rating: "4.9 ⭐", exp: "8 سنوات خبرة", phone: "01012345678" },
-        { name: "محمود سعيد", rating: "4.7 ⭐", exp: "5 سنوات خبرة", phone: "01198765432" }
+        { name: "محمد إبراهيم", rating: "4.9 ⭐", exp: "8 سنوات خبرة" },
+        { name: "محمود سعيد", rating: "4.7 ⭐", exp: "5 سنوات خبرة" }
       ],
       "سباكة": [
-        { name: "أحمد عبد الستار", rating: "4.8 ⭐", exp: "10 سنوات خبرة", phone: "01234567890" },
-        { name: "سعيد مصطفى", rating: "4.6 ⭐", exp: "6 سنوات خبرة", phone: "01099887766" }
-      ],
-      "أجهزة منزلية": [
-        { name: "إسلام مرسي", rating: "4.9 ⭐", exp: "7 سنوات خبرة", phone: "01122334455" }
+        { name: "أحمد عبد الستار", rating: "4.8 ⭐", exp: "10 سنوات خبرة" },
+        { name: "سعيد مصطفى", rating: "4.6 ⭐", exp: "6 سنوات خبرة" }
       ],
       "تكييف": [
-        { name: "كريم الهواري", rating: "5.0 ⭐", exp: "9 سنوات خبرة", phone: "01555443322" }
+        { name: "كريم الهواري", rating: "5.0 ⭐", exp: "9 سنوات خبرة" }
       ],
-      "نقاشة": [
-        { name: "حسن الدسوقي", rating: "4.7 ⭐", exp: "12 سنة خبرة", phone: "01044332211" }
+      "تنظيف": [
+        { name: "شركة النظافة السريعة", rating: "4.9 ⭐", exp: "خدمة تنظيف منازل وشقق شاملة" },
+        { name: "فريق الإتقان للتنظيف", rating: "4.7 ⭐", exp: "تنظيف كنب وتكييفات ومفروشات" }
+      ],
+      "نقل وشحن": [
+        { name: "دينا نقل عفش مدينتي", rating: "4.9 ⭐", exp: "نقل وترحيل الأثاث والبضائع" },
+        { name: "شحن وتوصيل سريع", rating: "4.8 ⭐", exp: "نقل سريع لجميع الاحتياجات" }
+      ],
+      "مغسلة": [
+        { name: "مغسلة السجاد والمفروشات", rating: "4.8 ⭐", exp: "غسيل وتوصيل للمنزل" }
+      ],
+      "أجهزة منزلية": [
+        { name: "إسلام مرسي", rating: "4.9 ⭐", exp: "صيانة غسالات وثلاجات" }
       ],
       "نجارة": [
-        { name: "رامي سمير", rating: "4.8 ⭐", exp: "10 سنوات خبرة", phone: "01277889900" }
+        { name: "رامي سمير", rating: "4.8 ⭐", exp: "فك وتركيب وصيانة أثاث" }
+      ],
+      "نقاشة": [
+        { name: "حسن الدسوقي", rating: "4.7 ⭐", exp: "دهانات وديكورات حديثة" }
+      ],
+      "كاميرات مراقبة": [
+        { name: "مؤسسة الأمان الرقمي", rating: "4.9 ⭐", exp: "تركيب وصيانة كاميرات المراقبة" }
       ]
     };
 
@@ -582,10 +617,9 @@
       showView('jobView');
     }
 
-    // Open Technicians List for selected category
     function openTechniciansList(category, icon) {
       currentSelectedCategory = category;
-      document.getElementById('techCategoryTitle').innerText = `فنيين قسم: ${category} ${icon}`;
+      document.getElementById('techCategoryTitle').innerText = `قسم: ${category} ${icon}`;
       
       const container = document.getElementById('techniciansContainer');
       container.innerHTML = "";
@@ -593,14 +627,14 @@
       const techs = techniciansDB[category] || [];
 
       if (techs.length === 0) {
-        container.innerHTML = `<div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center text-slate-400 text-xs">لا توجد فنيين متاحين حالياً في هذا القسم.</div>`;
+        container.innerHTML = `<div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center text-slate-400 text-xs">لا توجد مزودين متاحين حالياً في هذا القسم.</div>`;
       } else {
         techs.forEach(tech => {
           const card = document.createElement('div');
           card.className = "bg-slate-900 border border-slate-800 hover:border-amber-500/50 p-4 rounded-2xl flex items-center justify-between transition-all";
           card.innerHTML = `
             <div class="flex items-center gap-3">
-              <div class="bg-amber-500/10 p-3 rounded-full text-xl">👨‍🔧</div>
+              <div class="bg-amber-500/10 p-3 rounded-full text-xl">🛠️</div>
               <div>
                 <h3 class="text-xs font-bold text-white">${tech.name}</h3>
                 <p class="text-[11px] text-amber-400 mt-0.5">${tech.rating} - ${tech.exp}</p>
@@ -632,19 +666,19 @@
       const desc = document.getElementById('clientOrderDesc').value.trim();
 
       btn.disabled = true;
-      btn.innerText = 'جاري إرسال الطلب للفني... ⏳';
+      btn.innerText = 'جاري إرسال الطلب... ⏳';
 
       const templateParams = {
-        applicant_name: `[طلب خدمة لفني: ${selectedTechnicianName}] العميل: ${name}`,
+        applicant_name: `[طلب خدمة: ${selectedTechnicianName}] العميل: ${name}`,
         applicant_phone: phone,
-        job_title: `القسم: ${currentSelectedCategory} | العنوان: ${address} | الوصف: ${desc}`,
+        job_title: `القسم: ${currentSelectedCategory} | العنوان: ${address} | التفاصيل: ${desc}`,
         accept_link: "https://hawea772-sudo.github.io/-forsa-fanny/",
         reject_link: "https://hawea772-sudo.github.io/-forsa-fanny/"
       };
 
       emailjs.send('service_9tw126v', 'template_ubom7ft', templateParams)
         .then(function() {
-           alert(`✅ تم إرسال طلبك إلى الفني (${selectedTechnicianName}) بنجاح وتوصلت الإدارة بنسخة على الجيميل!`);
+           alert(`✅ تم إرسال طلبك (${selectedTechnicianName}) بنجاح وتوصلت الإدارة بنسخة على الجيميل!`);
            e.target.reset();
            showView('homeView');
         }, function() {
