@@ -1,711 +1,167 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فرصة فني - منصة الخدمات والفنيين</title>
-    
-    <!-- ربط ملف التنزيل كتطبيق -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#0d1117">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-dark: #0d1117;
-            --card-dark: #161b22;
-            --card-border: #30363d;
-            --accent-gold: #ffc107;
-            --accent-gold-hover: #e0a800;
-            --text-main: #f0f6fc;
-            --text-sub: #8b949e;
-            --badge-green: #238636;
-            --input-bg: #090d11;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>فرصة فني - منصة التوظيف للفنيين</title>
+  
+  <!-- PWA Manifest & Theme Color -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1e293b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="فرصة فني">
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Tajawal', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-        }
-
-        .app-container {
-            width: 100%;
-            max-width: 480px;
-            background-color: var(--bg-dark);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            padding-bottom: 75px;
-        }
-
-        /* Top Header */
-        .app-header {
-            padding: 12px 16px;
-            background: var(--card-dark);
-            border-bottom: 1px solid var(--card-border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .app-title {
-            font-size: 1.1rem;
-            font-weight: 800;
-            color: var(--accent-gold);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .header-widgets {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* محفظة الرصيد - مخفية افتراضياً وتظهر فقط للشغالين */
-        .wallet-badge {
-            display: none; 
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: var(--accent-gold);
-            background: rgba(255, 193, 7, 0.1);
-            padding: 5px 10px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 193, 7, 0.3);
-            align-items: center;
-            gap: 4px;
-            cursor: pointer;
-        }
-
-        .location-badge {
-            font-size: 0.75rem;
-            color: var(--text-sub);
-            background: rgba(255, 255, 255, 0.05);
-            padding: 5px 10px;
-            border-radius: 20px;
-            border: 1px solid var(--card-border);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            cursor: pointer;
-            max-width: 150px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .main-content {
-            padding: 16px;
-            flex: 1;
-        }
-
-        .app-view {
-            display: none;
-        }
-
-        .app-view.active {
-            display: block;
-            animation: fadeIn 0.2s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(4px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .search-box {
-            background: var(--card-dark);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 12px 16px;
-            margin-bottom: 20px;
-        }
-
-        .search-title {
-            font-size: 1.1rem;
-            font-weight: 800;
-            text-align: center;
-            margin-bottom: 10px;
-            color: var(--text-main);
-        }
-
-        .search-input-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 12px 40px 12px 12px;
-            background: var(--input-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 10px;
-            color: var(--text-main);
-            font-size: 0.9rem;
-            outline: none;
-        }
-
-        .search-icon {
-            position: absolute;
-            right: 12px;
-            color: var(--text-sub);
-        }
-
-        .section-title {
-            font-size: 1rem;
-            font-weight: 700;
-            margin-bottom: 14px;
-            color: var(--text-main);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-
-        .service-card {
-            background: var(--card-dark);
-            border: 1px solid var(--card-border);
-            border-radius: 14px;
-            padding: 18px 12px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .service-card:active {
-            transform: scale(0.97);
-            border-color: var(--accent-gold);
-        }
-
-        .service-icon {
-            font-size: 2.2rem;
-            width: 52px;
-            height: 52px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 50%;
-        }
-
-        .service-name {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: var(--text-main);
-        }
-
-        .action-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .btn-action {
-            padding: 14px;
-            border-radius: 12px;
-            border: none;
-            font-size: 0.95rem;
-            font-weight: 800;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .btn-primary {
-            background: var(--accent-gold);
-            color: #000;
-        }
-
-        .btn-secondary {
-            background: var(--card-dark);
-            color: var(--text-main);
-            border: 1px solid var(--card-border);
-        }
-
-        .btn-google {
-            background: #ffffff;
-            color: #000;
-            width: 100%;
-            margin-bottom: 12px;
-            border: none;
-            padding: 12px;
-            border-radius: 10px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            cursor: pointer;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            background: var(--card-dark);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            color: var(--text-sub);
-        }
-
-        .empty-icon {
-            font-size: 3rem;
-            margin-bottom: 12px;
-        }
-
-        .modal-form {
-            background: var(--card-dark);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        .form-label {
-            display: block;
-            font-size: 0.85rem;
-            font-weight: 700;
-            margin-bottom: 6px;
-            color: var(--text-sub);
-        }
-
-        .form-input, .form-select, .form-textarea {
-            width: 100%;
-            padding: 12px;
-            background: var(--input-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 8px;
-            color: var(--text-main);
-            font-size: 0.9rem;
-            outline: none;
-        }
-
-        .upload-box {
-            border: 2px dashed var(--card-border);
-            border-radius: 10px;
-            padding: 16px;
-            text-align: center;
-            cursor: pointer;
-            background: var(--input-bg);
-            transition: border-color 0.2s ease;
-        }
-
-        .upload-box:hover {
-            border-color: var(--accent-gold);
-        }
-
-        .menu-item {
-            background: var(--card-dark);
-            border: 1px solid var(--card-border);
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            font-weight: 700;
-            font-size: 0.9rem;
-        }
-
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            max-width: 480px;
-            background: var(--card-dark);
-            border-top: 1px solid var(--card-border);
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            z-index: 100;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            color: var(--text-sub);
-            font-size: 0.75rem;
-            cursor: pointer;
-            border: none;
-            background: none;
-            width: 25%;
-        }
-
-        .nav-item.active {
-            color: var(--accent-gold);
-            font-weight: 700;
-        }
-
-        .divider {
-            text-align: center;
-            margin: 16px 0;
-            position: relative;
-            color: var(--text-sub);
-            font-size: 0.8rem;
-        }
-
-        .divider::before, .divider::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            width: 40%;
-            height: 1px;
-            background: var(--card-border);
-        }
-        .divider::before { left: 0; }
-        .divider::after { right: 0; }
-    </style>
+  <!-- EmailJS SDK -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script type="text/javascript">
+    (function(){
+       emailjs.init("GmJXhbuFZa7wFxvn_");
+    })();
+  </script>
 </head>
-<body>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans flex flex-col justify-between">
 
-<div class="app-container">
-    <header class="app-header">
-        <div class="app-title">🏠 فرصة فني</div>
-        <div class="header-widgets">
-            <!-- المحفظة تظهر فقط إذا كان نوع المستخدم "فني / worker" -->
-            <div class="wallet-badge" id="walletBadge" onclick="alert('رصيد أرباحك الحالي: ' + (currentUser.wallet || '0.00') + ' ج.م')">
-                💳 <span id="walletBalance">0.00</span> ج.م
-            </div>
-            <div class="location-badge" id="userLocation" onclick="detectAutoLocation()">
-                📍 <span id="locationText">جاري التحديد...</span>
-            </div>
-        </div>
-    </header>
+  <!-- Header -->
+  <header class="bg-slate-800 border-b border-slate-700 p-4 sticky top-0 z-50">
+    <div class="max-w-md mx-auto flex justify-between items-center">
+      <h1 class="text-xl font-bold text-amber-500">🛠️ فرصة فني</h1>
+      <span class="text-xs bg-amber-500/10 text-amber-400 px-2.5 py-1 rounded-full border border-amber-500/20">PWA App</span>
+    </div>
+  </header>
 
-    <main class="main-content">
+  <!-- Main Container -->
+  <main class="max-w-md mx-auto w-full p-4 flex-1">
 
-        <!-- 0. شاشة تسجيل الدخول -->
-        <div id="viewAuth" class="app-view active">
-            <div style="text-align:center; margin: 20px 0;">
-                <h2 style="color:var(--accent-gold); margin-bottom: 6px;">مرحباً بك في فرصة فني 👋</h2>
-                <p style="font-size:0.85rem; color:var(--text-sub);">سجل دخولك لطلب الخدمة أو لتقديم خدماتك كفني</p>
-            </div>
+    <!-- Notification Banner (Shows decision status when opened from email) -->
+    <div id="statusAlert" class="hidden mb-4 p-4 rounded-xl text-center font-semibold transition-all"></div>
 
-            <div class="modal-form">
-                <button class="btn-google" onclick="loginWithGoogle()">
-                    <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
-                    المتابعة باستخدام Google
-                </button>
+    <!-- Application Form Card -->
+    <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl">
+      <h2 class="text-lg font-bold mb-1 text-white">قدّم على فرصة عمل</h2>
+      <p class="text-slate-400 text-sm mb-6">ادخل بياناتك وسيتم إرسال الطلب للمسؤول للمراجعة والرد.</p>
 
-                <div class="divider">أو باستخدام رقم الهاتف</div>
-
-                <form id="phoneAuthForm" onsubmit="handlePhoneLogin(event)">
-                    <div class="form-group">
-                        <label class="form-label">نوع الحساب</label>
-                        <select class="form-select" id="userRoleInput" required>
-                            <option value="customer">عميل (محتاج خدمة)</option>
-                            <option value="worker">فني / مهني (عايز شغل)</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">الاسم بالكامل</label>
-                        <input type="text" class="form-input" id="userNameInput" placeholder="أدخل اسمك الكريم" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">رقم الهاتف</label>
-                        <input type="tel" class="form-input" id="userPhoneInput" placeholder="01xxxxxxxxx" pattern="[0-9]{11}" required>
-                    </div>
-
-                    <div class="form-group" id="otpGroup" style="display:none;">
-                        <label class="form-label">رمز التحقق (OTP)</label>
-                        <input type="text" class="form-input" id="otpInput" placeholder="أدخل كود التحقق 4 أرقام">
-                    </div>
-
-                    <button type="submit" id="btnSubmitAuth" class="btn-action btn-primary" style="width: 100%;">إرسال رمز التحقق 📲</button>
-                </form>
-            </div>
+      <form id="jobForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">الاسم بالكامل</label>
+          <input type="text" id="applicantName" required placeholder="مثال: محمد أحمد" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500">
         </div>
 
-        <!-- 1. الشاشة الرئيسية -->
-        <div id="viewHome" class="app-view">
-            <div class="search-box">
-                <div class="search-title">إيه المشكلة اللي محتاج حلها؟</div>
-                <div class="search-input-wrapper">
-                    <span class="search-icon">🔍</span>
-                    <input type="text" id="searchInput" class="search-input" placeholder="اكتب مشكلتك هنا..." onkeypress="if(event.key === 'Enter') handleSearch()">
-                </div>
-            </div>
-
-            <div class="action-buttons">
-                <button class="btn-action btn-primary" onclick="switchTab('newRequest')">
-                    🛠️ محتاج خدمة
-                </button>
-                <button class="btn-action btn-secondary" onclick="switchTab('offerSkills')">
-                    💼 عايز شغل
-                </button>
-            </div>
-
-            <div class="section-title">
-                <span>أو اختار نوع الخدمة</span>
-            </div>
-            <div class="services-grid">
-                <div class="service-card" onclick="selectService('سباكة')"><div class="service-icon">🚰</div><div class="service-name">سباكة</div></div>
-                <div class="service-card" onclick="selectService('كهرباء')"><div class="service-icon">⚡</div><div class="service-name">كهرباء</div></div>
-                <div class="service-card" onclick="selectService('أجهزة منزلية')"><div class="service-icon">❄️</div><div class="service-name">أجهزة منزلية</div></div>
-                <div class="service-card" onclick="selectService('تكييف')"><div class="service-icon">💨</div><div class="service-name">تكييف</div></div>
-                <div class="service-card" onclick="selectService('موبايلات')"><div class="service-icon">📱</div><div class="service-name">موبايلات</div></div>
-                <div class="service-card" onclick="selectService('سيارات')"><div class="service-icon">🚗</div><div class="service-name">سيارات</div></div>
-                <div class="service-card" onclick="selectService('نقاشة')"><div class="service-icon">🎨</div><div class="service-name">نقاشة</div></div>
-                <div class="service-card" onclick="selectService('نجارة')"><div class="service-icon">🪚</div><div class="service-name">نجارة</div></div>
-                <div class="service-card" onclick="selectService('نقل وشحن')"><div class="service-icon">🚚</div><div class="service-name">نقل وشحن</div></div>
-                <div class="service-card" onclick="selectService('تنظيف')"><div class="service-icon">🧹</div><div class="service-name">تنظيف</div></div>
-            </div>
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">رقم الهاتف / الواتساب</label>
+          <input type="tel" id="applicantPhone" required placeholder="01234567890" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500">
         </div>
 
-        <!-- باقي الشاشات -->
-        <div id="viewTechs" class="app-view">
-            <div class="section-title"><span id="selectedCategoryTitle">الفنيين المتاحين</span></div>
-            <div id="techsListContainer"><div class="empty-state"><div class="empty-icon">👷‍♂️</div><h4>لا يوجد فنيين مسجلين حالياً بالقرب منك</h4></div></div>
+        <div>
+          <label class="block text-xs font-medium text-slate-300 mb-1">التخصص / المهنة</label>
+          <select id="jobTitle" required class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500">
+            <option value="" disabled selected>اختر التخصص</option>
+            <option value="كهربائي">كهربائي</option>
+            <option value="سباك">سباك</option>
+            <option value="فني تكييف">فني تكييف</option>
+            <option value="نقاش">نقاش</option>
+            <option value="نجار">نجار</option>
+            <option value="تخصص آخر">تخصص آخر</option>
+          </select>
         </div>
 
-        <div id="viewNewRequest" class="app-view">
-            <div class="section-title">طلب خدمة جديدة</div>
-            <div class="modal-form">
-                <form id="requestForm" onsubmit="submitNewRequest(event)">
-                    <div class="form-group">
-                        <label class="form-label">نوع الخدمة</label>
-                        <select class="form-select" id="reqCategory" required>
-                            <option value="">اختر الخدمة...</option>
-                            <option value="سباكة">سباكة</option>
-                            <option value="كهرباء">كهرباء</option>
-                            <option value="أجهزة منزلية">أجهزة منزلية</option>
-                            <option value="تكييف">تكييف</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">وصف المشكلة</label>
-                        <textarea class="form-textarea" id="reqDescription" placeholder="اشرح المشكلة للفني..." required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label class="form-label">العنوان</label>
-                        <input type="text" class="form-input" id="reqLocation" placeholder="العنوان بالتفصيل" required>
-                    </div>
-                    <button type="submit" class="btn-action btn-primary" style="width: 100%;">إرسال الطلب 🚀</button>
-                </form>
-            </div>
-        </div>
+        <button type="submit" id="submitBtn" class="w-full bg-amber-500 hover:bg-amber-600 active:scale-95 transition-all text-slate-950 font-bold py-3.5 rounded-xl shadow-lg shadow-amber-500/20 mt-2">
+          إرسال الطلب الآن 🚀
+        </button>
+      </form>
+    </div>
 
-        <div id="viewOfferSkills" class="app-view">
-            <div class="section-title">التسجيل المباشر للفنيين</div>
-            <div class="modal-form">
-                <form id="techRegisterForm" onsubmit="registerTechnician(event)">
-                    <div class="form-group"><label class="form-label">الاسم بالكامل</label><input type="text" class="form-input" id="techName" required></div>
-                    <div class="form-group"><label class="form-label">رقم الهاتف</label><input type="tel" class="form-input" id="techPhone" required></div>
-                    <div class="form-group"><label class="form-label">المهنة</label><input type="text" class="form-input" id="techCategory" placeholder="سباك، كهربائي..." required></div>
-                    <button type="submit" class="btn-action btn-primary" style="width: 100%;">تقديم الطلب 🚀</button>
-                </form>
-            </div>
-        </div>
+    <!-- Instructions Card -->
+    <div class="mt-6 bg-slate-800/50 p-4 rounded-xl border border-slate-700/50 text-xs text-slate-400 space-y-2">
+      <p class="font-semibold text-slate-300">ℹ️ كيف يعمل النظام؟</p>
+      <p>• عند الضغط على إرسال، تصلك تفاصيل المتقدم مباشرة على بريدك الإلكتروني.</p>
+      <p>• يحتوي الإيميل على زرين (قبول / رفض) يمكنك الضغط عليهما مباشرة لاتخاذ القرار.</p>
+    </div>
 
-        <div id="viewOrders" class="app-view">
-            <div class="section-title">طلباتي</div>
-            <div class="empty-state"><div class="empty-icon">📋</div><h4>لا توجد طلبات جارية</h4></div>
-        </div>
+  </main>
 
-        <div id="viewChat" class="app-view">
-            <div class="section-title">المحادثات</div>
-            <div class="empty-state"><div class="empty-icon">💬</div><h4>لا توجد محادثات نشطة</h4></div>
-        </div>
+  <!-- Footer -->
+  <footer class="text-center p-4 text-xs text-slate-500 border-t border-slate-800">
+    تطبيق فرصة فني &copy; 2026 - جميع الحقوق محفوظة
+  </footer>
 
-        <div id="viewProfile" class="app-view">
-            <div style="text-align:center; padding: 20px 0;">
-                <div style="width:70px; height:70px; border-radius:50%; background:var(--accent-gold); color:#000; font-size:2rem; font-weight:800; display:flex; align-items:center; justify-content:center; margin:0 auto 10px;" id="profileAvatar">👤</div>
-                <h3 id="profileName">اسم المستخدم</h3>
-                <p style="font-size:0.8rem; color:var(--text-sub);" id="profileStatus">رقم الهاتف</p>
-            </div>
-            <div class="menu-item" style="color: #ea4335;" onclick="logout()"><span>🚪 تسجيل الخروج</span><span>‹</span></div>
-        </div>
-
-    </main>
-
-    <nav class="bottom-nav" id="bottomNav" style="display:none;">
-        <button class="nav-item active" id="nav-home" onclick="switchTab('home')"><span style="font-size:1.2rem;">🏠</span><span>الرئيسية</span></button>
-        <button class="nav-item" id="nav-orders" onclick="switchTab('orders')"><span style="font-size:1.2rem;">📋</span><span>طلباتي</span></button>
-        <button class="nav-item" id="nav-chat" onclick="switchTab('chat')"><span style="font-size:1.2rem;">💬</span><span>المحادثات</span></button>
-        <button class="nav-item" id="nav-profile" onclick="switchTab('profile')"><span style="font-size:1.2rem;">👤</span><span>حسابي</span></button>
-    </nav>
-</div>
-
-<script>
-    // تسجيل الـ Service Worker
+  <!-- Application Logic JS -->
+  <script>
+    // Service Worker Registration for PWA
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('./sw.js').then(() => console.log("App PWA Ready!"));
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW reg error:', err));
+      });
     }
 
-    let isOtpSent = false;
-    let currentUser = JSON.parse(localStorage.getItem('userSession')) || null;
+    // Form Submission Handler
+    function handleFormSubmit(event) {
+      event.preventDefault();
 
+      const btn = document.getElementById('submitBtn');
+      const name = document.getElementById('applicantName').value.trim();
+      const phone = document.getElementById('applicantPhone').value.trim();
+      const jobTitle = document.getElementById('jobTitle').value;
+
+      if (!name || !phone || !jobTitle) {
+        alert('يرجى ملء جميع البيانات المطلوبة');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerText = 'جاري إرسال الطلب... ⏳';
+
+      const appId = Date.now();
+      const baseUrl = 'https://hawea772-sudo.github.io/-forsa-fanny/';
+
+      const templateParams = {
+        applicant_name: name,
+        applicant_phone: phone,
+        job_title: jobTitle,
+        accept_link: `${baseUrl}?action=accept&id=${appId}`,
+        reject_link: `${baseUrl}?action=reject&id=${appId}`
+      };
+
+      emailjs.send('service_ofjx955', 'template_saoi5q6', templateParams)
+        .then(function(response) {
+           alert('✅ تم إرسال طلبك بنجاح! سيتلقى المسؤول إشعاراً لمراجعة طلبك.');
+           document.getElementById('jobForm').reset();
+        }, function(error) {
+           console.error('EmailJS Error:', error);
+           alert('❌ حدث خطأ أثناء إرسال الطلب، يرجى المحاولة مرة أخرى.');
+        })
+        .finally(function() {
+           btn.disabled = false;
+           btn.innerText = 'إرسال الطلب الآن 🚀';
+        });
+    }
+
+    // Process Action Links (Accept/Reject) from Email Click
     window.addEventListener('DOMContentLoaded', () => {
-        detectAutoLocation();
-        if (currentUser) {
-            setupLoggedInState();
+      const urlParams = new URLSearchParams(window.location.search);
+      const action = urlParams.get('action');
+      const appId = urlParams.get('id');
+      const statusAlert = document.getElementById('statusAlert');
+
+      if (action && appId) {
+        if (action === 'accept') {
+          localStorage.setItem(`app_status_${appId}`, 'accepted');
+          statusAlert.className = 'p-4 rounded-xl text-center font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
+          statusAlert.innerText = `✅ تم قبول الطلب رقم (#${appId}) بنجاح!`;
+          statusAlert.classList.remove('hidden');
+        } else if (action === 'reject') {
+          localStorage.setItem(`app_status_${appId}`, 'rejected');
+          statusAlert.className = 'p-4 rounded-xl text-center font-semibold bg-rose-500/20 text-rose-400 border border-rose-500/30';
+          statusAlert.innerText = `❌ تم رفض الطلب رقم (#${appId}).`;
+          statusAlert.classList.remove('hidden');
         }
+        // Clean URL parameters
+        window.history.replaceState({}, document.title, window.location.pathname);
+      }
     });
-
-    function detectAutoLocation() {
-        const locationText = document.getElementById('locationText');
-        locationText.innerText = "جاري التحديد...";
-
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const lat = position.coords.latitude;
-                    const lon = position.coords.longitude;
-                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&accept-language=ar`)
-                        .then(res => res.json())
-                        .then(data => {
-                            if (data && data.address) {
-                                const city = data.address.state || data.address.city || data.address.governorate || "موقعك الحقيقي";
-                                const district = data.address.suburb || data.address.town || "";
-                                locationText.innerText = district ? `${city} - ${district}` : city;
-                            } else {
-                                locationText.innerText = "موقعك الحالي";
-                            }
-                        })
-                        .catch(() => locationText.innerText = "موقعك الحالي");
-                },
-                () => locationText.innerText = "تحديد الموقع ملغى"
-            );
-        } else {
-            locationText.innerText = "الموقع غير مدعوم";
-        }
-    }
-
-    function loginWithGoogle() {
-        saveSession("مستخدم Google", "تسجيل عبر Google", "customer");
-    }
-
-    function handlePhoneLogin(e) {
-        e.preventDefault();
-        const name = document.getElementById('userNameInput').value;
-        const phone = document.getElementById('userPhoneInput').value;
-        const role = document.getElementById('userRoleInput').value;
-
-        if (!isOtpSent) {
-            document.getElementById('otpGroup').style.display = 'block';
-            document.getElementById('btnSubmitAuth').innerText = 'تأكيد ودخول 🚀';
-            alert('تم إرسال كود التحقق OTP إلى الرقم: ' + phone);
-            isOtpSent = true;
-        } else {
-            saveSession(name, phone, role);
-        }
-    }
-
-    function saveSession(name, phone, role) {
-        currentUser = { name, phone, role, wallet: "0.00" };
-        localStorage.setItem('userSession', JSON.stringify(currentUser));
-        setupLoggedInState();
-    }
-
-    function setupLoggedInState() {
-        document.getElementById('profileName').innerText = currentUser.name;
-        document.getElementById('profileStatus').innerText = currentUser.phone + " (" + (currentUser.role === 'worker' ? 'فني' : 'عميل') + ")";
-        document.getElementById('bottomNav').style.display = 'flex';
-        
-        // شرط المحفظة: تظهر فقط للـ worker (الفني/الشغال)
-        const walletBadge = document.getElementById('walletBadge');
-        if (currentUser.role === 'worker') {
-            walletBadge.style.display = 'flex';
-            document.getElementById('walletBalance').innerText = currentUser.wallet || '0.00';
-        } else {
-            walletBadge.style.display = 'none'; // مخفية تماماً عن العملاء
-        }
-
-        switchTab('home');
-    }
-
-    function logout() {
-        localStorage.removeItem('userSession');
-        currentUser = null;
-        document.getElementById('bottomNav').style.display = 'none';
-        document.getElementById('walletBadge').style.display = 'none';
-        isOtpSent = false;
-        document.getElementById('otpGroup').style.display = 'none';
-        document.getElementById('btnSubmitAuth').innerText = 'إرسال رمز التحقق 📲';
-        switchTab('auth');
-    }
-
-    function switchTab(tab) {
-        document.querySelectorAll('.app-view').forEach(view => view.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
-
-        if (tab === 'auth') document.getElementById('viewAuth').classList.add('active');
-        else if (tab === 'home') { document.getElementById('viewHome').classList.add('active'); document.getElementById('nav-home').classList.add('active'); }
-        else if (tab === 'techs') { document.getElementById('viewTechs').classList.add('active'); document.getElementById('nav-home').classList.add('active'); }
-        else if (tab === 'newRequest') { document.getElementById('viewNewRequest').classList.add('active'); document.getElementById('nav-orders').classList.add('active'); }
-        else if (tab === 'offerSkills') { document.getElementById('viewOfferSkills').classList.add('active'); document.getElementById('nav-profile').classList.add('active'); }
-        else if (tab === 'chat') { document.getElementById('viewChat').classList.add('active'); document.getElementById('nav-chat').classList.add('active'); }
-        else if (tab === 'orders') { document.getElementById('viewOrders').classList.add('active'); document.getElementById('nav-orders').classList.add('active'); }
-        else if (tab === 'profile') { document.getElementById('viewProfile').classList.add('active'); document.getElementById('nav-profile').classList.add('active'); }
-
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function selectService(categoryName) {
-        document.getElementById('selectedCategoryTitle').innerText = 'فنيين: ' + categoryName;
-        switchTab('techs');
-    }
-
-    function handleSearch() {
-        const query = document.getElementById('searchInput').value;
-        if(query) {
-            document.getElementById('selectedCategoryTitle').innerText = 'نتائج البحث عن: ' + query;
-            switchTab('techs');
-        }
-    }
-
-    function submitNewRequest(e) {
-        e.preventDefault();
-        alert('تم إرسال طلبك بنجاح!');
-        document.getElementById('requestForm').reset();
-        switchTab('orders');
-    }
-
-    function registerTechnician(e) {
-        e.preventDefault();
-        alert('تم تقديم طلب تسجيل الفني بنجاح!');
-        document.getElementById('techRegisterForm').reset();
-        switchTab('home');
-    }
-</script>
-
+  </script>
 </body>
 </html>
