@@ -36,7 +36,7 @@
   <!-- Main Container -->
   <main class="max-w-md mx-auto w-full p-4 flex-1">
 
-    <!-- Notification Banner (Shows decision status when opened from email) -->
+    <!-- Notification Banner -->
     <div id="statusAlert" class="hidden mb-4 p-4 rounded-xl text-center font-semibold transition-all"></div>
 
     <!-- Application Form Card -->
@@ -109,13 +109,6 @@
       </form>
     </div>
 
-    <!-- Instructions Card -->
-    <div class="mt-6 bg-slate-800/50 p-4 rounded-xl border border-slate-700/50 text-xs text-slate-400 space-y-2">
-      <p class="font-semibold text-slate-300">ℹ️ كيف يعمل النظام؟</p>
-      <p>• يتم توثيق هوية الفني برفع صورة البطاقة والتقاط صورة الوجه الحية.</p>
-      <p>• تصلك كافة البيانات والمستندات أونلاين لمراجعتها والرد بالقبول أو الرفض بضغطة زر.</p>
-    </div>
-
   </main>
 
   <!-- Footer -->
@@ -125,20 +118,17 @@
 
   <!-- Application Logic JS -->
   <script>
-    // Global Storage for Encoded Images
     let idFrontBase64 = "";
     let idBackBase64 = "";
     let selfieBase64 = "";
     let videoStream = null;
 
-    // Service Worker Registration for PWA
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW reg error:', err));
       });
     }
 
-    // Handle File Reader for ID images
     function handleFileSelect(event, previewId) {
       const file = event.target.files[0];
       if (!file) return;
@@ -156,7 +146,6 @@
       reader.readAsDataURL(file);
     }
 
-    // Camera Access for Face ID Selfie
     async function startCamera() {
       try {
         videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
@@ -171,7 +160,6 @@
       }
     }
 
-    // Capture Selfie Photo
     function takeSelfie() {
       const video = document.getElementById('webcam');
       const canvas = document.getElementById('canvas');
@@ -182,12 +170,11 @@
       const context = canvas.getContext('2d');
       context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      selfieBase64 = canvas.toDataURL('image/jpeg', 0.6); // Compressed for EmailJS limit
+      selfieBase64 = canvas.toDataURL('image/jpeg', 0.6);
       selfiePreview.src = selfieBase64;
       selfiePreview.classList.remove('hidden');
       video.classList.add('hidden');
 
-      // Stop camera stream
       if (videoStream) {
         videoStream.getTracks().forEach(track => track.stop());
       }
@@ -197,7 +184,6 @@
       document.getElementById('captureBtn').classList.add('hidden');
     }
 
-    // Form Submission Handler
     function handleFormSubmit(event) {
       event.preventDefault();
 
@@ -255,7 +241,6 @@
         });
     }
 
-    // Process Action Links (Accept/Reject) from Email Click
     window.addEventListener('DOMContentLoaded', () => {
       const urlParams = new URLSearchParams(window.location.search);
       const action = urlParams.get('action');
@@ -274,7 +259,6 @@
           statusAlert.innerText = `❌ تم رفض الطلب رقم (#${appId}).`;
           statusAlert.classList.remove('hidden');
         }
-        // Clean URL parameters
         window.history.replaceState({}, document.title, window.location.pathname);
       }
     });
