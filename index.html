@@ -1,3 +1,4 @@
+<!-- Version 1.0.2 - Updated Home Interface & Cache Control -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -180,7 +181,7 @@
     let selfieBase64 = "";
     let videoStream = null;
 
-    // Completely Unregister and Clear Cache
+    // Completely Unregister Service Worker and Clear Caches
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistrations().then(function(registrations) {
         for(let registration of registrations) {
