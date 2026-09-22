@@ -1,4 +1,4 @@
-<!-- Version 4.1.0 - Strict Admin Gmail Approval + Client Chat + Separated Technician Application -->
+<!-- Version 4.1.1 - Strict Non-Auto Technician Role Fix -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -104,7 +104,7 @@
     <!-- Main Content Area -->
     <main class="max-w-md mx-auto w-full p-4 space-y-5">
 
-      <!-- Home View (Services Grid for Regular Client - Completely Clean without Tech Job Banner) -->
+      <!-- Home View (Services Grid for Regular Client) -->
       <div id="homeView" class="space-y-4">
         
         <div class="relative">
@@ -346,7 +346,7 @@
         </div>
       </div>
 
-      <!-- Messages View (Technical Dashboard: ONLY visible if technician is approved by Admin Gmail) -->
+      <!-- Messages View (Technical Dashboard: ONLY visible if technician is approved) -->
       <div id="messagesView" class="hidden space-y-4">
         <div class="flex justify-between items-center border-b border-slate-800 pb-2">
           <h2 class="text-sm font-bold text-amber-500">💬 محادثات الطلبات الواردة للفني</h2>
@@ -354,7 +354,7 @@
         </div>
         
         <div id="messagesContainer" class="space-y-3">
-          <!-- Dynamically populated received order chats for approved technician -->
+          <!-- Dynamically populated received order chats -->
         </div>
       </div>
 
@@ -404,7 +404,7 @@
           </button>
         </div>
 
-        <!-- Simulation Approval Button for Testing (To simulate you clicking 'Approve' from Gmail) -->
+        <!-- Simulation Approval Button for Testing -->
         <div class="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-4 space-y-2 text-xs">
           <p class="font-bold text-amber-300">🛠️ محاكاة موافقة الإدارة (من رسالة الجيميل):</p>
           <p class="text-[11px] text-slate-400">بمجرد الضغط هنا كأنك ضغطت على زر "موافقة" في بريدك الإلكتروني، ليتحول حسابك إلى فني وتظهر لك شاشة محادثات الطلبات:</p>
@@ -434,7 +434,7 @@
           <span class="text-lg">📋</span>
           <span class="text-[10px]">طلباتي</span>
         </button>
-        <!-- Messages Tab is dynamically shown or hidden based on Technician Approval Role -->
+        <!-- Messages Tab is dynamically shown or hidden based strictly on Technician Approval Role -->
         <button onclick="checkAndOpenMessages()" id="navMessagesBtn" class="hidden flex-col items-center gap-1 text-slate-400 hover:text-slate-200 cursor-pointer relative">
           <span class="text-lg">💬</span>
           <span class="text-[10px]">طلبات الفني</span>
@@ -583,7 +583,8 @@
       localStorage.setItem('user_account_text', accountText);
       localStorage.setItem('user_auth_method', authMethod);
 
-      if (!localStorage.getItem('user_technician_approved')) {
+      // تأكد أن القيمة الافتراضية دائماً false ولا يتم تفعيلها تلقائياً أبداً
+      if (localStorage.getItem('user_technician_approved') !== 'true') {
         localStorage.setItem('user_technician_approved', 'false');
       }
 
