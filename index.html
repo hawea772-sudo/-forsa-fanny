@@ -1,18 +1,17 @@
-<!-- Version 1.0.2 - Updated Home Interface & Cache Control -->
+<!-- Version 1.0.3 - Direct Form Main Interface -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <!-- Disable Browser & PWA Caching -->
+  <!-- Disable Caching -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
 
-  <title>فرصة فني - منصة الخدمات والتوظيف</title>
-  
-  <meta name="theme-color" content="#1e293b">
+  <title>فرصة فني - تقديم طلب انضمام</title>
+  <meta name="theme-color" content="#0f172a">
 
   <script src="https://cdn.tailwindcss.com"></script>
 
@@ -24,7 +23,7 @@
     })();
   </script>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-screen font-sans flex flex-col justify-between">
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans pb-10">
 
   <!-- Header -->
   <header class="bg-slate-800 border-b border-slate-700 p-4 sticky top-0 z-40 shadow-md">
@@ -33,72 +32,21 @@
         <span class="text-2xl">🛠️</span>
         <h1 class="text-xl font-bold text-amber-500">فرصة فني</h1>
       </div>
-      <button onclick="openApplicationModal()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold px-3 py-2 rounded-xl transition-all shadow-md active:scale-95 cursor-pointer">
-        انضم كـ فني 🚀
-      </button>
+      <span class="text-xs bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2.5 py-1 rounded-full font-bold">توثيق فني جديد</span>
     </div>
   </header>
 
-  <!-- Main Content (Home Page Interface) -->
-  <main class="max-w-md mx-auto w-full p-4 flex-1 space-y-6">
+  <main class="max-w-md mx-auto w-full p-4 space-y-6">
 
     <!-- Admin Decision Alert Banner -->
     <div id="statusAlert" class="hidden p-5 rounded-2xl text-center font-bold text-sm shadow-xl transition-all"></div>
 
-    <!-- Hero / Welcome Banner -->
-    <div class="bg-gradient-to-r from-amber-500/20 to-slate-800 p-6 rounded-2xl border border-amber-500/30">
-      <h2 class="text-lg font-bold text-white mb-2">أهلاً بك في منصة فرصة فني 👋</h2>
-      <p class="text-xs text-slate-300 leading-relaxed mb-4">
-        المنصة الأسرع للوصول إلى أفضل الفنيين المعتمدين في جميع التخصصات. أو قدم طلبك الآن للانضمام لفريقنا!
-      </p>
-      <div class="flex gap-2">
-        <button onclick="openApplicationModal()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold py-3 rounded-xl shadow-lg transition-all cursor-pointer">
-          قدّم كـ فني الآن 🛠️
-        </button>
-      </div>
-    </div>
-
-    <!-- Categories / Services Grid -->
-    <div>
-      <h3 class="text-sm font-bold text-slate-300 mb-3">الخدمات والتخصصات</h3>
-      <div class="grid grid-cols-3 gap-3 text-center">
-        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700/60 hover:border-amber-500/50 transition-all cursor-pointer">
-          <span class="text-2xl block mb-1">⚡</span>
-          <span class="text-xs font-medium text-slate-200">كهرباء</span>
-        </div>
-        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700/60 hover:border-amber-500/50 transition-all cursor-pointer">
-          <span class="text-2xl block mb-1">🔧</span>
-          <span class="text-xs font-medium text-slate-200">سباكة</span>
-        </div>
-        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700/60 hover:border-amber-500/50 transition-all cursor-pointer">
-          <span class="text-2xl block mb-1">❄️</span>
-          <span class="text-xs font-medium text-slate-200">تكييف</span>
-        </div>
-        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700/60 hover:border-amber-500/50 transition-all cursor-pointer">
-          <span class="text-2xl block mb-1">🎨</span>
-          <span class="text-xs font-medium text-slate-200">نقاشة</span>
-        </div>
-        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700/60 hover:border-amber-500/50 transition-all cursor-pointer">
-          <span class="text-2xl block mb-1">🪚</span>
-          <span class="text-xs font-medium text-slate-200">نجارة</span>
-        </div>
-        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700/60 hover:border-amber-500/50 transition-all cursor-pointer">
-          <span class="text-2xl block mb-1">🛠️</span>
-          <span class="text-xs font-medium text-slate-200">خدمات أخرى</span>
-        </div>
-      </div>
-    </div>
-
-  </main>
-
-  <!-- Application Form Modal (Slide Popup) -->
-  <div id="appModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex justify-center items-end sm:items-center p-0 sm:p-4 overflow-y-auto">
-    <div class="bg-slate-800 w-full max-w-md rounded-t-3xl sm:rounded-2xl border border-slate-700 p-6 max-h-[90vh] overflow-y-auto space-y-4 shadow-2xl relative">
+    <!-- Main Application Form Section (Directly on Main Screen) -->
+    <div class="bg-slate-800 border border-slate-700 rounded-2xl p-5 shadow-2xl space-y-4">
       
-      <!-- Close Modal Button -->
-      <div class="flex justify-between items-center border-b border-slate-700 pb-3">
-        <h3 class="text-base font-bold text-amber-500">استمارة التقديم كـ فني</h3>
-        <button onclick="closeApplicationModal()" class="text-slate-400 hover:text-white text-xl font-bold p-1 cursor-pointer">✕</button>
+      <div class="border-b border-slate-700 pb-3">
+        <h2 class="text-base font-bold text-amber-500">استمارة التقديم كـ فني</h2>
+        <p class="text-xs text-slate-400 mt-1">يرجى إدخال البيانات وتأكيد الهوية للبدء في استقبال الطلبات.</p>
       </div>
 
       <form id="jobForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
@@ -133,12 +81,12 @@
             <div>
               <span class="block text-xs text-slate-400 mb-1">وجه البطاقة الأمامي:</span>
               <input type="file" id="idFrontInput" accept="image/*" required onchange="handleFileSelect(event, 'idFrontPreview')" class="w-full text-xs text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-700 file:text-amber-400 cursor-pointer">
-              <img id="idFrontPreview" class="hidden mt-2 rounded-lg max-h-32 border border-slate-700 w-full object-cover">
+              <img id="idFrontPreview" class="hidden mt-2 rounded-lg max-h-36 border border-slate-700 w-full object-cover">
             </div>
             <div>
               <span class="block text-xs text-slate-400 mb-1">ظهر البطاقة الخلفي:</span>
               <input type="file" id="idBackInput" accept="image/*" required onchange="handleFileSelect(event, 'idBackPreview')" class="w-full text-xs text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-700 file:text-amber-400 cursor-pointer">
-              <img id="idBackPreview" class="hidden mt-2 rounded-lg max-h-32 border border-slate-700 w-full object-cover">
+              <img id="idBackPreview" class="hidden mt-2 rounded-lg max-h-36 border border-slate-700 w-full object-cover">
             </div>
           </div>
         </div>
@@ -147,9 +95,9 @@
         <div class="border-t border-slate-700 pt-4">
           <label class="block text-xs font-bold text-amber-400 mb-2">📸 بصمة الوجه الحية (Live Selfie)</label>
           <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 text-center">
-            <video id="webcam" autoplay playsinline class="hidden w-full h-44 bg-black rounded-lg mb-2 object-cover"></video>
+            <video id="webcam" autoplay playsinline class="hidden w-full h-48 bg-black rounded-lg mb-2 object-cover"></video>
             <canvas id="canvas" class="hidden"></canvas>
-            <img id="selfiePreview" class="hidden w-full h-44 rounded-lg mb-2 border border-slate-700 object-cover">
+            <img id="selfiePreview" class="hidden w-full h-48 rounded-lg mb-2 border border-slate-700 object-cover">
 
             <div class="flex justify-center gap-2 mt-2">
               <button type="button" id="startCamBtn" onclick="startCamera()" class="bg-slate-700 hover:bg-slate-600 active:scale-95 text-amber-400 font-semibold text-xs px-4 py-2.5 rounded-xl border border-slate-600 transition-all cursor-pointer">
@@ -169,7 +117,8 @@
 
       </form>
     </div>
-  </div>
+
+  </main>
 
   <footer class="text-center p-4 text-xs text-slate-500 border-t border-slate-800">
     تطبيق فرصة فني &copy; 2026
@@ -181,29 +130,11 @@
     let selfieBase64 = "";
     let videoStream = null;
 
-    // Completely Unregister Service Worker and Clear Caches
+    // Clear Cache
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistrations().then(function(registrations) {
-        for(let registration of registrations) {
-          registration.unregister();
-        }
+        for(let registration of registrations) registration.unregister();
       });
-    }
-    if ('caches' in window) {
-      caches.keys().then(function(names) {
-        for (let name of names) caches.delete(name);
-      });
-    }
-
-    function openApplicationModal() {
-      document.getElementById('appModal').classList.remove('hidden');
-    }
-
-    function closeApplicationModal() {
-      document.getElementById('appModal').classList.add('hidden');
-      if (videoStream) {
-        videoStream.getTracks().forEach(track => track.stop());
-      }
     }
 
     function handleFileSelect(event, previewId) {
@@ -293,7 +224,6 @@
         reject_link: `${baseUrl}?action=reject&id=${appId}`
       };
 
-      // Explicitly call Forsa Fanny Template
       emailjs.send('service_ofjx955', 'template_saoi5q6', templateParams)
         .then(function() {
            alert('✅ تم إرسال طلبك بنجاح وسنقوم بمراجعته!');
@@ -301,7 +231,6 @@
            document.getElementById('idFrontPreview').classList.add('hidden');
            document.getElementById('idBackPreview').classList.add('hidden');
            document.getElementById('selfiePreview').classList.add('hidden');
-           closeApplicationModal();
         }, function(error) {
            alert('❌ حدث خطأ أثناء الإرسال.');
         })
@@ -311,7 +240,7 @@
         });
     }
 
-    // Process Direct Admin Actions from Email
+    // Process Admin Action Links
     window.addEventListener('DOMContentLoaded', () => {
       const urlParams = new URLSearchParams(window.location.search);
       const action = urlParams.get('action');
