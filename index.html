@@ -28,13 +28,13 @@
         <span class="text-2xl">🛠️</span>
         <h1 class="text-xl font-bold text-amber-500">فرصة فني</h1>
       </div>
-      <button onclick="openApplicationModal()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold px-3 py-2 rounded-xl transition-all shadow-md active:scale-95">
+      <button onclick="openApplicationModal()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold px-3 py-2 rounded-xl transition-all shadow-md active:scale-95 cursor-pointer">
         انضم كـ فني 🚀
       </button>
     </div>
   </header>
 
-  <!-- Main Content (Application Interface) -->
+  <!-- Main Content (Home Page Interface) -->
   <main class="max-w-md mx-auto w-full p-4 flex-1 space-y-6">
 
     <!-- Admin Decision Alert Banner -->
@@ -47,7 +47,7 @@
         المنصة الأسرع للوصول إلى أفضل الفنيين المعتمدين في جميع التخصصات. أو قدم طلبك الآن للانضمام لفريقنا!
       </p>
       <div class="flex gap-2">
-        <button onclick="openApplicationModal()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold py-3 rounded-xl shadow-lg transition-all">
+        <button onclick="openApplicationModal()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold py-3 rounded-xl shadow-lg transition-all cursor-pointer">
           قدّم كـ فني الآن 🛠️
         </button>
       </div>
@@ -86,14 +86,14 @@
 
   </main>
 
-  <!-- Application Form Modal (Popup/Slide Page) -->
+  <!-- Application Form Modal (Slide Popup) -->
   <div id="appModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex justify-center items-end sm:items-center p-0 sm:p-4 overflow-y-auto">
     <div class="bg-slate-800 w-full max-w-md rounded-t-3xl sm:rounded-2xl border border-slate-700 p-6 max-h-[90vh] overflow-y-auto space-y-4 shadow-2xl relative">
       
       <!-- Close Modal Button -->
       <div class="flex justify-between items-center border-b border-slate-700 pb-3">
         <h3 class="text-base font-bold text-amber-500">استمارة التقديم كـ فني</h3>
-        <button onclick="closeApplicationModal()" class="text-slate-400 hover:text-white text-xl font-bold p-1">✕</button>
+        <button onclick="closeApplicationModal()" class="text-slate-400 hover:text-white text-xl font-bold p-1 cursor-pointer">✕</button>
       </div>
 
       <form id="jobForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
@@ -176,7 +176,15 @@
     let selfieBase64 = "";
     let videoStream = null;
 
-    // Modal Control Functions
+    // Unregister old SW to force updates
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function(registrations) {
+        for(let registration of registrations) {
+          registration.unregister();
+        }
+      });
+    }
+
     function openApplicationModal() {
       document.getElementById('appModal').classList.remove('hidden');
     }
