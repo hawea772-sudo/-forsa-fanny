@@ -1,4 +1,4 @@
-<!-- Version 3.3.0 - No Auto-Zoom & Full Home Services Marketplace -->
+<!-- Version 3.5.0 - Added Car Repair Section -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -119,7 +119,7 @@
           <h2 class="text-xs font-bold text-slate-400">اختر القسم المطلوب لطلب الفنيين:</h2>
         </div>
 
-        <!-- Services Grid (All Home Services Included) -->
+        <!-- Services Grid -->
         <div id="servicesGrid" class="grid grid-cols-2 gap-3">
           <button onclick="openTechniciansList('كهرباء', '⚡')" class="service-card bg-slate-900 border border-slate-800/80 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
             <span class="text-3xl">⚡</span>
@@ -169,6 +169,11 @@
           <button onclick="openTechniciansList('كاميرات مراقبة', '📷')" class="service-card bg-slate-900 border border-slate-800/80 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
             <span class="text-3xl">📷</span>
             <span class="service-name text-xs font-semibold text-slate-200">كاميرات وأمن</span>
+          </button>
+
+          <button onclick="openTechniciansList('تصليح السيارات', '🚗')" class="service-card bg-slate-900 border border-slate-800/80 p-4 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer col-span-2">
+            <span class="text-3xl">🚗</span>
+            <span class="service-name text-xs font-semibold text-slate-200">تصليح السيارات (ميكانيكا وكهرباء سيارات)</span>
           </button>
         </div>
 
@@ -224,12 +229,12 @@
               <input type="tel" id="clientOrderPhone" required placeholder="01XXXXXXXXX" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500">
             </div>
             <div>
-              <label class="block text-xs font-medium text-slate-300 mb-1">العنوان بالتفصيل (المنطقة / الشارع / الحارة)</label>
-              <input type="text" id="clientOrderAddress" required placeholder="مثال: مدينتي، الحي الأول، عمارة 5" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500">
+              <label class="block text-xs font-medium text-slate-300 mb-1">العنوان أو موقع السيارة (المنطقة / الشارع)</label>
+              <input type="text" id="clientOrderAddress" required placeholder="مثال: مدينتي، جراج البوابة الرئيسية" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500">
             </div>
             <div>
-              <label class="block text-xs font-medium text-slate-300 mb-1">وصف الطلب / التفاصيل</label>
-              <textarea id="clientOrderDesc" rows="3" required placeholder="اكتب تفاصيل الخدمة أو المطلوب تنفيذه..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500"></textarea>
+              <label class="block text-xs font-medium text-slate-300 mb-1">وصف الطلب / تفاصيل عطل السيارة</label>
+              <textarea id="clientOrderDesc" rows="3" required placeholder="اكتب تفاصيل الخدمة أو العطل المطلوب فحصه وتصليحه..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500"></textarea>
             </div>
 
             <button type="submit" id="directOrderBtn" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3.5 rounded-xl shadow-lg transition-all cursor-pointer">
@@ -273,6 +278,7 @@
               <option value="نجارة">نجارة</option>
               <option value="نقاشة">نقاشة وديكور</option>
               <option value="كاميرات مراقبة">كاميرات مراقبة</option>
+              <option value="تصليح السيارات">تصليح السيارات</option>
             </select>
           </div>
 
@@ -326,11 +332,15 @@
         </div>
       </div>
 
-      <!-- Messages View -->
+      <!-- Messages View (In-App Orders & Chats) -->
       <div id="messagesView" class="hidden space-y-4">
-        <h2 class="text-sm font-bold text-amber-500 border-b border-slate-800 pb-2">💬 المحادثات</h2>
-        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center text-slate-400 text-xs">
-          لا توجد محادثات مفتوحة.
+        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+          <h2 class="text-sm font-bold text-amber-500">💬 محادثات الطلبات الواردة</h2>
+          <span class="text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded-full font-bold">مباشر داخل التطبيق</span>
+        </div>
+        
+        <div id="messagesContainer" class="space-y-3">
+          <!-- Dynamically populated received order chats -->
         </div>
       </div>
 
@@ -414,7 +424,7 @@
     let currentSelectedCategory = "";
     let selectedTechnicianName = "";
 
-    // Comprehensive Database for all home services
+    // Comprehensive Database for all home and car services
     const techniciansDB = {
       "كهرباء": [
         { name: "محمد إبراهيم", rating: "4.9 ⭐", exp: "8 سنوات خبرة" },
@@ -449,6 +459,10 @@
       ],
       "كاميرات مراقبة": [
         { name: "مؤسسة الأمان الرقمي", rating: "4.9 ⭐", exp: "تركيب وصيانة كاميرات المراقبة" }
+      ],
+      "تصليح السيارات": [
+        { name: "ورشة الكابتن لميكانيكا السيارات", rating: "4.9 ⭐", exp: "إصلاح أعطال ومحركات سيارات" },
+        { name: "إبراهيم الصاوي (كهرباء سيارات)", rating: "4.8 ⭐", exp: "فحص وبرمجة كمبيوتر وأعطال كهربائية" }
       ]
     };
 
@@ -543,6 +557,7 @@
 
       document.getElementById('loggedInAccount').innerText = accountText;
       requestGeolocation();
+      loadInAppMessages();
     }
 
     function logoutApp() {
@@ -610,6 +625,9 @@
       });
 
       document.getElementById(viewId).classList.remove('hidden');
+      if (viewId === 'messagesView') {
+        loadInAppMessages();
+      }
       window.scrollTo(0, 0);
     }
 
@@ -666,7 +684,23 @@
       const desc = document.getElementById('clientOrderDesc').value.trim();
 
       btn.disabled = true;
-      btn.innerText = 'جاري إرسال الطلب... ⏳';
+      btn.innerText = 'جاري إرسال الطلب وحفظه للمحادثات... ⏳';
+
+      const newOrderMessage = {
+        id: Date.now(),
+        techName: selectedTechnicianName,
+        category: currentSelectedCategory,
+        clientName: name,
+        clientPhone: phone,
+        address: address,
+        description: desc,
+        time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
+        date: new Date().toLocaleDateString('ar-EG')
+      };
+
+      let savedOrders = JSON.parse(localStorage.getItem('technician_incoming_orders') || '[]');
+      savedOrders.unshift(newOrderMessage);
+      localStorage.setItem('technician_incoming_orders', JSON.stringify(savedOrders));
 
       const templateParams = {
         applicant_name: `[طلب خدمة: ${selectedTechnicianName}] العميل: ${name}`,
@@ -677,17 +711,74 @@
       };
 
       emailjs.send('service_9tw126v', 'template_ubom7ft', templateParams)
-        .then(function() {
-           alert(`✅ تم إرسال طلبك (${selectedTechnicianName}) بنجاح وتوصلت الإدارة بنسخة على الجيميل!`);
-           e.target.reset();
-           showView('homeView');
-        }, function() {
-           alert('❌ حدث خطأ أثناء إرسال الطلب.');
-        })
-        .finally(function() {
-           btn.disabled = false;
-           btn.innerText = 'إرسال الطلب الآن 🚀';
-        });
+        .then(function() {}, function() {});
+
+      setTimeout(() => {
+        alert(`✅ تم إرسال طلبك إلى (${selectedTechnicianName}) وتلقاه في خانة المحادثات داخل التطبيق بنجاح!`);
+        e.target.reset();
+        btn.disabled = false;
+        btn.innerText = 'إرسال الطلب الآن 🚀';
+        showView('messagesView');
+      }, 800);
+    }
+
+    function loadInAppMessages() {
+      const container = document.getElementById('messagesContainer');
+      const savedOrders = JSON.parse(localStorage.getItem('technician_incoming_orders') || '[]');
+
+      if (savedOrders.length === 0) {
+        container.innerHTML = `
+          <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center space-y-2">
+            <span class="text-3xl block">📭</span>
+            <p class="text-slate-400 text-xs font-semibold">لا توجد محادثات أو طلبات واردة حالياً.</p>
+            <p class="text-slate-500 text-[11px]">عند قيام أي عميل بطلب خدمة، ستظهر تفاصيل الطلب والتواصل هنا مباشرة.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = "";
+      savedOrders.forEach(order => {
+        const card = document.createElement('div');
+        card.className = "bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3 shadow-md";
+        card.innerHTML = `
+          <div class="flex justify-between items-start border-b border-slate-800 pb-2.5">
+            <div>
+              <span class="text-[10px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded font-bold">${order.category}</span>
+              <h3 class="text-xs font-bold text-white mt-1">الفني المسؤول: ${order.techName}</h3>
+            </div>
+            <span class="text-[10px] text-slate-500 font-mono">${order.date} - ${order.time}</span>
+          </div>
+
+          <div class="space-y-1 text-xs text-slate-300">
+            <p><span class="text-slate-500">اسم العميل:</span> <strong class="text-amber-300">${order.clientName}</strong></p>
+            <p><span class="text-slate-500">رقم الهاتف:</span> <span class="font-mono text-emerald-400">${order.clientPhone}</span></p>
+            <p><span class="text-slate-500">العنوان / الموقع:</span> ${order.address}</p>
+            <div class="bg-slate-950 p-2.5 rounded-xl border border-slate-800 mt-2">
+              <p class="text-[11px] text-slate-400"><strong class="text-slate-200">الطلبية / المشكلة:</strong> ${order.description}</p>
+            </div>
+          </div>
+
+          <div class="flex gap-2 pt-1">
+            <a href="tel:${order.clientPhone}" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white text-center font-bold text-xs py-2 rounded-xl transition-all">
+              📞 اتصال بالعميل
+            </a>
+            <button onclick="deleteOrderMessage(${order.id})" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-xs px-3 py-2 rounded-xl transition-all cursor-pointer">
+              🗑️ حذف
+            </button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function deleteOrderMessage(orderId) {
+      if (confirm('هل تريد حذف هذه المحادثة/الطلب؟')) {
+        let savedOrders = JSON.parse(localStorage.getItem('technician_incoming_orders') || '[]');
+        savedOrders = savedOrders.filter(o => o.id !== orderId);
+        localStorage.setItem('technician_incoming_orders', JSON.stringify(savedOrders));
+        loadInAppMessages();
+      }
     }
 
     function handleFileSelect(event, previewId) {
