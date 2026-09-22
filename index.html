@@ -1,4 +1,4 @@
-<!-- Version 2.2.0 - Search Bar, User Account Info & Service Photo Attachment -->
+<!-- Version 2.3.0 - Geolocation, Wallet & Problem Photo -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -31,7 +31,10 @@
         <span class="text-xl">🛠️</span>
         <h1 class="text-lg font-bold text-amber-500">فرصة فني</h1>
       </div>
-      <span class="text-xs bg-slate-800 text-slate-400 border border-slate-700 px-2.5 py-1 rounded-full">القاهرة</span>
+      <div id="locationBadge" class="flex items-center gap-1 text-xs bg-slate-800 text-slate-300 border border-slate-700 px-2.5 py-1 rounded-full">
+        <span>📍</span>
+        <span id="locationText">جاري تحديد الموقع...</span>
+      </div>
     </div>
   </header>
 
@@ -256,10 +259,30 @@
       </div>
     </div>
 
-    <!-- Profile View (Personal Info, Account Detection & Settings) -->
+    <!-- Profile View (Personal Info, Wallet, Geolocation & Settings) -->
     <div id="profileView" class="hidden space-y-4">
-      <h2 class="text-sm font-bold text-amber-500 border-b border-slate-800 pb-2">👤 حسابي والمعلومات الشخصية</h2>
+      <h2 class="text-sm font-bold text-amber-500 border-b border-slate-800 pb-2">👤 حسابي والمحفظة</h2>
       
+      <!-- Wallet Card Section -->
+      <div class="bg-gradient-to-r from-amber-500/20 via-slate-900 to-slate-900 border border-amber-500/30 rounded-2xl p-4 space-y-3">
+        <div class="flex justify-between items-center">
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">👛</span>
+            <div>
+              <p class="text-[10px] text-slate-400">رصيد المحفظة الحالي</p>
+              <p class="text-lg font-bold text-amber-400">250.00 <span class="text-xs">ج.م</span></p>
+            </div>
+          </div>
+          <button onclick="alert('خدمة شحن الرصيد ستكون متاحة قريباً!')" class="bg-amber-500 text-slate-950 text-xs font-bold px-3 py-2 rounded-xl hover:bg-amber-400 transition-all cursor-pointer">
+            + شحن الرصيد
+          </button>
+        </div>
+        <div class="flex justify-between text-[11px] text-slate-400 border-t border-slate-800 pt-2">
+          <span>آخر عملية: شحن محفظة (+100 ج.م)</span>
+          <span class="text-amber-400/80 cursor-pointer" onclick="alert('لا توجد عمليات سابقة أخرى')">السجل كامل ➔</span>
+        </div>
+      </div>
+
       <!-- Account Info Card -->
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-3">
         <div class="flex items-center gap-3 border-b border-slate-800 pb-3">
@@ -276,12 +299,12 @@
             <span class="text-emerald-400 font-bold">حساب معتمد ✅</span>
           </div>
           <div class="flex justify-between py-1 border-b border-slate-800/50">
-            <span class="text-slate-400">نوع الحساب:</span>
-            <span class="text-slate-200">عميل / فني متقدم</span>
+            <span class="text-slate-400">محل الإقامة الحقيقي:</span>
+            <span id="detectedLocationText" class="text-amber-400 font-semibold">جاري التحديد...</span>
           </div>
           <div class="flex justify-between py-1">
-            <span class="text-slate-400">المنطقة الحالية:</span>
-            <span class="text-slate-200">القاهرة، مصر</span>
+            <span class="text-slate-400">نوع الحساب:</span>
+            <span class="text-slate-200">عميل / فني متقدم</span>
           </div>
         </div>
       </div>
@@ -290,12 +313,12 @@
       <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2 text-xs">
         <h3 class="font-bold text-slate-300 mb-2">⚙️ الإعدادات والتحكم</h3>
         
-        <button onclick="alert('الإشعارات مفعلة بنجاح.')" class="w-full flex justify-between items-center p-2.5 rounded-xl bg-slate-950 border border-slate-800/60 hover:border-amber-500/40 text-slate-300 cursor-pointer">
-          <span>🔔 إعدادات الإشعارات</span>
+        <button onclick="requestGeolocation()" class="w-full flex justify-between items-center p-2.5 rounded-xl bg-slate-950 border border-slate-800/60 hover:border-amber-500/40 text-slate-300 cursor-pointer">
+          <span>📍 تحديث الموقع الجغرافي الفعلي</span>
           <span class="text-slate-500">←</span>
         </button>
 
-        <button onclick="alert('تم تحديث الموقع لأحدث نسخة.')" class="w-full flex justify-between items-center p-2.5 rounded-xl bg-slate-950 border border-slate-800/60 hover:border-amber-500/40 text-slate-300 cursor-pointer">
+        <button onclick="alert('تم تحديث التخزين المؤقت للموقع.')" class="w-full flex justify-between items-center p-2.5 rounded-xl bg-slate-950 border border-slate-800/60 hover:border-amber-500/40 text-slate-300 cursor-pointer">
           <span>🔄 مسح التخزين المؤقت (Cache)</span>
           <span class="text-slate-500">←</span>
         </button>
@@ -341,6 +364,47 @@
       navigator.serviceWorker.getRegistrations().then(function(registrations) {
         for(let registration of registrations) registration.unregister();
       });
+    }
+
+    // Geolocation Detection Logic
+    function requestGeolocation() {
+      const locTextHeader = document.getElementById('locationText');
+      const locTextProfile = document.getElementById('detectedLocationText');
+      
+      if ("geolocation" in navigator) {
+        locTextHeader.innerText = "جاري التحديد...";
+        if(locTextProfile) locTextProfile.innerText = "جاري التحديد...";
+
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            
+            try {
+              const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=ar`);
+              const data = await response.json();
+              
+              const city = data.address.state || data.address.city || data.address.governorate || data.address.town || "مصر";
+              const district = data.address.suburb || data.address.neighbourhood || data.address.county || "";
+              const fullLoc = district ? `${district}، ${city}` : city;
+
+              locTextHeader.innerText = fullLoc;
+              if(locTextProfile) locTextProfile.innerText = fullLoc;
+            } catch (err) {
+              locTextHeader.innerText = "القاهرة، مصر";
+              if(locTextProfile) locTextProfile.innerText = "القاهرة، مصر";
+            }
+          },
+          (error) => {
+            locTextHeader.innerText = "القاهرة، مصر";
+            if(locTextProfile) locTextProfile.innerText = "القاهرة، مصر (افتراضي)";
+          },
+          { enableHighAccuracy: true, timeout: 5000 }
+        );
+      } else {
+        locTextHeader.innerText = "القاهرة، مصر";
+        if(locTextProfile) locTextProfile.innerText = "القاهرة، مصر";
+      }
     }
 
     // Filter services grid based on search bar
@@ -508,8 +572,11 @@
         });
     }
 
-    // Process Admin Decision Links
+    // On Load Initializations
     window.addEventListener('DOMContentLoaded', () => {
+      // Trigger Geolocation immediately
+      requestGeolocation();
+
       const urlParams = new URLSearchParams(window.location.search);
       const action = urlParams.get('action');
       const appId = urlParams.get('id');
