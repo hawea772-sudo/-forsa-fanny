@@ -1,4 +1,4 @@
-<!-- Version 2.5.1 - Fixed Google Auth & Native One-Tap Login -->
+<!-- Version 2.5.2 - Added Edit Phone Button & Simplified Egyptian Phone Format -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -36,15 +36,53 @@
 
       <!-- Auth Selection Tabs -->
       <div class="flex bg-slate-950 p-1 rounded-2xl border border-slate-800 text-xs font-semibold">
-        <button id="googleTabBtn" onclick="switchAuthTab('google')" class="flex-1 py-2.5 rounded-xl bg-amber-500 text-slate-950 transition-all cursor-pointer">🌐 حساب Google</button>
-        <button id="phoneTabBtn" onclick="switchAuthTab('phone')" class="flex-1 py-2.5 rounded-xl text-slate-400 hover:text-white transition-all cursor-pointer">📱 رقم الهاتف</button>
+        <button id="phoneTabBtn" onclick="switchAuthTab('phone')" class="flex-1 py-2.5 rounded-xl bg-amber-500 text-slate-950 transition-all cursor-pointer">📱 رقم الهاتف</button>
+        <button id="googleTabBtn" onclick="switchAuthTab('google')" class="flex-1 py-2.5 rounded-xl text-slate-400 hover:text-white transition-all cursor-pointer">🌐 حساب Google</button>
+      </div>
+
+      <!-- Phone Login View -->
+      <div id="phoneAuthView" class="space-y-4">
+        
+        <!-- Step 1: Input Phone Number -->
+        <form id="phoneStep1" onsubmit="sendOTP(event)" class="space-y-3">
+          <div class="text-right">
+            <label class="block text-xs text-slate-400 mb-1">أدخل رقم الهاتف (يبدأ بـ 010...):</label>
+            <input type="tel" id="userPhone" required placeholder="010XXXXXXXX" pattern="^01[0125][0-9]{8}$" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500 dir-ltr text-right">
+          </div>
+          <button type="submit" id="sendOtpBtn" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3 rounded-xl transition-all cursor-pointer">
+            إرسال رمز التحقق 📲
+          </button>
+        </form>
+
+        <!-- Step 2: OTP Verification & Edit Phone Number -->
+        <form id="phoneStep2" onsubmit="verifyOTP(event)" class="hidden space-y-3">
+          <div class="bg-slate-950/60 border border-slate-800 p-2.5 rounded-xl flex justify-between items-center text-xs">
+            <span id="displayEnteredPhone" class="text-amber-400 font-mono font-bold">01000000000</span>
+            <button type="button" onclick="editPhoneNumber()" class="text-slate-400 hover:text-amber-400 font-bold underline cursor-pointer text-[11px]">✏️ تعديل الرقم</button>
+          </div>
+
+          <div class="text-right">
+            <label class="block text-xs text-slate-400 mb-1">أدخل رمز التحقق (OTP):</label>
+            <input type="number" id="otpInput" required placeholder="1234" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-base text-center tracking-widest text-amber-400 font-mono focus:outline-none focus:border-amber-500">
+            <span id="otpHelperText" class="block text-[10px] text-amber-500/80 mt-1"></span>
+          </div>
+
+          <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl transition-all cursor-pointer">
+            تأكيد الرمز والدخول 🚀
+          </button>
+
+          <div class="flex justify-between items-center text-xs pt-1 px-1">
+            <button type="button" onclick="editPhoneNumber()" class="text-slate-400 hover:text-white cursor-pointer">✏️ تغيير الرقم</button>
+            <button type="button" onclick="resendOTP()" class="text-amber-400 hover:text-amber-300 font-semibold cursor-pointer">إعادة إرسال الرمز</button>
+          </div>
+        </form>
+
       </div>
 
       <!-- Google Login View -->
-      <div id="googleAuthView" class="space-y-4 py-2">
+      <div id="googleAuthView" class="hidden space-y-4 py-2">
         <p class="text-xs text-slate-400">سجل بضغطة واحدة باستخدام حساب Google الخاص بك:</p>
 
-        <!-- Direct Native Google Login Button -->
         <button onclick="googleLogin('hawea772@gmail.com')" class="w-full bg-slate-800 hover:bg-slate-700/80 border border-slate-700/80 text-white font-bold py-3.5 px-4 rounded-xl text-xs flex items-center justify-center gap-3 cursor-pointer transition-all active:scale-95 shadow-md">
           <svg class="w-5 h-5" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -54,40 +92,6 @@
           </svg>
           <span>المتابعة بحساب Google (hawea772@gmail.com)</span>
         </button>
-
-        <p class="text-[10px] text-slate-500">ملاحظة: يتم التحقق من الحساب تلقائياً دون الحاجة لتأكيد خارجي.</p>
-      </div>
-
-      <!-- Phone Login View -->
-      <div id="phoneAuthView" class="hidden space-y-4">
-        
-        <!-- Step 1: Input Phone Number -->
-        <form id="phoneStep1" onsubmit="sendOTP(event)" class="space-y-3">
-          <div class="text-right">
-            <label class="block text-xs text-slate-400 mb-1">أدخل رقم الهاتف:</label>
-            <div class="flex gap-2">
-              <input type="tel" id="userPhone" required placeholder="01XXXXXXXXX" pattern="^01[0125][0-9]{8}$" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500 dir-ltr text-right">
-              <span class="bg-slate-800 border border-slate-700 px-3 py-3 rounded-xl text-xs font-mono text-slate-300 flex items-center">+20</span>
-            </div>
-          </div>
-          <button type="submit" id="sendOtpBtn" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3 rounded-xl transition-all cursor-pointer">
-            إرسال رمز التحقق 📲
-          </button>
-        </form>
-
-        <!-- Step 2: OTP Verification -->
-        <form id="phoneStep2" onsubmit="verifyOTP(event)" class="hidden space-y-3">
-          <div class="text-right">
-            <label class="block text-xs text-slate-400 mb-1">أدخل رمز التحقق (OTP):</label>
-            <input type="number" id="otpInput" required placeholder="1234" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-base text-center tracking-widest text-amber-400 font-mono focus:outline-none focus:border-amber-500">
-            <span id="otpHelperText" class="block text-[10px] text-amber-500/80 mt-1"></span>
-          </div>
-          <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 rounded-xl transition-all cursor-pointer">
-            تأكيد الرمز والدخول 🚀
-          </button>
-          <button type="button" onclick="resendOTP()" class="text-xs text-slate-400 hover:text-slate-200">إعادة إرسال الرمز</button>
-        </form>
-
       </div>
 
     </div>
@@ -466,12 +470,19 @@
 
       generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
 
+      document.getElementById('displayEnteredPhone').innerText = currentPhone;
       document.getElementById('phoneStep1').classList.add('hidden');
       document.getElementById('phoneStep2').classList.remove('hidden');
       
       const helper = document.getElementById('otpHelperText');
       helper.innerText = `كود التحقيق الخاص بك هو: ${generatedOTP}`;
-      alert(`📲 تم إرسال كود التحقيق إلى الرقم +20 ${currentPhone}\nكود التحقيق: ${generatedOTP}`);
+      alert(`📲 تم إرسال كود التحقيق إلى الرقم ${currentPhone}\nكود التحقيق: ${generatedOTP}`);
+    }
+
+    function editPhoneNumber() {
+      document.getElementById('phoneStep2').classList.add('hidden');
+      document.getElementById('phoneStep1').classList.remove('hidden');
+      document.getElementById('userPhone').focus();
     }
 
     function verifyOTP(e) {
@@ -479,7 +490,7 @@
       const enteredOTP = document.getElementById('otpInput').value.trim();
 
       if (enteredOTP === generatedOTP) {
-        completeLogin(`+20 ${currentPhone}`, "رقم الهاتف (OTP Verified)");
+        completeLogin(currentPhone, "رقم الهاتف (OTP Verified)");
       } else {
         alert("❌ كود التحقق غير صحيح، يرجى المحاولة مرة أخرى.");
       }
