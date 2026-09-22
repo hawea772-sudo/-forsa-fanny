@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>فرصة فني - منصة التوظيف</title>
+  <title>فرصة فني - منصة الخدمات والتوظيف</title>
   
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#1e293b">
@@ -22,23 +22,79 @@
 <body class="bg-slate-900 text-slate-100 min-h-screen font-sans flex flex-col justify-between">
 
   <!-- Header -->
-  <header class="bg-slate-800 border-b border-slate-700 p-4 sticky top-0 z-50 shadow-md">
+  <header class="bg-slate-800 border-b border-slate-700 p-4 sticky top-0 z-40 shadow-md">
     <div class="max-w-md mx-auto flex justify-between items-center">
-      <h1 class="text-xl font-bold text-amber-500">🛠️ فرصة فني</h1>
-      <span class="text-xs bg-amber-500/10 text-amber-400 px-2.5 py-1 rounded-full border border-amber-500/20">منصة التوظيف</span>
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">🛠️</span>
+        <h1 class="text-xl font-bold text-amber-500">فرصة فني</h1>
+      </div>
+      <button onclick="openApplicationModal()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold px-3 py-2 rounded-xl transition-all shadow-md active:scale-95">
+        انضم كـ فني 🚀
+      </button>
     </div>
   </header>
 
-  <!-- Main Container -->
-  <main class="max-w-md mx-auto w-full p-4 flex-1">
+  <!-- Main Content (Application Interface) -->
+  <main class="max-w-md mx-auto w-full p-4 flex-1 space-y-6">
 
-    <!-- Action Decision Modal Banner -->
-    <div id="statusAlert" class="hidden mb-6 p-5 rounded-2xl text-center font-bold text-sm shadow-xl transition-all"></div>
+    <!-- Admin Decision Alert Banner -->
+    <div id="statusAlert" class="hidden p-5 rounded-2xl text-center font-bold text-sm shadow-xl transition-all"></div>
 
-    <!-- Application Form Card -->
-    <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-2xl">
-      <h2 class="text-lg font-bold mb-1 text-white">قدّم على فرصة عمل</h2>
-      <p class="text-slate-400 text-xs mb-6">استكمل بياناتك وصور التوثيق المطلوبة مباشرة داخل الصفحة.</p>
+    <!-- Hero / Welcome Banner -->
+    <div class="bg-gradient-to-r from-amber-500/20 to-slate-800 p-6 rounded-2xl border border-amber-500/30">
+      <h2 class="text-lg font-bold text-white mb-2">أهلاً بك في منصة فرصة فني 👋</h2>
+      <p class="text-xs text-slate-300 leading-relaxed mb-4">
+        المنصة الأسرع للوصول إلى أفضل الفنيين المعتمدين في جميع التخصصات. أو قدم طلبك الآن للانضمام لفريقنا!
+      </p>
+      <div class="flex gap-2">
+        <button onclick="openApplicationModal()" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 text-xs font-bold py-3 rounded-xl shadow-lg transition-all">
+          قدّم كـ فني الآن 🛠️
+        </button>
+      </div>
+    </div>
+
+    <!-- Categories / Services Grid -->
+    <div>
+      <h3 class="text-sm font-bold text-slate-300 mb-3">الخدمات والتخصصات</h3>
+      <div class="grid grid-cols-3 gap-3 text-center">
+        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700/60 hover:border-amber-500/50 transition-all cursor-pointer">
+          <span class="text-2xl block mb-1">⚡</span>
+          <span class="text-xs font-medium text-slate-200">كهرباء</span>
+        </div>
+        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700/60 hover:border-amber-500/50 transition-all cursor-pointer">
+          <span class="text-2xl block mb-1">🔧</span>
+          <span class="text-xs font-medium text-slate-200">سباكة</span>
+        </div>
+        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700/60 hover:border-amber-500/50 transition-all cursor-pointer">
+          <span class="text-2xl block mb-1">❄️</span>
+          <span class="text-xs font-medium text-slate-200">تكييف</span>
+        </div>
+        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700/60 hover:border-amber-500/50 transition-all cursor-pointer">
+          <span class="text-2xl block mb-1">🎨</span>
+          <span class="text-xs font-medium text-slate-200">نقاشة</span>
+        </div>
+        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700/60 hover:border-amber-500/50 transition-all cursor-pointer">
+          <span class="text-2xl block mb-1">🪚</span>
+          <span class="text-xs font-medium text-slate-200">نجارة</span>
+        </div>
+        <div class="bg-slate-800 p-4 rounded-xl border border-slate-700/60 hover:border-amber-500/50 transition-all cursor-pointer">
+          <span class="text-2xl block mb-1">🛠️</span>
+          <span class="text-xs font-medium text-slate-200">خدمات أخرى</span>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Application Form Modal (Popup/Slide Page) -->
+  <div id="appModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex justify-center items-end sm:items-center p-0 sm:p-4 overflow-y-auto">
+    <div class="bg-slate-800 w-full max-w-md rounded-t-3xl sm:rounded-2xl border border-slate-700 p-6 max-h-[90vh] overflow-y-auto space-y-4 shadow-2xl relative">
+      
+      <!-- Close Modal Button -->
+      <div class="flex justify-between items-center border-b border-slate-700 pb-3">
+        <h3 class="text-base font-bold text-amber-500">استمارة التقديم كـ فني</h3>
+        <button onclick="closeApplicationModal()" class="text-slate-400 hover:text-white text-xl font-bold p-1">✕</button>
+      </div>
 
       <form id="jobForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
         
@@ -66,16 +122,14 @@
         </div>
 
         <!-- ID Upload Section -->
-        <div class="border-t border-slate-700 pt-4 mt-2">
+        <div class="border-t border-slate-700 pt-4">
           <label class="block text-xs font-bold text-amber-400 mb-2">💳 توثيق الهوية (صورة البطاقة)</label>
-          
           <div class="space-y-3">
             <div>
               <span class="block text-xs text-slate-400 mb-1">وجه البطاقة الأمامي:</span>
               <input type="file" id="idFrontInput" accept="image/*" required onchange="handleFileSelect(event, 'idFrontPreview')" class="w-full text-xs text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-700 file:text-amber-400 cursor-pointer">
               <img id="idFrontPreview" class="hidden mt-2 rounded-lg max-h-32 border border-slate-700 w-full object-cover">
             </div>
-
             <div>
               <span class="block text-xs text-slate-400 mb-1">ظهر البطاقة الخلفي:</span>
               <input type="file" id="idBackInput" accept="image/*" required onchange="handleFileSelect(event, 'idBackPreview')" class="w-full text-xs text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-700 file:text-amber-400 cursor-pointer">
@@ -85,9 +139,8 @@
         </div>
 
         <!-- Camera Section -->
-        <div class="border-t border-slate-700 pt-4 mt-2">
+        <div class="border-t border-slate-700 pt-4">
           <label class="block text-xs font-bold text-amber-400 mb-2">📸 بصمة الوجه الحية (Live Selfie)</label>
-          
           <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 text-center">
             <video id="webcam" autoplay playsinline class="hidden w-full h-44 bg-black rounded-lg mb-2 object-cover"></video>
             <canvas id="canvas" class="hidden"></canvas>
@@ -106,13 +159,12 @@
 
         <!-- Submit Button -->
         <button type="submit" id="submitBtn" class="w-full bg-amber-500 hover:bg-amber-600 active:scale-95 transition-all text-slate-950 font-bold py-3.5 rounded-xl shadow-lg shadow-amber-500/20 mt-4 cursor-pointer">
-          إرسال الطلب الآن 🚀
+          إرسال طلب الانضمام 🚀
         </button>
 
       </form>
     </div>
-
-  </main>
+  </div>
 
   <footer class="text-center p-4 text-xs text-slate-500 border-t border-slate-800">
     تطبيق فرصة فني &copy; 2026
@@ -124,13 +176,16 @@
     let selfieBase64 = "";
     let videoStream = null;
 
-    // Force Unregister old Service Worker to bypass Cache issue
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(function(registrations) {
-        for(let registration of registrations) {
-          registration.unregister();
-        }
-      });
+    // Modal Control Functions
+    function openApplicationModal() {
+      document.getElementById('appModal').classList.remove('hidden');
+    }
+
+    function closeApplicationModal() {
+      document.getElementById('appModal').classList.add('hidden');
+      if (videoStream) {
+        videoStream.getTracks().forEach(track => track.stop());
+      }
     }
 
     function handleFileSelect(event, previewId) {
@@ -222,21 +277,22 @@
 
       emailjs.send('service_ofjx955', 'template_saoi5q6', templateParams)
         .then(function() {
-           alert('✅ تم إرسال الطلب بنجاح!');
+           alert('✅ تم إرسال طلبك بنجاح وسنقوم بمراجعته!');
            document.getElementById('jobForm').reset();
            document.getElementById('idFrontPreview').classList.add('hidden');
            document.getElementById('idBackPreview').classList.add('hidden');
            document.getElementById('selfiePreview').classList.add('hidden');
+           closeApplicationModal();
         }, function(error) {
            alert('❌ حدث خطأ أثناء الإرسال.');
         })
         .finally(function() {
            btn.disabled = false;
-           btn.innerText = 'إرسال الطلب الآن 🚀';
+           btn.innerText = 'إرسال طلب الانضمام 🚀';
         });
     }
 
-    // Process Actions inside the page
+    // Process Direct Admin Actions from Email
     window.addEventListener('DOMContentLoaded', () => {
       const urlParams = new URLSearchParams(window.location.search);
       const action = urlParams.get('action');
