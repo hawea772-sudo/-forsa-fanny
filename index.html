@@ -1,4 +1,4 @@
-<!-- Version 2.0.0 - Original Layout with Job Application Flow -->
+<!-- Version 2.1.0 - Fully Interactive Buttons & Services -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -44,48 +44,61 @@
     <!-- Home View (Services Grid) -->
     <div id="homeView" class="space-y-4">
       
-      <!-- Services Grid -->
+      <div class="flex justify-between items-center">
+        <h2 class="text-xs font-bold text-slate-400">اختر الخدمة المطلوبة:</h2>
+      </div>
+
+      <!-- Services Grid with Click Handlers -->
       <div class="grid grid-cols-2 gap-3">
-        <div class="bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/40 active:scale-95 transition-all cursor-pointer">
+        <button onclick="openServiceRequest('كهرباء', '⚡')" class="bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
           <span class="text-3xl">⚡</span>
           <span class="text-xs font-semibold text-slate-200">كهرباء</span>
-        </div>
-        <div class="bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/40 active:scale-95 transition-all cursor-pointer">
+        </button>
+        
+        <button onclick="openServiceRequest('سباكة', '🔧')" class="bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
           <span class="text-3xl">🔧</span>
           <span class="text-xs font-semibold text-slate-200">سباكة</span>
-        </div>
-        <div class="bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/40 active:scale-95 transition-all cursor-pointer">
+        </button>
+        
+        <button onclick="openServiceRequest('أجهزة منزلية', '📺')" class="bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
           <span class="text-3xl">📺</span>
           <span class="text-xs font-semibold text-slate-200">أجهزة منزلية</span>
-        </div>
-        <div class="bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/40 active:scale-95 transition-all cursor-pointer">
+        </button>
+        
+        <button onclick="openServiceRequest('تكييف', '❄️')" class="bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
           <span class="text-3xl">❄️</span>
           <span class="text-xs font-semibold text-slate-200">تكييف</span>
-        </div>
-        <div class="bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/40 active:scale-95 transition-all cursor-pointer">
+        </button>
+        
+        <button onclick="openServiceRequest('موبايلات', '📱')" class="bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
           <span class="text-3xl">📱</span>
           <span class="text-xs font-semibold text-slate-200">موبايلات</span>
-        </div>
-        <div class="bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/40 active:scale-95 transition-all cursor-pointer">
+        </button>
+        
+        <button onclick="openServiceRequest('سيارات', '🚗')" class="bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
           <span class="text-3xl">🚗</span>
           <span class="text-xs font-semibold text-slate-200">سيارات</span>
-        </div>
-        <div class="bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/40 active:scale-95 transition-all cursor-pointer">
+        </button>
+        
+        <button onclick="openServiceRequest('نقاشة', '🎨')" class="bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
           <span class="text-3xl">🎨</span>
           <span class="text-xs font-semibold text-slate-200">نقاشة</span>
-        </div>
-        <div class="bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/40 active:scale-95 transition-all cursor-pointer">
+        </button>
+        
+        <button onclick="openServiceRequest('نجارة', '🪚')" class="bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
           <span class="text-3xl">🪚</span>
           <span class="text-xs font-semibold text-slate-200">نجارة</span>
-        </div>
-        <div class="bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/40 active:scale-95 transition-all cursor-pointer">
+        </button>
+        
+        <button onclick="openServiceRequest('تنظيف', '🧹')" class="bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
           <span class="text-3xl">🧹</span>
           <span class="text-xs font-semibold text-slate-200">تنظيف</span>
-        </div>
-        <div class="bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/40 active:scale-95 transition-all cursor-pointer">
+        </button>
+        
+        <button onclick="openServiceRequest('نقل وشحن', '🚚')" class="bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
           <span class="text-3xl">🚚</span>
           <span class="text-xs font-semibold text-slate-200">نقل وشحن</span>
-        </div>
+        </button>
       </div>
 
       <!-- Main Action Buttons -->
@@ -94,30 +107,25 @@
           <span>💼</span>
           <span>عايز شغل</span>
         </button>
-        <button class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-amber-500/10 active:scale-95 transition-all cursor-pointer">
+        
+        <button onclick="openGeneralRequest()" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-4 rounded-2xl flex items-center justify-center gap-2 shadow-lg shadow-amber-500/10 active:scale-95 transition-all cursor-pointer">
           <span>🔧</span>
           <span>محتاج خدمة</span>
         </button>
       </div>
 
-      <!-- Info Banner -->
-      <div class="border border-amber-500/30 bg-amber-500/5 rounded-2xl p-4 text-center">
-        <p class="text-xs font-semibold text-amber-400">قسم «عايز شغل» للتقديم كفني معتمد واستقبال الطلبات 💼</p>
-      </div>
-
     </div>
 
-    <!-- Application Form View (Hidden by default, shown when clicking 'عايز شغل') -->
+    <!-- Job View (Application Form) -->
     <div id="jobView" class="hidden space-y-4">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
-        <button onclick="closeJobForm()" class="text-xs text-amber-400 font-bold flex items-center gap-1 cursor-pointer">
+        <button onclick="showView('homeView')" class="text-xs text-amber-400 font-bold flex items-center gap-1 cursor-pointer">
           <span>➡️</span> عودة للرئيسية
         </button>
         <h2 class="text-sm font-bold text-amber-500">استمارة التقديم كـ فني</h2>
       </div>
 
       <form id="jobForm" onsubmit="handleFormSubmit(event)" class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
-        
         <div>
           <label class="block text-xs font-medium text-slate-300 mb-1">الاسم بالكامل</label>
           <input type="text" id="applicantName" required placeholder="مثال: محمد أحمد" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500">
@@ -141,7 +149,7 @@
           </select>
         </div>
 
-        <!-- ID Upload Section -->
+        <!-- ID Upload -->
         <div class="border-t border-slate-800 pt-4">
           <label class="block text-xs font-bold text-amber-400 mb-2">💳 توثيق الهوية (صورة البطاقة)</label>
           <div class="space-y-3">
@@ -177,12 +185,76 @@
           </div>
         </div>
 
-        <!-- Submit Button -->
         <button type="submit" id="submitBtn" class="w-full bg-amber-500 hover:bg-amber-600 active:scale-95 transition-all text-slate-950 font-bold py-3.5 rounded-xl shadow-lg shadow-amber-500/20 mt-4 cursor-pointer">
           إرسال طلب الانضمام 🚀
         </button>
-
       </form>
+    </div>
+
+    <!-- Request Service Modal / View -->
+    <div id="serviceModal" class="hidden space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <button onclick="showView('homeView')" class="text-xs text-amber-400 font-bold flex items-center gap-1 cursor-pointer">
+          <span>➡️</span> رجوع
+        </button>
+        <h2 id="serviceModalTitle" class="text-sm font-bold text-amber-500">طلب خدمة</h2>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-4">
+        <div class="text-center p-3 bg-slate-950 rounded-xl border border-slate-800">
+          <span id="serviceIcon" class="text-4xl block mb-1">🔧</span>
+          <span id="serviceName" class="text-sm font-bold text-slate-200">اسم الخدمة</span>
+        </div>
+
+        <form onsubmit="handleServiceRequestSubmit(event)" class="space-y-3">
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">الاسم</label>
+            <input type="text" required placeholder="اسمك الكريم" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">رقم الهاتف</label>
+            <input type="tel" required placeholder="01XXXXXXXXX" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500">
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-slate-300 mb-1">وصف المشكلة / الطلب</label>
+            <textarea rows="3" placeholder="اكتب تفاصيل الخدمة المطلوب تنفيذها..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500"></textarea>
+          </div>
+          <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3.5 rounded-xl shadow-lg transition-all cursor-pointer">
+            ارسال الطلب الآن 🛠️
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Orders View -->
+    <div id="ordersView" class="hidden space-y-4">
+      <h2 class="text-sm font-bold text-amber-500 border-b border-slate-800 pb-2">📋 طلباتي الأخيرة</h2>
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center text-slate-400 text-xs">
+        لا توجد طلبات نشطة حالياً.
+      </div>
+    </div>
+
+    <!-- Messages View -->
+    <div id="messagesView" class="hidden space-y-4">
+      <h2 class="text-sm font-bold text-amber-500 border-b border-slate-800 pb-2">💬 المحادثات</h2>
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center text-slate-400 text-xs">
+        لا توجد محادثات مفتوحة.
+      </div>
+    </div>
+
+    <!-- Profile View -->
+    <div id="profileView" class="hidden space-y-4">
+      <h2 class="text-sm font-bold text-amber-500 border-b border-slate-800 pb-2">👤 حسابي</h2>
+      <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 space-y-3 text-xs">
+        <div class="flex justify-between border-b border-slate-800 pb-2">
+          <span class="text-slate-400">الحالة:</span>
+          <span class="text-emerald-400 font-bold">نشط</span>
+        </div>
+        <div class="flex justify-between">
+          <span class="text-slate-400">المدينة:</span>
+          <span class="text-slate-200">القاهرة</span>
+        </div>
+      </div>
     </div>
 
   </main>
@@ -190,19 +262,19 @@
   <!-- Bottom Navigation Bar -->
   <nav class="fixed bottom-0 left-0 right-0 bg-slate-900/95 backdrop-blur border-t border-slate-800/80 py-2.5 z-40">
     <div class="max-w-md mx-auto flex justify-around items-center text-center">
-      <button onclick="closeJobForm()" class="flex flex-col items-center gap-1 text-amber-500 font-semibold cursor-pointer">
+      <button onclick="showView('homeView')" id="navHome" class="flex flex-col items-center gap-1 text-amber-500 font-semibold cursor-pointer">
         <span class="text-lg">🏫</span>
         <span class="text-[10px]">الرئيسية</span>
       </button>
-      <button class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 cursor-pointer">
+      <button onclick="showView('ordersView')" id="navOrders" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 cursor-pointer">
         <span class="text-lg">📋</span>
         <span class="text-[10px]">طلباتي</span>
       </button>
-      <button class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 cursor-pointer">
+      <button onclick="showView('messagesView')" id="navMessages" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 cursor-pointer">
         <span class="text-lg">💬</span>
         <span class="text-[10px]">المحادثات</span>
       </button>
-      <button class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 cursor-pointer">
+      <button onclick="showView('profileView')" id="navProfile" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 cursor-pointer">
         <span class="text-lg">👤</span>
         <span class="text-[10px]">حسابي</span>
       </button>
@@ -221,19 +293,39 @@
       });
     }
 
-    function openJobForm() {
-      document.getElementById('homeView').classList.add('hidden');
-      document.getElementById('jobView').classList.remove('hidden');
-      window.scrollTo(0, 0);
-    }
+    function showView(viewId) {
+      const views = ['homeView', 'jobView', 'serviceModal', 'ordersView', 'messagesView', 'profileView'];
+      views.forEach(v => {
+        const el = document.getElementById(v);
+        if (el) el.classList.add('hidden');
+      });
 
-    function closeJobForm() {
-      document.getElementById('jobView').classList.add('hidden');
-      document.getElementById('homeView').classList.remove('hidden');
-      if (videoStream) {
+      document.getElementById(viewId).classList.remove('hidden');
+
+      if (videoStream && viewId !== 'jobView') {
         videoStream.getTracks().forEach(track => track.stop());
       }
       window.scrollTo(0, 0);
+    }
+
+    function openJobForm() {
+      showView('jobView');
+    }
+
+    function openServiceRequest(name, icon) {
+      document.getElementById('serviceName').innerText = 'طلب خدمة ' + name;
+      document.getElementById('serviceIcon').innerText = icon;
+      showView('serviceModal');
+    }
+
+    function openGeneralRequest() {
+      openServiceRequest('عامة', '🛠️');
+    }
+
+    function handleServiceRequestSubmit(e) {
+      e.preventDefault();
+      alert('✅ تم استلام طلبك بنجاح وسيتم التواصل معك قريباً!');
+      showView('homeView');
     }
 
     function handleFileSelect(event, previewId) {
@@ -330,7 +422,7 @@
            document.getElementById('idFrontPreview').classList.add('hidden');
            document.getElementById('idBackPreview').classList.add('hidden');
            document.getElementById('selfiePreview').classList.add('hidden');
-           closeJobForm();
+           showView('homeView');
         }, function(error) {
            alert('❌ حدث خطأ أثناء الإرسال.');
         })
