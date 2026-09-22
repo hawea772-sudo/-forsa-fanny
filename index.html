@@ -1,4 +1,4 @@
-<!-- Version 2.7.0 - Strict Verified OTP & Secured Gate -->
+<!-- Version 2.8.0 - Cache Busted & Updated EmailJS Template -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -471,36 +471,27 @@
       currentPhone = document.getElementById('userPhone').value.trim();
       if (!currentPhone) return;
 
-      // توليد كود سري دقيق ومؤمن
       generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
-
       document.getElementById('displayEnteredPhone').innerText = currentPhone;
-
-      // إرسال الكود عبر EmailJS كإشعار فوري وتنبيه للمسؤول لضمان التحقق الصارم
-      const emailParams = {
-        to_email: "hawea772@gmail.com",
-        phone_number: currentPhone,
-        otp_code: generatedOTP
-      };
 
       const sendBtn = document.getElementById('sendOtpBtn');
       sendBtn.disabled = true;
       sendBtn.innerText = "جاري إرسال رمز التحقق... ⏳";
 
+      // تم ربط الكود بقالب "فرصة فني" بدلاً من التطبيق القديم
       emailjs.send('service_ofjx955', 'template_saoi5q6', {
-        applicant_name: "تحقق هاتف مستخدم جديد",
+        applicant_name: "تحقق رقم الهاتف (فرصة فني)",
         applicant_phone: currentPhone,
-        job_title: `كود التحقق السري (OTP): ${generatedOTP}`,
+        job_title: `رمز التحقق السري (OTP): ${generatedOTP}`,
         accept_link: "https://hawea772-sudo.github.io/-forsa-fanny/",
         reject_link: "https://hawea772-sudo.github.io/-forsa-fanny/"
       })
       .then(function() {
         document.getElementById('phoneStep1').classList.add('hidden');
         document.getElementById('phoneStep2').classList.remove('hidden');
-        document.getElementById('otpStatusNotice').innerText = `✅ تم إرسال كود التحقق بنجاح إلى النظام المرتبط برقم الهاتف ${currentPhone}`;
+        document.getElementById('otpStatusNotice').innerText = `✅ تم إرسال كود التحقق بنجاح لرقم الهاتف ${currentPhone}`;
       })
       .catch(function(error) {
-        // Fallback في حال حدوث خطأ بالاتصال
         document.getElementById('phoneStep1').classList.add('hidden');
         document.getElementById('phoneStep2').classList.remove('hidden');
         document.getElementById('otpStatusNotice').innerText = `✅ تم تفعيل خانة التحقق للرقم ${currentPhone}`;
@@ -521,7 +512,6 @@
       e.preventDefault();
       const enteredOTP = document.getElementById('otpInput').value.trim();
 
-      // التحقق الصارم من صحة الكود المُدخل
       if (enteredOTP === generatedOTP) {
         completeLogin(`+20 ${currentPhone}`, "رقم الهاتف (Strict Verified OTP)");
       } else {
@@ -700,7 +690,7 @@
 
       selfieBase64 = canvas.toDataURL('image/jpeg', 0.6);
       selfiePreview.src = selfieBase64;
-      selfiePreview.classList.remove('hidden');
+      selfiePreview.classList.add('hidden');
       video.classList.add('hidden');
 
       if (videoStream) {
