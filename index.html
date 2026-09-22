@@ -3,11 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Disable Browser & PWA Caching -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
   <title>فرصة فني - منصة الخدمات والتوظيف</title>
   
-  <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#1e293b">
-  <meta name="apple-mobile-web-app-capable" content="yes">
 
   <script src="https://cdn.tailwindcss.com"></script>
 
@@ -176,12 +180,17 @@
     let selfieBase64 = "";
     let videoStream = null;
 
-    // Unregister old SW to force updates
+    // Completely Unregister and Clear Cache
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistrations().then(function(registrations) {
         for(let registration of registrations) {
           registration.unregister();
         }
+      });
+    }
+    if ('caches' in window) {
+      caches.keys().then(function(names) {
+        for (let name of names) caches.delete(name);
       });
     }
 
@@ -283,6 +292,7 @@
         reject_link: `${baseUrl}?action=reject&id=${appId}`
       };
 
+      // Explicitly call Forsa Fanny Template
       emailjs.send('service_ofjx955', 'template_saoi5q6', templateParams)
         .then(function() {
            alert('✅ تم إرسال طلبك بنجاح وسنقوم بمراجعته!');
