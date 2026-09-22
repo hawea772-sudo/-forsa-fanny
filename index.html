@@ -1,4 +1,4 @@
-<!-- Version 3.5.0 - Added Car Repair Section -->
+<!-- Version 4.0.0 - Role Separator (Client vs Approved Technician) -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -104,10 +104,7 @@
     <!-- Main Content Area -->
     <main class="max-w-md mx-auto w-full p-4 space-y-5">
 
-      <!-- Admin Alert Banner -->
-      <div id="statusAlert" class="hidden p-4 rounded-2xl text-center font-bold text-xs shadow-xl transition-all"></div>
-
-      <!-- Home View (Services Grid) -->
+      <!-- Home View (Services Grid for Regular Client) -->
       <div id="homeView" class="space-y-4">
         
         <div class="relative">
@@ -177,7 +174,7 @@
           </button>
         </div>
 
-        <!-- Main Action Buttons -->
+        <!-- Join as Technician Banner/Button -->
         <div class="grid grid-cols-1 gap-3 pt-2">
           <button onclick="openJobForm()" class="bg-slate-900 border border-slate-800 hover:border-amber-500/50 text-slate-200 font-bold py-4 rounded-2xl flex items-center justify-center gap-2 active:scale-95 transition-all cursor-pointer">
             <span>💼</span>
@@ -244,7 +241,33 @@
         </div>
       </div>
 
-      <!-- Job View (Application Form) -->
+      <!-- In-App Chat Room View -->
+      <div id="chatRoomView" class="hidden space-y-3">
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <button onclick="showView('messagesView')" class="text-xs text-amber-400 font-bold flex items-center gap-1 cursor-pointer">
+            <span>➡️</span> عودة للمحادثات
+          </button>
+          <div class="text-center">
+            <h2 id="chatRoomTechName" class="text-xs font-bold text-amber-500">اسم الفني</h2>
+            <span class="text-[9px] text-emerald-400 font-semibold">● متصل الآن في الشات</span>
+          </div>
+        </div>
+
+        <!-- Chat Messages Container -->
+        <div id="chatMessagesBox" class="bg-slate-900 border border-slate-800 rounded-2xl p-3 h-80 overflow-y-auto space-y-3 flex flex-col">
+          <!-- Dynamically appended chat bubbles -->
+        </div>
+
+        <!-- Chat Input Form -->
+        <form onsubmit="sendChatMessage(event)" class="flex gap-2">
+          <input type="text" id="chatInputMessage" required placeholder="اكتب رسالتك هنا..." class="flex-1 bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-amber-500">
+          <button type="submit" class="bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold px-4 py-3 rounded-xl transition-all cursor-pointer text-xs">
+            إرسال ✈️
+          </button>
+        </form>
+      </div>
+
+      <!-- Job View (Application Form to become a technician) -->
       <div id="jobView" class="hidden space-y-4">
         <div class="flex items-center justify-between border-b border-slate-800 pb-3">
           <button onclick="showView('homeView')" class="text-xs text-amber-400 font-bold flex items-center gap-1 cursor-pointer">
@@ -319,12 +342,12 @@
           </div>
 
           <button type="submit" id="submitBtn" class="w-full bg-amber-500 hover:bg-amber-600 active:scale-95 transition-all text-slate-950 font-bold py-3.5 rounded-xl shadow-lg shadow-amber-500/20 mt-4 cursor-pointer">
-            إرسال طلب الانضمام 🚀
+            إرسال طلب الانضمام كفني 🚀
           </button>
         </form>
       </div>
 
-      <!-- Orders View -->
+      <!-- Orders View (Client Orders) -->
       <div id="ordersView" class="hidden space-y-4">
         <h2 class="text-sm font-bold text-amber-500 border-b border-slate-800 pb-2">📋 طلباتي الأخيرة</h2>
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 text-center text-slate-400 text-xs">
@@ -332,15 +355,15 @@
         </div>
       </div>
 
-      <!-- Messages View (In-App Orders & Chats) -->
+      <!-- Messages View (Technical Dashboard: ONLY visible if technician is approved) -->
       <div id="messagesView" class="hidden space-y-4">
         <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-          <h2 class="text-sm font-bold text-amber-500">💬 محادثات الطلبات الواردة</h2>
-          <span class="text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded-full font-bold">مباشر داخل التطبيق</span>
+          <h2 class="text-sm font-bold text-amber-500">💬 محادثات الطلبات الواردة للفني</h2>
+          <span class="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-bold">فني معتمد ✅</span>
         </div>
         
         <div id="messagesContainer" class="space-y-3">
-          <!-- Dynamically populated received order chats -->
+          <!-- Dynamically populated received order chats for approved technician -->
         </div>
       </div>
 
@@ -371,14 +394,23 @@
 
           <div class="space-y-2 text-xs">
             <div class="flex justify-between py-1 border-b border-slate-800/50">
-              <span class="text-slate-400">حالة التوثيق:</span>
-              <span class="text-emerald-400 font-bold">حساب موثق ✅</span>
+              <span class="text-slate-400">صفة المستخدم الحالية:</span>
+              <span id="userRoleBadge" class="text-amber-400 font-bold">عميل (مستخدم عادي) 👤</span>
             </div>
             <div class="flex justify-between py-1 border-b border-slate-800/50">
               <span class="text-slate-400">محل الإقامة الفعلي:</span>
               <span id="detectedLocationText" class="text-amber-400 font-semibold">جاري التحديد...</span>
             </div>
           </div>
+        </div>
+
+        <!-- Simulation Approval Button for Testing (To simulate you clicking 'Approve' from Gmail) -->
+        <div class="bg-amber-500/10 border border-amber-500/30 rounded-2xl p-4 space-y-2 text-xs">
+          <p class="font-bold text-amber-300">🛠️ محاكاة موافقة الإدارة (من رسالة الجيميل):</p>
+          <p class="text-[11px] text-slate-400">بمجرد الضغط هنا كأنك ضغطت على زر "موافقة" في بريدك الإلكتروني، ليتحول حسابك إلى فني وتظهر لك شاشة محادثات الطلبات:</p>
+          <button onclick="simulateAdminApproval()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2.5 rounded-xl transition-all cursor-pointer">
+            ✨ تفعيل حسابي كفني معتمد الآن
+          </button>
         </div>
 
         <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 space-y-2 text-xs">
@@ -402,9 +434,11 @@
           <span class="text-lg">📋</span>
           <span class="text-[10px]">طلباتي</span>
         </button>
-        <button onclick="showView('messagesView')" id="navMessages" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 cursor-pointer">
+        <!-- Messages Tab is dynamically shown or hidden based on Technician Approval Role -->
+        <button onclick="checkAndOpenMessages()" id="navMessagesBtn" class="hidden flex-col items-center gap-1 text-slate-400 hover:text-slate-200 cursor-pointer relative">
           <span class="text-lg">💬</span>
           <span class="text-[10px]">المحادثات</span>
+          <span id="chatBadgeDot" class="absolute top-0 right-2 w-2 h-2 bg-emerald-500 rounded-full hidden"></span>
         </button>
         <button onclick="showView('profileView')" id="navProfile" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 cursor-pointer">
           <span class="text-lg">👤</span>
@@ -423,8 +457,9 @@
     let videoStream = null;
     let currentSelectedCategory = "";
     let selectedTechnicianName = "";
+    let currentActiveChatId = null;
 
-    // Comprehensive Database for all home and car services
+    // Database for services
     const techniciansDB = {
       "كهرباء": [
         { name: "محمد إبراهيم", rating: "4.9 ⭐", exp: "8 سنوات خبرة" },
@@ -438,12 +473,10 @@
         { name: "كريم الهواري", rating: "5.0 ⭐", exp: "9 سنوات خبرة" }
       ],
       "تنظيف": [
-        { name: "شركة النظافة السريعة", rating: "4.9 ⭐", exp: "خدمة تنظيف منازل وشقق شاملة" },
-        { name: "فريق الإتقان للتنظيف", rating: "4.7 ⭐", exp: "تنظيف كنب وتكييفات ومفروشات" }
+        { name: "شركة النظافة السريعة", rating: "4.9 ⭐", exp: "خدمة تنظيف منازل وشقق شاملة" }
       ],
       "نقل وشحن": [
-        { name: "دينا نقل عفش مدينتي", rating: "4.9 ⭐", exp: "نقل وترحيل الأثاث والبضائع" },
-        { name: "شحن وتوصيل سريع", rating: "4.8 ⭐", exp: "نقل سريع لجميع الاحتياجات" }
+        { name: "دينا نقل عفش مدينتي", rating: "4.9 ⭐", exp: "نقل وترحيل الأثاث والبضائع" }
       ],
       "مغسلة": [
         { name: "مغسلة السجاد والمفروشات", rating: "4.8 ⭐", exp: "غسيل وتوصيل للمنزل" }
@@ -461,8 +494,7 @@
         { name: "مؤسسة الأمان الرقمي", rating: "4.9 ⭐", exp: "تركيب وصيانة كاميرات المراقبة" }
       ],
       "تصليح السيارات": [
-        { name: "ورشة الكابتن لميكانيكا السيارات", rating: "4.9 ⭐", exp: "إصلاح أعطال ومحركات سيارات" },
-        { name: "إبراهيم الصاوي (كهرباء سيارات)", rating: "4.8 ⭐", exp: "فحص وبرمجة كمبيوتر وأعطال كهربائية" }
+        { name: "ورشة الكابتن لميكانيكا السيارات", rating: "4.9 ⭐", exp: "إصلاح أعطال ومحركات سيارات" }
       ]
     };
 
@@ -552,18 +584,54 @@
       localStorage.setItem('user_account_text', accountText);
       localStorage.setItem('user_auth_method', authMethod);
 
+      // Default role upon login is regular client unless previously approved
+      if (!localStorage.getItem('user_technician_approved')) {
+        localStorage.setItem('user_technician_approved', 'false');
+      }
+
       document.getElementById('authGate').classList.add('hidden');
       document.getElementById('appContainer').classList.remove('hidden');
 
       document.getElementById('loggedInAccount').innerText = accountText;
+      updateUIRoleState();
       requestGeolocation();
-      loadInAppMessages();
+    }
+
+    function updateUIRoleState() {
+      const isApprovedTech = localStorage.getItem('user_technician_approved') === 'true';
+      const messagesBtn = document.getElementById('navMessagesBtn');
+      const roleBadge = document.getElementById('userRoleBadge');
+
+      if (isApprovedTech) {
+        messagesBtn.classList.remove('hidden');
+        if (roleBadge) roleBadge.innerHTML = "فني معتمد (مزود خدمة) 🛠️✅";
+      } else {
+        messagesBtn.classList.add('hidden');
+        if (roleBadge) roleBadge.innerHTML = "عميل (مستخدم عادي) 👤";
+      }
+    }
+
+    function simulateAdminApproval() {
+      localStorage.setItem('user_technician_approved', 'true');
+      updateUIRoleState();
+      alert("✅ تمت الموافقة على حسابك كفني بنجاح! تم فتح شاشة (محادثات الطلبات الواردة) في شريط التنقل السفلي.");
+      showView('messagesView');
+    }
+
+    function checkAndOpenMessages() {
+      const isApprovedTech = localStorage.getItem('user_technician_approved') === 'true';
+      if (isApprovedTech) {
+        showView('messagesView');
+      } else {
+        alert("⚠️ هذا القسم خاص بالفنيين المعتمدين فقط بعد موافقة الإدارة.");
+      }
     }
 
     function logoutApp() {
       localStorage.removeItem('user_auth_status');
       localStorage.removeItem('user_account_text');
       localStorage.removeItem('user_auth_method');
+      localStorage.removeItem('user_technician_approved');
       location.reload();
     }
 
@@ -618,7 +686,7 @@
     }
 
     function showView(viewId) {
-      const views = ['homeView', 'techniciansView', 'serviceDetailView', 'jobView', 'ordersView', 'messagesView', 'profileView'];
+      const views = ['homeView', 'techniciansView', 'serviceDetailView', 'chatRoomView', 'jobView', 'ordersView', 'messagesView', 'profileView'];
       views.forEach(v => {
         const el = document.getElementById(v);
         if (el) el.classList.add('hidden');
@@ -684,7 +752,7 @@
       const desc = document.getElementById('clientOrderDesc').value.trim();
 
       btn.disabled = true;
-      btn.innerText = 'جاري إرسال الطلب وحفظه للمحادثات... ⏳';
+      btn.innerText = 'جاري إرسال الطلب وحفظه... ⏳';
 
       const newOrderMessage = {
         id: Date.now(),
@@ -695,7 +763,11 @@
         address: address,
         description: desc,
         time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
-        date: new Date().toLocaleDateString('ar-EG')
+        date: new Date().toLocaleDateString('ar-EG'),
+        messages: [
+          { sender: 'system', text: `تم بدء الطلب بنجاح. المشكلة: ${desc}` },
+          { sender: 'tech', text: `أهلاً بك يا ${name}، أنا معك وجاري فحص طلبك.` }
+        ]
       };
 
       let savedOrders = JSON.parse(localStorage.getItem('technician_incoming_orders') || '[]');
@@ -714,11 +786,11 @@
         .then(function() {}, function() {});
 
       setTimeout(() => {
-        alert(`✅ تم إرسال طلبك إلى (${selectedTechnicianName}) وتلقاه في خانة المحادثات داخل التطبيق بنجاح!`);
+        alert(`✅ تم إرسال طلبك إلى (${selectedTechnicianName}) بنجاح!`);
         e.target.reset();
         btn.disabled = false;
         btn.innerText = 'إرسال الطلب الآن 🚀';
-        showView('messagesView');
+        showView('ordersView');
       }, 800);
     }
 
@@ -730,8 +802,8 @@
         container.innerHTML = `
           <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 text-center space-y-2">
             <span class="text-3xl block">📭</span>
-            <p class="text-slate-400 text-xs font-semibold">لا توجد محادثات أو طلبات واردة حالياً.</p>
-            <p class="text-slate-500 text-[11px]">عند قيام أي عميل بطلب خدمة، ستظهر تفاصيل الطلب والتواصل هنا مباشرة.</p>
+            <p class="text-slate-400 text-xs font-semibold">لا توجد طلبات واردة للفني حالياً.</p>
+            <p class="text-slate-500 text-[11px]">عند قيام العملاء بطلب خدمة، ستظهر تفاصيل الطلبات هنا للمتابعة والرد.</p>
           </div>
         `;
         return;
@@ -759,17 +831,75 @@
             </div>
           </div>
 
-          <div class="flex gap-2 pt-1">
-            <a href="tel:${order.clientPhone}" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white text-center font-bold text-xs py-2 rounded-xl transition-all">
+          <div class="flex gap-2 pt-1 flex-wrap">
+            <a href="tel:${order.clientPhone}" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white text-center font-bold text-xs py-2.5 rounded-xl transition-all">
               📞 اتصال بالعميل
             </a>
-            <button onclick="deleteOrderMessage(${order.id})" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-xs px-3 py-2 rounded-xl transition-all cursor-pointer">
-              🗑️ حذف
+            <button onclick="openChatRoom(${order.id})" class="flex-1 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs py-2.5 rounded-xl transition-all cursor-pointer">
+              💬 فتح الشات
+            </button>
+            <button onclick="deleteOrderMessage(${order.id})" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 text-xs px-3 py-2.5 rounded-xl transition-all cursor-pointer">
+              🗑️
             </button>
           </div>
         `;
         container.appendChild(card);
       });
+    }
+
+    function openChatRoom(orderId) {
+      currentActiveChatId = orderId;
+      const savedOrders = JSON.parse(localStorage.getItem('technician_incoming_orders') || '[]');
+      const order = savedOrders.find(o => o.id === orderId);
+      if (!order) return;
+
+      document.getElementById('chatRoomTechName').innerText = `${order.techName} (${order.clientName})`;
+      renderChatMessages(order.messages || []);
+      showView('chatRoomView');
+    }
+
+    function renderChatMessages(messages) {
+      const box = document.getElementById('chatMessagesBox');
+      box.innerHTML = "";
+
+      if (messages.length === 0) {
+        box.innerHTML = `<p class="text-center text-slate-500 text-xs my-auto">ابدأ المحادثة الآن...</p>`;
+        return;
+      }
+
+      messages.forEach(msg => {
+        const div = document.createElement('div');
+        if (msg.sender === 'client') {
+          div.className = "self-end bg-amber-500 text-slate-950 p-2.5 rounded-2xl rounded-bl-none text-xs max-w-[80%] font-medium";
+          div.innerText = msg.text;
+        } else if (msg.sender === 'tech') {
+          div.className = "self-start bg-slate-800 text-slate-100 p-2.5 rounded-2xl rounded-br-none text-xs max-w-[80%] font-medium border border-slate-700";
+          div.innerText = msg.text;
+        } else {
+          div.className = "mx-auto bg-slate-950/80 text-amber-400 border border-slate-800 px-3 py-1.5 rounded-xl text-[10px] text-center";
+          div.innerText = msg.text;
+        }
+        box.appendChild(div);
+      });
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function sendChatMessage(e) {
+      e.preventDefault();
+      const input = document.getElementById('chatInputMessage');
+      const text = input.value.trim();
+      if (!text || !currentActiveChatId) return;
+
+      let savedOrders = JSON.parse(localStorage.getItem('technician_incoming_orders') || '[]');
+      const orderIndex = savedOrders.findIndex(o => o.id === currentActiveChatId);
+      if (orderIndex === -1) return;
+
+      if (!savedOrders[orderIndex].messages) savedOrders[orderIndex].messages = [];
+      savedOrders[orderIndex].messages.push({ sender: 'tech', text: text });
+
+      localStorage.setItem('technician_incoming_orders', JSON.stringify(savedOrders));
+      renderChatMessages(savedOrders[orderIndex].messages);
+      input.value = "";
     }
 
     function deleteOrderMessage(orderId) {
@@ -841,7 +971,7 @@
       btn.innerText = 'جاري إرسال الطلب... ⏳';
 
       const templateParams = {
-        applicant_name: `[تقديم فني] ${name}`,
+        applicant_name: `[تقديم فني جديد] ${name}`,
         applicant_phone: phone,
         job_title: jobTitle,
         accept_link: "https://hawea772-sudo.github.io/-forsa-fanny/",
@@ -850,7 +980,7 @@
 
       emailjs.send('service_9tw126v', 'template_ubom7ft', templateParams)
         .then(function() {
-           alert('✅ تم إرسال طلبك بنجاح وسنقوم بمراجعته!');
+           alert('✅ تم إرسال طلبك للانضمام كفني إلى بريد الإدارة بنجاح! في انتظار الموافقة.');
            document.getElementById('jobForm').reset();
            showView('homeView');
         }, function() {
@@ -858,7 +988,7 @@
         })
         .finally(function() {
            btn.disabled = false;
-           btn.innerText = 'إرسال طلب الانضمام 🚀';
+           btn.innerText = 'إرسال طلب الانضمام كفني 🚀';
         });
     }
 
