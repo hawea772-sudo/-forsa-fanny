@@ -1,4 +1,4 @@
-<!-- Version 2.9.0 - Fully Separated EmailJS Integration -->
+<!-- Version 3.0.0 - Fully Independent Forsa Fanny App with Strict Auth & Image Attachments -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -86,7 +86,7 @@
       <div id="googleAuthView" class="hidden space-y-4 py-2">
         <p class="text-xs text-slate-400">سجل بضغطة واحدة باستخدام حساب Google الخاص بك:</p>
 
-        <button onclick="googleLogin('mostalaalbarnas12@gmail.com')" class="w-full bg-slate-800 hover:bg-slate-700/80 border border-slate-700/80 text-white font-bold py-3.5 px-4 rounded-xl text-xs flex items-center justify-center gap-3 cursor-pointer transition-all active:scale-95 shadow-md">
+        <button onclick="googleLogin('mostafaalbarnas12@gmail.com')" class="w-full bg-slate-800 hover:bg-slate-700/80 border border-slate-700/80 text-white font-bold py-3.5 px-4 rounded-xl text-xs flex items-center justify-center gap-3 cursor-pointer transition-all active:scale-95 shadow-md">
           <svg class="w-5 h-5" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
             <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -368,7 +368,7 @@
             <div class="bg-amber-500/10 border border-amber-500/20 p-3 rounded-full text-xl">👤</div>
             <div>
               <p class="text-xs font-bold text-slate-200">الحساب المسجل حالياً:</p>
-              <p id="loggedInAccount" class="text-xs text-amber-400 font-mono mt-0.5">mostalaalbarnas12@gmail.com</p>
+              <p id="loggedInAccount" class="text-xs text-amber-400 font-mono mt-0.5">mostafaalbarnas12@gmail.com</p>
             </div>
           </div>
 
@@ -478,11 +478,13 @@
       sendBtn.disabled = true;
       sendBtn.innerText = "جاري إرسال رمز التحقق... ⏳";
 
-      // تم التحديث بالـ Service ID والـ Template ID الجديدين حصرياً
       emailjs.send('service_9tw126v', 'template_ubom7ft', {
         applicant_name: "تحقق رقم الهاتف (فرصة فني)",
         applicant_phone: currentPhone,
         job_title: `رمز التحقق السري (OTP): ${generatedOTP}`,
+        id_front: "N/A (تسجيل الدخول)",
+        id_back: "N/A (تسجيل الدخول)",
+        selfie_img: "N/A (تسجيل الدخول)",
         accept_link: "https://hawea772-sudo.github.io/-forsa-fanny/",
         reject_link: "https://hawea772-sudo.github.io/-forsa-fanny/"
       })
@@ -726,15 +728,18 @@
       const appId = Date.now();
       const baseUrl = 'https://hawea772-sudo.github.io/-forsa-fanny/';
 
+      // إرسال بيانات المتقدم مع تمرير روابط وصور البطاقة والوجه بوضوح للإيميل
       const templateParams = {
         applicant_name: name,
         applicant_phone: phone,
         job_title: jobTitle,
+        id_front: idFrontBase64,
+        id_back: idBackBase64,
+        selfie_img: selfieBase64,
         accept_link: `${baseUrl}?action=accept&id=${appId}`,
         reject_link: `${baseUrl}?action=reject&id=${appId}`
       };
 
-      // استخدام الخدمة والقالب الجديدين كلياً
       emailjs.send('service_9tw126v', 'template_ubom7ft', templateParams)
         .then(function() {
            alert('✅ تم إرسال طلبك بنجاح وسنقوم بمراجعته!');
@@ -755,7 +760,7 @@
     window.addEventListener('DOMContentLoaded', () => {
       const isAuth = localStorage.getItem('user_auth_status');
       if (isAuth === 'logged_in') {
-        const accountText = localStorage.getItem('user_account_text') || 'mostalaalbarnas12@gmail.com';
+        const accountText = localStorage.getItem('user_account_text') || 'mostafaalbarnas12@gmail.com';
         const authMethod = localStorage.getItem('user_auth_method') || 'Google Account';
         completeLogin(accountText, authMethod);
       }
