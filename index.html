@@ -42,7 +42,7 @@
     <!-- Application Form Card -->
     <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl">
       <h2 class="text-lg font-bold mb-1 text-white">قدّم على فرصة عمل</h2>
-      <p class="text-slate-400 text-sm mb-6">ادخل بياناتك وسيتم إرسال الطلب للمسؤول للمراجعة والرد.</p>
+      <p class="text-slate-400 text-sm mb-6">ادخل بياناتك وصور التوثيق وسيتم إرسال الطلب للمسؤول للمراجعة والرد.</p>
 
       <form id="jobForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
         <div>
@@ -68,7 +68,42 @@
           </select>
         </div>
 
-        <button type="submit" id="submitBtn" class="w-full bg-amber-500 hover:bg-amber-600 active:scale-95 transition-all text-slate-950 font-bold py-3.5 rounded-xl shadow-lg shadow-amber-500/20 mt-2">
+        <!-- ID Upload Section -->
+        <div class="border-t border-slate-700 pt-4 mt-4">
+          <label class="block text-xs font-medium text-amber-400 mb-2">💳 توثيق الهوية (صورة البطاقة)</label>
+          
+          <div class="space-y-3">
+            <div>
+              <span class="block text-xs text-slate-400 mb-1">صورة البطاقة (وجه أمامي):</span>
+              <input type="file" id="idFrontInput" accept="image/*" required onchange="handleFileSelect(event, 'idFrontPreview')" class="w-full text-xs text-slate-400 file:mr-2 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-700 file:text-amber-400 hover:file:bg-slate-600">
+              <img id="idFrontPreview" class="hidden mt-2 rounded-lg max-h-32 border border-slate-700 w-full object-cover">
+            </div>
+
+            <div>
+              <span class="block text-xs text-slate-400 mb-1">صورة البطاقة (ظهر خلفي):</span>
+              <input type="file" id="idBackInput" accept="image/*" required onchange="handleFileSelect(event, 'idBackPreview')" class="w-full text-xs text-slate-400 file:mr-2 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-700 file:text-amber-400 hover:file:bg-slate-600">
+              <img id="idBackPreview" class="hidden mt-2 rounded-lg max-h-32 border border-slate-700 w-full object-cover">
+            </div>
+          </div>
+        </div>
+
+        <!-- Camera / Face ID Selfie Section -->
+        <div class="border-t border-slate-700 pt-4 mt-4">
+          <label class="block text-xs font-medium text-amber-400 mb-2">📸 التحقق المباشر من الوجه (Face Selfie)</label>
+          
+          <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 text-center">
+            <video id="webcam" autoplay playsinline class="hidden w-full h-48 bg-black rounded-lg mb-2 object-cover"></video>
+            <canvas id="canvas" class="hidden"></canvas>
+            <img id="selfiePreview" class="hidden w-full h-48 rounded-lg mb-2 border border-slate-700 object-cover">
+
+            <div class="flex justify-center gap-2">
+              <button type="button" id="startCamBtn" onclick="startCamera()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs px-3 py-2 rounded-lg transition-all">فتح الكاميرا 📷</button>
+              <button type="button" id="captureBtn" onclick="takeSelfie()" class="hidden bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3 py-2 rounded-lg transition-all">التقاط صورة الوجه ⚡</button>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" id="submitBtn" class="w-full bg-amber-500 hover:bg-amber-600 active:scale-95 transition-all text-slate-950 font-bold py-3.5 rounded-xl shadow-lg shadow-amber-500/20 mt-4">
           إرسال الطلب الآن 🚀
         </button>
       </form>
@@ -77,8 +112,8 @@
     <!-- Instructions Card -->
     <div class="mt-6 bg-slate-800/50 p-4 rounded-xl border border-slate-700/50 text-xs text-slate-400 space-y-2">
       <p class="font-semibold text-slate-300">ℹ️ كيف يعمل النظام؟</p>
-      <p>• عند الضغط على إرسال، تصلك تفاصيل المتقدم مباشرة على بريدك الإلكتروني.</p>
-      <p>• يحتوي الإيميل على زرين (قبول / رفض) يمكنك الضغط عليهما مباشرة لاتخاذ القرار.</p>
+      <p>• يتم توثيق هوية الفني برفع صورة البطاقة والتقاط صورة الوجه الحية.</p>
+      <p>• تصلك كافة البيانات والمستندات أونلاين لمراجعتها والرد بالقبول أو الرفض بضغطة زر.</p>
     </div>
 
   </main>
@@ -90,11 +125,76 @@
 
   <!-- Application Logic JS -->
   <script>
+    // Global Storage for Encoded Images
+    let idFrontBase64 = "";
+    let idBackBase64 = "";
+    let selfieBase64 = "";
+    let videoStream = null;
+
     // Service Worker Registration for PWA
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW reg error:', err));
       });
+    }
+
+    // Handle File Reader for ID images
+    function handleFileSelect(event, previewId) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const base64Str = e.target.result;
+        const imgEl = document.getElementById(previewId);
+        imgEl.src = base64Str;
+        imgEl.classList.remove('hidden');
+
+        if (previewId === 'idFrontPreview') idFrontBase64 = base64Str;
+        if (previewId === 'idBackPreview') idBackBase64 = base64Str;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    // Camera Access for Face ID Selfie
+    async function startCamera() {
+      try {
+        videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
+        const video = document.getElementById('webcam');
+        video.srcObject = videoStream;
+        video.classList.remove('hidden');
+        document.getElementById('startCamBtn').classList.add('hidden');
+        document.getElementById('captureBtn').classList.remove('hidden');
+        document.getElementById('selfiePreview').classList.add('hidden');
+      } catch (err) {
+        alert('تعذر الوصول إلى الكاميرا، يرجى السماح بالإذن للكاميرا في المتصفح.');
+      }
+    }
+
+    // Capture Selfie Photo
+    function takeSelfie() {
+      const video = document.getElementById('webcam');
+      const canvas = document.getElementById('canvas');
+      const selfiePreview = document.getElementById('selfiePreview');
+
+      canvas.width = video.videoWidth || 320;
+      canvas.height = video.videoHeight || 240;
+      const context = canvas.getContext('2d');
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      selfieBase64 = canvas.toDataURL('image/jpeg', 0.6); // Compressed for EmailJS limit
+      selfiePreview.src = selfieBase64;
+      selfiePreview.classList.remove('hidden');
+      video.classList.add('hidden');
+
+      // Stop camera stream
+      if (videoStream) {
+        videoStream.getTracks().forEach(track => track.stop());
+      }
+
+      document.getElementById('startCamBtn').innerText = 'إعادة التقاط الصورة 🔄';
+      document.getElementById('startCamBtn').classList.remove('hidden');
+      document.getElementById('captureBtn').classList.add('hidden');
     }
 
     // Form Submission Handler
@@ -111,8 +211,18 @@
         return;
       }
 
+      if (!idFrontBase64 || !idBackBase64) {
+        alert('يرجى رفع صورتي البطاقة (الوجه والظهر) للتوثيق.');
+        return;
+      }
+
+      if (!selfieBase64) {
+        alert('يرجى التقاط صورة الوجه الحية (Face Selfie) للتحقق.');
+        return;
+      }
+
       btn.disabled = true;
-      btn.innerText = 'جاري إرسال الطلب... ⏳';
+      btn.innerText = 'جاري إرسال الطلب والتأكد من التوثيق... ⏳';
 
       const appId = Date.now();
       const baseUrl = 'https://hawea772-sudo.github.io/-forsa-fanny/';
@@ -127,8 +237,14 @@
 
       emailjs.send('service_ofjx955', 'template_saoi5q6', templateParams)
         .then(function(response) {
-           alert('✅ تم إرسال طلبك بنجاح! سيتلقى المسؤول إشعاراً لمراجعة طلبك.');
+           alert('✅ تم إرسال طلبك وتوثيق بياناتك بنجاح! سيتلقى المسؤول إشعاراً لمراجعة طلبك.');
            document.getElementById('jobForm').reset();
+           document.getElementById('idFrontPreview').classList.add('hidden');
+           document.getElementById('idBackPreview').classList.add('hidden');
+           document.getElementById('selfiePreview').classList.add('hidden');
+           idFrontBase64 = "";
+           idBackBase64 = "";
+           selfieBase64 = "";
         }, function(error) {
            console.error('EmailJS Error:', error);
            alert('❌ حدث خطأ أثناء إرسال الطلب، يرجى المحاولة مرة أخرى.');
