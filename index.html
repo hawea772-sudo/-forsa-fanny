@@ -1,4 +1,4 @@
-<!-- Version 2.3.0 - Geolocation, Wallet & Problem Photo -->
+<!-- Version 2.4.0 - Exact City & Governorate Geolocation -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -33,7 +33,7 @@
       </div>
       <div id="locationBadge" class="flex items-center gap-1 text-xs bg-slate-800 text-slate-300 border border-slate-700 px-2.5 py-1 rounded-full">
         <span>📍</span>
-        <span id="locationText">جاري تحديد الموقع...</span>
+        <span id="locationText">جاري تحديث الموقع...</span>
       </div>
     </div>
   </header>
@@ -57,7 +57,7 @@
         <h2 class="text-xs font-bold text-slate-400">اختر الخدمة المطلوبة:</h2>
       </div>
 
-      <!-- Services Grid with Search Filtering -->
+      <!-- Services Grid -->
       <div id="servicesGrid" class="grid grid-cols-2 gap-3">
         <button onclick="openServiceRequest('كهرباء', '⚡')" class="service-card bg-slate-900 border border-slate-800/80 p-5 rounded-2xl flex flex-col items-center justify-center gap-2 hover:border-amber-500/50 active:scale-95 transition-all cursor-pointer">
           <span class="text-3xl">⚡</span>
@@ -200,7 +200,7 @@
       </form>
     </div>
 
-    <!-- Request Service View (With Problem Photo Capture) -->
+    <!-- Request Service View -->
     <div id="serviceModal" class="hidden space-y-4">
       <div class="flex items-center justify-between border-b border-slate-800 pb-3">
         <button onclick="showView('homeView')" class="text-xs text-amber-400 font-bold flex items-center gap-1 cursor-pointer">
@@ -304,7 +304,7 @@
           </div>
           <div class="flex justify-between py-1">
             <span class="text-slate-400">نوع الحساب:</span>
-            <span class="text-slate-200">عميل / فني متقدم</span>
+            <span class="text-slate-200">عميل / فني متتقدم</span>
           </div>
         </div>
       </div>
@@ -366,7 +366,7 @@
       });
     }
 
-    // Geolocation Detection Logic
+    // Advanced Geolocation: Formats to "المحافظة، المدينة/المنطقة"
     function requestGeolocation() {
       const locTextHeader = document.getElementById('locationText');
       const locTextProfile = document.getElementById('detectedLocationText');
@@ -384,30 +384,31 @@
               const response = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=ar`);
               const data = await response.json();
               
-              const city = data.address.state || data.address.city || data.address.governorate || data.address.town || "مصر";
-              const district = data.address.suburb || data.address.neighbourhood || data.address.county || "";
-              const fullLoc = district ? `${district}، ${city}` : city;
+              const addr = data.address || {};
+              const governorate = addr.state || addr.governorate || addr.city || "القاهرة";
+              const city = addr.suburb || addr.neighbourhood || addr.city_district || addr.town || addr.village || "مدينتي";
+
+              const fullLoc = `${governorate}، ${city}`;
 
               locTextHeader.innerText = fullLoc;
               if(locTextProfile) locTextProfile.innerText = fullLoc;
             } catch (err) {
-              locTextHeader.innerText = "القاهرة، مصر";
-              if(locTextProfile) locTextProfile.innerText = "القاهرة، مصر";
+              locTextHeader.innerText = "القاهرة، مدينتي";
+              if(locTextProfile) locTextProfile.innerText = "القاهرة، مدينتي";
             }
           },
           (error) => {
-            locTextHeader.innerText = "القاهرة، مصر";
-            if(locTextProfile) locTextProfile.innerText = "القاهرة، مصر (افتراضي)";
+            locTextHeader.innerText = "القاهرة، مدينتي";
+            if(locTextProfile) locTextProfile.innerText = "القاهرة، مدينتي (افتراضي)";
           },
           { enableHighAccuracy: true, timeout: 5000 }
         );
       } else {
-        locTextHeader.innerText = "القاهرة، مصر";
-        if(locTextProfile) locTextProfile.innerText = "القاهرة، مصر";
+        locTextHeader.innerText = "القاهرة، مدينتي";
+        if(locTextProfile) locTextProfile.innerText = "القاهرة، مدينتي";
       }
     }
 
-    // Filter services grid based on search bar
     function filterServices() {
       const input = document.getElementById('searchInput').value.toLowerCase();
       const cards = document.querySelectorAll('.service-card');
@@ -572,9 +573,7 @@
         });
     }
 
-    // On Load Initializations
     window.addEventListener('DOMContentLoaded', () => {
-      // Trigger Geolocation immediately
       requestGeolocation();
 
       const urlParams = new URLSearchParams(window.location.search);
