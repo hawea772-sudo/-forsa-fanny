@@ -3,16 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>فرصة فني - منصة التوظيف للفنيين</title>
+  <title>فرصة فني - التقديم والتوظيف</title>
   
-  <!-- PWA Manifest & Theme Color -->
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#1e293b">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="فرصة فني">
 
-  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- EmailJS SDK -->
@@ -26,75 +23,79 @@
 <body class="bg-slate-900 text-slate-100 min-h-screen font-sans flex flex-col justify-between">
 
   <!-- Header -->
-  <header class="bg-slate-800 border-b border-slate-700 p-4 sticky top-0 z-50">
+  <header class="bg-slate-800 border-b border-slate-700 p-4 sticky top-0 z-50 shadow-md">
     <div class="max-w-md mx-auto flex justify-between items-center">
       <h1 class="text-xl font-bold text-amber-500">🛠️ فرصة فني</h1>
-      <span class="text-xs bg-amber-500/10 text-amber-400 px-2.5 py-1 rounded-full border border-amber-500/20">PWA App</span>
+      <span class="text-xs bg-amber-500/10 text-amber-400 px-2.5 py-1 rounded-full border border-amber-500/20">منصة التوظيف</span>
     </div>
   </header>
 
   <!-- Main Container -->
   <main class="max-w-md mx-auto w-full p-4 flex-1">
 
-    <!-- Notification Banner -->
-    <div id="statusAlert" class="hidden mb-4 p-4 rounded-xl text-center font-semibold transition-all"></div>
+    <!-- Admin Decision Alert Banner -->
+    <div id="statusAlert" class="hidden mb-6 p-5 rounded-2xl text-center font-bold text-sm shadow-xl transition-all"></div>
 
-    <!-- Application Form Card -->
-    <div class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-xl">
-      <h2 class="text-lg font-bold mb-1 text-white">قدّم على فرصة عمل</h2>
-      <p class="text-slate-400 text-sm mb-6">ادخل بياناتك وصور التوثيق وسيتم إرسال الطلب للمسؤول للمراجعة والرد.</p>
+    <!-- Application Card -->
+    <div id="appContainer" class="bg-slate-800 p-6 rounded-2xl border border-slate-700 shadow-2xl">
+      <h2 class="text-lg font-bold mb-1 text-white">طلب انضمام فني جديد</h2>
+      <p class="text-slate-400 text-xs mb-6">يرجى استكمال كافة البيانات وصور التوثيق المطلوبة.</p>
 
       <form id="jobForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
+        
+        <!-- Field 1: Name -->
         <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1">الاسم بالكامل</label>
-          <input type="text" id="applicantName" required placeholder="مثال: محمد أحمد" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500">
+          <label class="block text-xs font-medium text-slate-300 mb-1">الاسم الثلاثي</label>
+          <input type="text" id="applicantName" required placeholder="مثال: أحمد محمود علي" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500 transition-all">
         </div>
 
+        <!-- Field 2: Phone -->
         <div>
           <label class="block text-xs font-medium text-slate-300 mb-1">رقم الهاتف / الواتساب</label>
-          <input type="tel" id="applicantPhone" required placeholder="01234567890" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500">
+          <input type="tel" id="applicantPhone" required placeholder="01xxxxxxxxx" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500 transition-all">
         </div>
 
+        <!-- Field 3: Job Selection -->
         <div>
-          <label class="block text-xs font-medium text-slate-300 mb-1">التخصص / المهنة</label>
-          <select id="jobTitle" required class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500">
+          <label class="block text-xs font-medium text-slate-300 mb-1">المهنة / التخصص المطلوب</label>
+          <select id="jobTitle" required class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-amber-500 transition-all">
             <option value="" disabled selected>اختر التخصص</option>
-            <option value="كهربائي">كهربائي</option>
-            <option value="سباك">سباك</option>
-            <option value="فني تكييف">فني تكييف</option>
-            <option value="نقاش">نقاش</option>
-            <option value="نجار">نجار</option>
+            <option value="كهربائي">كهربائي منازل/مصانع</option>
+            <option value="سباك">سباك وصيانة شبكات</option>
+            <option value="فني تكييف">فني تكييف وتبريد</option>
+            <option value="نقاش">نقاش وديكورات</option>
+            <option value="نجار">نجار تركيبات/صيانة</option>
             <option value="تخصص آخر">تخصص آخر</option>
           </select>
         </div>
 
         <!-- ID Upload Section -->
-        <div class="border-t border-slate-700 pt-4 mt-4">
-          <label class="block text-xs font-medium text-amber-400 mb-2">💳 توثيق الهوية (صورة البطاقة)</label>
+        <div class="border-t border-slate-700/80 pt-4 mt-2">
+          <label class="block text-xs font-bold text-amber-400 mb-2">💳 توثيق الهوية (البطاقة الشخصية)</label>
           
           <div class="space-y-3">
             <div>
-              <span class="block text-xs text-slate-400 mb-1">صورة البطاقة (وجه أمامي):</span>
-              <input type="file" id="idFrontInput" accept="image/*" required onchange="handleFileSelect(event, 'idFrontPreview')" class="w-full text-xs text-slate-400 file:mr-2 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-700 file:text-amber-400 hover:file:bg-slate-600">
+              <span class="block text-xs text-slate-400 mb-1">صورة وجه البطاقة (أمامي):</span>
+              <input type="file" id="idFrontInput" accept="image/*" required onchange="handleFileSelect(event, 'idFrontPreview')" class="w-full text-xs text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-700 file:text-amber-400">
               <img id="idFrontPreview" class="hidden mt-2 rounded-lg max-h-32 border border-slate-700 w-full object-cover">
             </div>
 
             <div>
-              <span class="block text-xs text-slate-400 mb-1">صورة البطاقة (ظهر خلفي):</span>
-              <input type="file" id="idBackInput" accept="image/*" required onchange="handleFileSelect(event, 'idBackPreview')" class="w-full text-xs text-slate-400 file:mr-2 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-700 file:text-amber-400 hover:file:bg-slate-600">
+              <span class="block text-xs text-slate-400 mb-1">صورة ظهر البطاقة (خلفي):</span>
+              <input type="file" id="idBackInput" accept="image/*" required onchange="handleFileSelect(event, 'idBackPreview')" class="w-full text-xs text-slate-400 file:mr-2 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-slate-700 file:text-amber-400">
               <img id="idBackPreview" class="hidden mt-2 rounded-lg max-h-32 border border-slate-700 w-full object-cover">
             </div>
           </div>
         </div>
 
-        <!-- Camera / Face ID Selfie Section -->
-        <div class="border-t border-slate-700 pt-4 mt-4">
-          <label class="block text-xs font-medium text-amber-400 mb-2">📸 التحقق المباشر من الوجه (Face Selfie)</label>
+        <!-- Camera / Selfie Section -->
+        <div class="border-t border-slate-700/80 pt-4 mt-2">
+          <label class="block text-xs font-bold text-amber-400 mb-2">📸 بصمة الوجه الحية (Live Selfie)</label>
           
           <div class="bg-slate-900 p-3 rounded-xl border border-slate-700 text-center">
-            <video id="webcam" autoplay playsinline class="hidden w-full h-48 bg-black rounded-lg mb-2 object-cover"></video>
+            <video id="webcam" autoplay playsinline class="hidden w-full h-44 bg-black rounded-lg mb-2 object-cover"></video>
             <canvas id="canvas" class="hidden"></canvas>
-            <img id="selfiePreview" class="hidden w-full h-48 rounded-lg mb-2 border border-slate-700 object-cover">
+            <img id="selfiePreview" class="hidden w-full h-44 rounded-lg mb-2 border border-slate-700 object-cover">
 
             <div class="flex justify-center gap-2">
               <button type="button" id="startCamBtn" onclick="startCamera()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs px-3 py-2 rounded-lg transition-all">فتح الكاميرا 📷</button>
@@ -104,19 +105,17 @@
         </div>
 
         <button type="submit" id="submitBtn" class="w-full bg-amber-500 hover:bg-amber-600 active:scale-95 transition-all text-slate-950 font-bold py-3.5 rounded-xl shadow-lg shadow-amber-500/20 mt-4">
-          إرسال الطلب الآن 🚀
+          تأكيد وإرسال الطلب 🚀
         </button>
       </form>
     </div>
 
   </main>
 
-  <!-- Footer -->
   <footer class="text-center p-4 text-xs text-slate-500 border-t border-slate-800">
-    تطبيق فرصة فني &copy; 2026 - جميع الحقوق محفوظة
+    تطبيق فرصة فني &copy; 2026
   </footer>
 
-  <!-- Application Logic JS -->
   <script>
     let idFrontBase64 = "";
     let idBackBase64 = "";
@@ -125,7 +124,7 @@
 
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW reg error:', err));
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
       });
     }
 
@@ -156,7 +155,7 @@
         document.getElementById('captureBtn').classList.remove('hidden');
         document.getElementById('selfiePreview').classList.add('hidden');
       } catch (err) {
-        alert('تعذر الوصول إلى الكاميرا، يرجى السماح بالإذن للكاميرا في المتصفح.');
+        alert('يرجى السماح بصلاحية الكاميرا لالتقاط صورة الوجه.');
       }
     }
 
@@ -192,23 +191,18 @@
       const phone = document.getElementById('applicantPhone').value.trim();
       const jobTitle = document.getElementById('jobTitle').value;
 
-      if (!name || !phone || !jobTitle) {
-        alert('يرجى ملء جميع البيانات المطلوبة');
-        return;
-      }
-
       if (!idFrontBase64 || !idBackBase64) {
-        alert('يرجى رفع صورتي البطاقة (الوجه والظهر) للتوثيق.');
+        alert('يرجى ارفاق صور البطاقة الشخصية.');
         return;
       }
 
       if (!selfieBase64) {
-        alert('يرجى التقاط صورة الوجه الحية (Face Selfie) للتحقق.');
+        alert('يرجى التقاط صورة الوجه الحية.');
         return;
       }
 
       btn.disabled = true;
-      btn.innerText = 'جاري إرسال الطلب والتأكد من التوثيق... ⏳';
+      btn.innerText = 'جاري إرسال الطلب... ⏳';
 
       const appId = Date.now();
       const baseUrl = 'https://hawea772-sudo.github.io/-forsa-fanny/';
@@ -222,25 +216,22 @@
       };
 
       emailjs.send('service_ofjx955', 'template_saoi5q6', templateParams)
-        .then(function(response) {
-           alert('✅ تم إرسال طلبك وتوثيق بياناتك بنجاح! سيتلقى المسؤول إشعاراً لمراجعة طلبك.');
+        .then(function() {
+           alert('✅ تم إرسال الطلب وتوثيق هويتك بنجاح!');
            document.getElementById('jobForm').reset();
            document.getElementById('idFrontPreview').classList.add('hidden');
            document.getElementById('idBackPreview').classList.add('hidden');
            document.getElementById('selfiePreview').classList.add('hidden');
-           idFrontBase64 = "";
-           idBackBase64 = "";
-           selfieBase64 = "";
         }, function(error) {
-           console.error('EmailJS Error:', error);
-           alert('❌ حدث خطأ أثناء إرسال الطلب، يرجى المحاولة مرة أخرى.');
+           alert('❌ حدث خطأ أثناء الإرسال.');
         })
         .finally(function() {
            btn.disabled = false;
-           btn.innerText = 'إرسال الطلب الآن 🚀';
+           btn.innerText = 'تأكيد وإرسال الطلب 🚀';
         });
     }
 
+    // Handle Direct Action Links inside the page
     window.addEventListener('DOMContentLoaded', () => {
       const urlParams = new URLSearchParams(window.location.search);
       const action = urlParams.get('action');
@@ -250,13 +241,13 @@
       if (action && appId) {
         if (action === 'accept') {
           localStorage.setItem(`app_status_${appId}`, 'accepted');
-          statusAlert.className = 'p-4 rounded-xl text-center font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
-          statusAlert.innerText = `✅ تم قبول الطلب رقم (#${appId}) بنجاح!`;
+          statusAlert.className = 'p-5 rounded-2xl text-center font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30';
+          statusAlert.innerHTML = `🎉 تم قبول الطلب رقم (#${appId}) بنجاح!<br><span class="text-xs text-slate-300 font-normal">تم تحديث حالة الفني إلى مقبول.</span>`;
           statusAlert.classList.remove('hidden');
         } else if (action === 'reject') {
           localStorage.setItem(`app_status_${appId}`, 'rejected');
-          statusAlert.className = 'p-4 rounded-xl text-center font-semibold bg-rose-500/20 text-rose-400 border border-rose-500/30';
-          statusAlert.innerText = `❌ تم رفض الطلب رقم (#${appId}).`;
+          statusAlert.className = 'p-5 rounded-2xl text-center font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30';
+          statusAlert.innerHTML = `🚫 تم رفض الطلب رقم (#${appId}).<br><span class="text-xs text-slate-300 font-normal">تم تسجيل القرار في النظام.</span>`;
           statusAlert.classList.remove('hidden');
         }
         window.history.replaceState({}, document.title, window.location.pathname);
